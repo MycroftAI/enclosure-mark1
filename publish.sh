@@ -13,8 +13,8 @@ function _run() {
 }
 
 S3_HOST=s3://bootstrap.mycroft.ai/artifacts
-_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer sync --acl-public . ${S3_HOST}/amd64/latest/
-_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer put --acl-public enclosure.tar.gz ${S3_HOST}/amd64/latest
+_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer sync --acl-public enclosure.tar.gz ${S3_HOST}/amd64/latest/enclosure.tar.gz
+_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer put --acl-public enclosure.tar.gz ${S3_HOST}/amd64/latest/enclosure.tar.gz
 
-_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer sync --acl-public . ${S3_HOST}/armhf/latest/
-_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer put --acl-public enclosure.tar.gz ${S3_HOST}/armhf/latest
+_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer sync --acl-public enclosure.tar.gz ${S3_HOST}/armhf/latest/enclosure.tar.gz
+_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer put --acl-public enclosure.tar.gz ${S3_HOST}/armhf/latest/enclosure.tar.gz
