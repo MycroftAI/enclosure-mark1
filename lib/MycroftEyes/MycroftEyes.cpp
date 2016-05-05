@@ -7,7 +7,7 @@ MycroftEyes::MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type) {
 void MycroftEyes::start() {
     neoPixel.begin();
     color = neoPixel.Color(255, 255, 255);
-    neoPixel.setBrightness(100);
+    neoPixel.setBrightness(30);
     this->on();
 }
 
