@@ -37,4 +37,4 @@ function _run_s3() {
 _init_vars
 _compile_arduino_sketch
 _create_tarball
-#_upload
+_upload
