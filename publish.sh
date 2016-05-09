@@ -27,7 +27,7 @@ function upload() {
   _run s3cmd -c  ${HOME}/.s3cfg.mycroft-artifact-writer put --acl-public ${ARTIFACT_DIR}/latest ${S3_HOST}/${ARCH}/${PROJECT_NAME}/latest
 }
 
-function run_s3() {
+function _run() {
   if [[ "$QUIET" ]]; then
     echo "$*"
   else
