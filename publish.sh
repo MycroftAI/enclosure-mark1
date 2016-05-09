@@ -1,10 +1,33 @@
 #!/usr/bin/env bash
-./compile.sh
 
-cp build/enclosure.ino.hex enclosure.ino.hex
-tar -czvf enclosure.tar.gz enclosure.ino.hex upload.sh install-avrdude.sh avrdude-gpio.conf
+function init_vars() {
+  TOP='.'
+  PROJECT_NAME="enclosure"
+  VERSION="$(basename $(git describe --abbrev=0 --tags) | sed -e 's/v//g')"
+  ARCH="armhf"
+  ARTIFACT_BASE="enclosure-${ARCH}-${VERSION}"
+  ARTIFACT_DIR=${TOP}/build_artifacts
+  S3_HOST=s3://bootstrap.mycroft.ai/artifacts
+}
 
-function _run() {
+function compile_arduino_sketch() {
+  ./compile.sh
+}
+
+
+function create_tarball() {
+  mkdir -pv ${ARTIFACT_DIR}
+  echo $VERSION > ${TOP}/version.txt
+  echo $VERSION > ${ARTIFACT_DIR}/latest
+  tar -czvf $ARTIFACT_DIR/${ARTIFACT_BASE}.tar.gz enclosure.ino.hex upload.sh install-avrdude.sh avrdude-gpio.conf version.txt
+}
+
+function upload() {
+  _run s3cmd -c  ${HOME}/.s3cfg.mycroft-artifact-writer sync --acl-public ${ARTIFACT_DIR}/${ARTIFACT_BASE}.tar.gz ${S3_HOST}/${ARCH}/${PROJECT_NAME}/${VERSION}/
+  _run s3cmd -c  ${HOME}/.s3cfg.mycroft-artifact-writer put --acl-public ${ARTIFACT_DIR}/latest ${S3_HOST}/${ARCH}/${PROJECT_NAME}/latest
+}
+
+function run_s3() {
   if [[ "$QUIET" ]]; then
     echo "$*"
   else
@@ -12,10 +35,7 @@ function _run() {
   fi
 }
 
-S3_HOST=s3://bootstrap.mycroft.ai/artifacts
-_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer sync --acl-public enclosure.tar.gz ${S3_HOST}/amd64/latest/enclosure.tar.gz
-_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer put --acl-public enclosure.tar.gz ${S3_HOST}/amd64/latest/enclosure.tar.gz
-
-_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer sync --acl-public enclosure.tar.gz ${S3_HOST}/armhf/latest/enclosure.tar.gz
-_run s3cmd -c ${HOME}/.s3cfg.mycroft-artifact-writer put --acl-public enclosure.tar.gz ${S3_HOST}/armhf/latest/enclosure.tar.gz
-
+init_vars
+compile_arduino_sketch
+create_tarball
+upload
