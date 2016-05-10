@@ -110,7 +110,7 @@ void processMouth(String cmd) {
 
 void checkReset() {
     if (arduino.isButtonPress()) {
-        Serial.println("mycroft.reset");
+        Serial.println("mycroft.stop");
         arduino.blink(1, 500);
     }
 }
