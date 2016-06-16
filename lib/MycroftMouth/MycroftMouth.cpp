@@ -65,7 +65,7 @@ void MycroftMouth::talk() {
     }
 }
 
-void MycroftMouth::read_buffer(byte idx, const char[][] anim) {
+void MycroftMouth::readBuffer(byte idx, const char[][] anim) {
     byte size = sizeof(buffer);
     for (byte j = 0; j < size; j++) {
         buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
