@@ -42,7 +42,7 @@ private:
 
     void updateText();
 
-    void read_buffer_listen(byte idx);
+    void readBuffer(byte idx, const char[][] anim);
 
     void read_buffer_smile(byte idx);
 
