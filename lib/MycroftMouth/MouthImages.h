@@ -488,30 +488,3 @@ const PROGMEM char SMILE_IMAGE[][16] = {
         }
 };
 
-const PROGMEM char MUSIC_IMAGE[][16] = {//an imported image from the old faceplate repo that shows a musical note on each of the four mouth panels--possibly useful for later music skills?
-        {
-                0b0000, 0b0100, 0b0000, 0b1110,
-		0b1111, 0b0111, 0b0011, 0b0000, 
-		0b0011, 0b0000, 0b0011, 0b0010, 
-		0b0011, 0b0111, 0b1111, 0b0011
-        },
-
-        {
-                0b0000, 0b0100, 0b0000, 0b1110,
-		0b1111, 0b0111, 0b0011, 0b0000, 
-		0b0011, 0b0000, 0b0011, 0b0010, 
-		0b0011, 0b0111, 0b1111, 0b0011
-        },
-        {
-                0b0000, 0b0100, 0b0000, 0b1110,
-		0b1111, 0b0111, 0b0011, 0b0000, 
-		0b0011, 0b0000, 0b0011, 0b0010, 
-		0b0011, 0b0111, 0b1111, 0b0011
-        },
-        {
-                0b0000, 0b0100, 0b0000, 0b1110,
-		0b1111, 0b0111, 0b0011, 0b0000, 
-		0b0011, 0b0000, 0b0011, 0b0010, 
-		0b0011, 0b0111, 0b1111, 0b0011
-        }
-};
