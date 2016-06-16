@@ -42,7 +42,13 @@ private:
 
     void updateText();
 
-    void read_buffer(byte idx);
+    void read_buffer_listen(byte idx);
+
+    void read_buffer_smile(byte idx);
+
+    void read_buffer_talk(byte idx);
+
+    void read_buffer_think(byte idx);
 
     void copyText(const char *value);
 };

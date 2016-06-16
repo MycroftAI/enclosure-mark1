@@ -20,7 +20,6 @@ void MycroftMouth::reset() {
 }
 
 void MycroftMouth::run() {
-
     switch (state) {
         case TALK:
             this->talk();
@@ -52,7 +51,7 @@ void MycroftMouth::talk() {
         for (byte j = 0; j < size; j++) {
             byte idx = (i * size) + j;
             byte x = j * 8;
-            this->read_buffer(idx);
+            this->read_buffer_talk(idx);
             ht1632.drawImage(buffer, width, height, x, 0);
         }
         ht1632.render();
@@ -65,24 +64,100 @@ void MycroftMouth::talk() {
         }
     }
 }
+//split up the old read_buffer function into separate ones for each animation
+void MycroftMouth::read_buffer_listen(byte idx) {
+    byte size = sizeof(buffer);
+    for (byte j = 0; j < size; j++) {
+        buffer[j] = (char) pgm_read_byte(&(LISTEN_ANIMATION[idx][j]));
+    }
+}
 
-void MycroftMouth::read_buffer(byte idx) {
+void MycroftMouth::read_buffer_smile(byte idx) {
+    byte size = sizeof(buffer);
+    for (byte j = 0; j < size; j++) {
+        buffer[j] = (char) pgm_read_byte(&(SMILE_IMAGE[idx][j]));
+    }
+}
+
+void MycroftMouth::read_buffer_talk(byte idx) {
     byte size = sizeof(buffer);
     for (byte j = 0; j < size; j++) {
         buffer[j] = (char) pgm_read_byte(&(TALK_ANIMATION[idx][j]));
     }
 }
 
+void MycroftMouth::read_buffer_think(byte idx) {
+    byte size = sizeof(buffer);
+    for (byte j = 0; j < size; j++) {
+        buffer[j] = (char) pgm_read_byte(&(THINK_ANIMATION[idx][j]));
+    }
+}
+
 void MycroftMouth::listen() {
     state = LISTEN;
+    byte size = 6;
+    byte plates = 4;
+    byte total = size * 2;
+
+    for (byte i = 0, count = 0; count < total; count++) {
+        ht1632.clear();
+        for (byte j = 0; j < plates; j++) {
+            byte idx = (i * plates) + j;
+            byte x = j * 8;
+            this->read_buffer_listen(idx);
+            ht1632.drawImage(buffer, width, height, x, 0);
+        }
+        ht1632.render();
+        delay(70);
+
+        if (i < size - 1) {
+            i++;
+        } else {
+            i = 0;//resets the listening sine wave animation whenever it ends, allowing it to loop smoothly and infinitely
+        }
+    }
 }
+
 
 void MycroftMouth::think() {
     state = THINK;
+    byte size = 8;
+    byte plates = 4;
+    byte total = (size * 2)-1;
+    boolean back = false;
+
+    for (byte i = 0, count = 0; count < total; count++) {
+        ht1632.clear();
+        for (byte j = 0; j < plates; j++) {
+            byte idx = (i * plates) + j;
+            byte x = j * 8;
+            this->read_buffer_think(idx);
+            ht1632.drawImage(buffer, width, height, x, 0);
+        }
+        ht1632.render();
+        delay(200);
+
+        if (i < size - 1 && !back) {//the think animation "fills" and "empties", so it uses a flag to determine whether it's currently filling or emptying
+            i++;
+        } else {
+            back = true;
+            i--;
+        }
+    }
 }
+
 
 void MycroftMouth::smile() {
     state = SMILE;
+    byte size = 4;
+        for (byte j = 0; j < size; j++) {
+            byte idx = j;
+            byte x = j * 8;
+            this->read_buffer_smile(idx);
+            ht1632.drawImage(buffer, width, height, x, 0);
+        }
+        ht1632.render();
+        delay(70);
 }
 
 void MycroftMouth::write(const char *value) {
