@@ -127,10 +127,10 @@ void loop() {
 
     if (value != last) {
         if (value > last) {
-            Serial.println("volume.down");
+            Serial.println("volume.up");
         }
         else {
-            Serial.println("volume.up");
+            Serial.println("volume.down");
         }
     last = value;
     }
