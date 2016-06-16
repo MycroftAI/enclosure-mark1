@@ -51,7 +51,7 @@ void MycroftMouth::talk() {
         for (byte j = 0; j < size; j++) {
             byte idx = (i * size) + j;
             byte x = j * 8;
-            this->read_buffer_talk(idx);
+            this->read_buffer(idx,TALK_ANIMATION);
             ht1632.drawImage(buffer, width, height, x, 0);
         }
         ht1632.render();
@@ -64,32 +64,11 @@ void MycroftMouth::talk() {
         }
     }
 }
-//split up the old read_buffer function into separate ones for each animation
-void MycroftMouth::read_buffer_listen(byte idx) {
-    byte size = sizeof(buffer);
-    for (byte j = 0; j < size; j++) {
-        buffer[j] = (char) pgm_read_byte(&(LISTEN_ANIMATION[idx][j]));
-    }
-}
 
-void MycroftMouth::read_buffer_smile(byte idx) {
+void MycroftMouth::read_buffer(byte idx, const char[][] anim) {
     byte size = sizeof(buffer);
     for (byte j = 0; j < size; j++) {
-        buffer[j] = (char) pgm_read_byte(&(SMILE_IMAGE[idx][j]));
-    }
-}
-
-void MycroftMouth::read_buffer_talk(byte idx) {
-    byte size = sizeof(buffer);
-    for (byte j = 0; j < size; j++) {
-        buffer[j] = (char) pgm_read_byte(&(TALK_ANIMATION[idx][j]));
-    }
-}
-
-void MycroftMouth::read_buffer_think(byte idx) {
-    byte size = sizeof(buffer);
-    for (byte j = 0; j < size; j++) {
-        buffer[j] = (char) pgm_read_byte(&(THINK_ANIMATION[idx][j]));
+        buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
     }
 }
 
@@ -104,7 +83,7 @@ void MycroftMouth::listen() {
         for (byte j = 0; j < plates; j++) {
             byte idx = (i * plates) + j;
             byte x = j * 8;
-            this->read_buffer_listen(idx);
+            this->read_buffer(idx, SMILE_IMAGE);
             ht1632.drawImage(buffer, width, height, x, 0);
         }
         ht1632.render();
@@ -131,7 +110,7 @@ void MycroftMouth::think() {
         for (byte j = 0; j < plates; j++) {
             byte idx = (i * plates) + j;
             byte x = j * 8;
-            this->read_buffer_think(idx);
+            this->read_buffer(idx, THINK_ANIMATION);
             ht1632.drawImage(buffer, width, height, x, 0);
         }
         ht1632.render();
@@ -153,7 +132,7 @@ void MycroftMouth::smile() {
         for (byte j = 0; j < size; j++) {
             byte idx = j;
             byte x = j * 8;
-            this->read_buffer_smile(idx);
+            this->read_buffer(idx, SMILE_IMAGE);
             ht1632.drawImage(buffer, width, height, x, 0);
         }
         ht1632.render();
