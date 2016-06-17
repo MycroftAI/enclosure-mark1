@@ -20,7 +20,6 @@ void MycroftMouth::reset() {
 }
 
 void MycroftMouth::run() {
-
     switch (state) {
         case TALK:
             this->talk();
@@ -52,7 +51,7 @@ void MycroftMouth::talk() {
         for (byte j = 0; j < size; j++) {
             byte idx = (i * size) + j;
             byte x = j * 8;
-            this->read_buffer(idx);
+            this->readBuffer(idx,TALK_ANIMATION);
             ht1632.drawImage(buffer, width, height, x, 0);
         }
         ht1632.render();
@@ -66,23 +65,79 @@ void MycroftMouth::talk() {
     }
 }
 
-void MycroftMouth::read_buffer(byte idx) {
+template <size_t x>
+void MycroftMouth::readBuffer(byte idx, const char(&anim)[x][16]) {
     byte size = sizeof(buffer);
     for (byte j = 0; j < size; j++) {
-        buffer[j] = (char) pgm_read_byte(&(TALK_ANIMATION[idx][j]));
+        buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
     }
 }
 
 void MycroftMouth::listen() {
     state = LISTEN;
+    byte size = 6;
+    byte plates = 4;
+    byte total = size * 2;
+
+    for (byte i = 0, count = 0; count < total; count++) {
+        ht1632.clear();
+        for (byte j = 0; j < plates; j++) {
+            byte idx = (i * plates) + j;
+            byte x = j * 8;
+            this->readBuffer(idx, LISTEN_ANIMATION);
+            ht1632.drawImage(buffer, width, height, x, 0);
+        }
+        ht1632.render();
+        delay(70);
+
+        if (i < size - 1) {
+            i++;
+        } else {
+            i = 0;
+        }
+    }
 }
+
 
 void MycroftMouth::think() {
     state = THINK;
+    byte size = 8;
+    byte plates = 4;
+    byte total = (size * 2)-1;
+    boolean back = false;
+
+    for (byte i = 0, count = 0; count < total; count++) {
+        ht1632.clear();
+        for (byte j = 0; j < plates; j++) {
+            byte idx = (i * plates) + j;
+            byte x = j * 8;
+            this->readBuffer(idx, THINK_ANIMATION);
+            ht1632.drawImage(buffer, width, height, x, 0);
+        }
+        ht1632.render();
+        delay(200);
+
+        if (i < size - 1 && !back) {
+            i++;
+        } else {
+            back = true;
+            i--;
+        }
+    }
 }
+
 
 void MycroftMouth::smile() {
     state = SMILE;
+    byte size = 4;
+        for (byte j = 0; j < size; j++) {
+            byte idx = j;
+            byte x = j * 8;
+            this->readBuffer(idx, SMILE_IMAGE);
+            ht1632.drawImage(buffer, width, height, x, 0);
+        }
+        ht1632.render();
+        delay(70);
 }
 
 void MycroftMouth::write(const char *value) {

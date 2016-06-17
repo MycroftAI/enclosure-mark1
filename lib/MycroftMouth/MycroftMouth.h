@@ -42,7 +42,8 @@ private:
 
     void updateText();
 
-    void read_buffer(byte idx);
+    template<size_t x>
+    void readBuffer(byte idx, const char (&anim)[x][16]);
 
     void copyText(const char *value);
 };
