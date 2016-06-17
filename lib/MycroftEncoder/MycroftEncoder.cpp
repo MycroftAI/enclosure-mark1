@@ -2,13 +2,12 @@
 #include "MycroftArduino.h"
 #include "MycroftEncoder.h"
 
-int16_t last, value;
-
 void MycroftEncoder::isr(){
     clickEncoder->service();
 }
 
 MycroftEncoder::MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton) {
+    pinMode(pinButton, INPUT_PULLUP);
     clickEncoder = new ClickEncoder(pinEncoderOne, pinEncoderTwo, pinButton); 
 }
 

@@ -21,6 +21,7 @@ public:
     
     
 private:
- 
+    int16_t last, value; 
+
 
 };

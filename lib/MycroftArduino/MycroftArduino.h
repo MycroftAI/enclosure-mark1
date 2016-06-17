@@ -1,7 +1,7 @@
 class MycroftArduino {
 
 public:
-    MycroftArduino(uint8_t buttonPin, uint8_t speakerPin);
+    MycroftArduino(uint8_t speakerPin);
 
     void start();
 
@@ -14,8 +14,6 @@ public:
     void blink(long times, unsigned long wait);
 
 private:
-    uint8_t buttonPin;
-
     uint8_t speakerPin;
 
 };

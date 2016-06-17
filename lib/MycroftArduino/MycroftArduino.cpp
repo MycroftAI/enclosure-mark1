@@ -2,14 +2,12 @@
 #include "MycroftArduino.h"
 
 
-MycroftArduino::MycroftArduino(uint8_t buttonPin, uint8_t speakerPin) {
-    this->buttonPin = buttonPin;
+MycroftArduino::MycroftArduino(uint8_t speakerPin) {
     this->speakerPin = speakerPin;
 }
 
 void MycroftArduino::start() {
     pinMode(LED_BUILTIN, OUTPUT);
-    pinMode(this->buttonPin, INPUT_PULLUP);
     pinMode(this->speakerPin, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);
     digitalWrite(this->speakerPin, HIGH);
