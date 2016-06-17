@@ -9,7 +9,7 @@ public:
 
     };
 
-    Direction direction;
+    
     
     ClickEncoder* clickEncoder;
 
@@ -23,5 +23,6 @@ public:
 private:
     int16_t last, value; 
 
+    Direction direction;
 
 };
