@@ -1,14 +1,13 @@
 #include "Arduino.h"
 #include "MycroftArduino.h"
 
-MycroftArduino::MycroftArduino(uint8_t buttonPin, uint8_t speakerPin) {
-    this->buttonPin = buttonPin;
+
+MycroftArduino::MycroftArduino(uint8_t speakerPin) {
     this->speakerPin = speakerPin;
 }
 
 void MycroftArduino::start() {
     pinMode(LED_BUILTIN, OUTPUT);
-    pinMode(this->buttonPin, INPUT);
     pinMode(this->speakerPin, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);
     digitalWrite(this->speakerPin, HIGH);
@@ -25,10 +24,6 @@ void MycroftArduino::mute() {
 
 void MycroftArduino::unmute() {
     digitalWrite(this->speakerPin, HIGH);
-}
-
-bool MycroftArduino::isButtonPress() {
-    return digitalRead(this->buttonPin) == HIGH;
 }
 
 void MycroftArduino::blink(long times, unsigned long wait) {

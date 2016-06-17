@@ -1,9 +1,12 @@
 #include "MycroftEyes.h"
 #include "MycroftMouth.h"
 #include "MycroftArduino.h"
+#include "MycroftEncoder.h"
 
 #define BUTTON_PIN 2
 #define SPEAKER_PIN 4
+#define ENC1_PIN 14
+#define ENC2_PIN 15
 
 #define EYES_PIN 3
 #define EYES_SIZE 24
@@ -13,21 +16,29 @@
 #define MOUTH_WR 8
 #define MOUTH_DATA 9
 
-MycroftArduino arduino = MycroftArduino(BUTTON_PIN, SPEAKER_PIN);
+MycroftArduino arduino = MycroftArduino(SPEAKER_PIN);
 MycroftEyes eyes = MycroftEyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
 MycroftMouth mouth = MycroftMouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA);
+MycroftEncoder encoder = MycroftEncoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
+int16_t time = 1000;
+
+void timerIsr(){
+    encoder.isr();
+}
 
 void initSerial() {
     Serial.begin(9600);
     while (!Serial);
     Serial.flush();
-    Serial.println(F("Mycroft Hardware v0.1.2 - Connected"));
+    Serial.println(F("Mycroft Hardware v0.1.3 - Connected"));
 }
 
 void setup() {
     initSerial();
     eyes.start();
     arduino.start();
+    Timer1.initialize(time);
+    Timer1.attachInterrupt(timerIsr);
 }
 
 bool contains(String value, String term) {
@@ -108,14 +119,40 @@ void processMouth(String cmd) {
     }
 }
 
-void checkReset() {
-    if (arduino.isButtonPress()) {
-        Serial.println("mycroft.stop");
-        arduino.blink(1, 500);
+void processVolume(){
+    MycroftEncoder::Direction d = encoder.getDirection();
+    if (d == MycroftEncoder::Direction::RIGHT) {
+        Serial.println("volume.up");
+    } 
+    else if (d == MycroftEncoder::Direction::LEFT) {
+        Serial.println("volume.down");
+    }
+}
+
+void processButton(){
+    ClickEncoder::Button b = encoder.clickEncoder->getButton();
+    if (b != ClickEncoder::Open) { 
+        switch (b) { 
+            case ClickEncoder::Pressed:
+                break;
+            case ClickEncoder::Held:
+                break;
+            case ClickEncoder::Released:  
+                break;
+            case ClickEncoder::Clicked:
+                Serial.println("mycroft.stop");
+	        arduino.blink(1, 500);
+                break;
+            case ClickEncoder::DoubleClicked:
+            break;
+        }
     }
 }
 
 void loop() {
+    processVolume();
+    processButton();
+
     if (Serial.available() > 0) {
         String cmd = Serial.readStringUntil('\n');
         Serial.flush();
@@ -136,8 +173,6 @@ void loop() {
         }
     }
     while (Serial.available() <= 0) {
-        checkReset();
         mouth.run();
     }
-    checkReset();
 }
