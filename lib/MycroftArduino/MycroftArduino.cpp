@@ -9,7 +9,7 @@ MycroftArduino::MycroftArduino(uint8_t buttonPin, uint8_t speakerPin) {
 
 void MycroftArduino::start() {
     pinMode(LED_BUILTIN, OUTPUT);
-    pinMode(this->buttonPin, INPUT_PULLUP);//fixes extensive issues with inconsistent button behavior
+    pinMode(this->buttonPin, INPUT_PULLUP);
     pinMode(this->speakerPin, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);
     digitalWrite(this->speakerPin, HIGH);
@@ -26,10 +26,6 @@ void MycroftArduino::mute() {
 
 void MycroftArduino::unmute() {
     digitalWrite(this->speakerPin, HIGH);
-}
-
-bool MycroftArduino::isButtonPress() {//currently unused: ClickEncoder provides functionality to detect button presses more efficiently
-    return digitalRead(this->buttonPin) == LOW;//but if we were to use it, INPUT_PULLUP means we'll be checking for low voltage, not high
 }
 
 void MycroftArduino::blink(long times, unsigned long wait) {

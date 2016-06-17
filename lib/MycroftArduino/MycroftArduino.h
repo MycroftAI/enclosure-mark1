@@ -11,8 +11,6 @@ public:
 
     void unmute();
 
-    bool isButtonPress();
-
     void blink(long times, unsigned long wait);
 
 private:
