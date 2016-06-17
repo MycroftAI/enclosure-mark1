@@ -121,12 +121,11 @@ void processMouth(String cmd) {
 
 void processVolume(){
     MycroftEncoder::Direction d = encoder.getDirection();
-
     if (d == MycroftEncoder::Direction::RIGHT) {
         Serial.println("volume.up");
     } 
     else if (d == MycroftEncoder::Direction::LEFT) {
-	Serial.println("volume.down");
+        Serial.println("volume.down");
     }
 }
 

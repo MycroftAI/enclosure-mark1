@@ -26,7 +26,7 @@ MycroftEncoder::Direction MycroftEncoder::getDirection() {
         }
     last = value;
     }
-	return ret;
+    return ret;
 }
 
 
