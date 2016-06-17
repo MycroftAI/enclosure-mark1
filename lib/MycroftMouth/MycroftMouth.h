@@ -44,11 +44,5 @@ private:
 
     void readBuffer(byte idx, const char[][] anim);
 
-    void read_buffer_smile(byte idx);
-
-    void read_buffer_talk(byte idx);
-
-    void read_buffer_think(byte idx);
-
     void copyText(const char *value);
 };
