@@ -18,7 +18,7 @@ function compile_arduino_sketch() {
 function create_tarball() {
   mkdir -pv ${ARTIFACT_DIR}
   echo $VERSION > ${ARTIFACT_DIR}/latest
-  tar -czvf $ARTIFACT_DIR/${ARTIFACT_BASE}.tar.gz enclosure.ino.hex upload.sh install-avrdude.sh avrdude-gpio.conf 
+  tar -czvf $ARTIFACT_DIR/${ARTIFACT_BASE}.tar.gz build/enclosure.ino.hex upload.sh install-avrdude.sh avrdude-gpio.conf 
 }
 
 function upload() {
