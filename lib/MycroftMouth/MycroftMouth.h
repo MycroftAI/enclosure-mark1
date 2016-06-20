@@ -5,7 +5,7 @@ class MycroftMouth {
 public:
     HT1632Class ht1632;
 
-    MycroftMouth(int pinCS1, int pinWR, int pinDATA);
+    MycroftMouth(int pinCS1, int pinWR, int pinDATA, void (*delay)(int));
 
     void reset();
 
@@ -39,6 +39,7 @@ private:
     char buffer[16];
 
     State state;
+    void (*delay)(int);
 
     void updateText();
 

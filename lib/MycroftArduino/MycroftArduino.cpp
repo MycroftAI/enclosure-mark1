@@ -2,8 +2,9 @@
 #include "MycroftArduino.h"
 
 
-MycroftArduino::MycroftArduino(uint8_t speakerPin) {
+MycroftArduino::MycroftArduino(uint8_t speakerPin, void (*delay)(int)) {
     this->speakerPin = speakerPin;
+    this->delay = delay;
 }
 
 void MycroftArduino::start() {
@@ -29,8 +30,8 @@ void MycroftArduino::unmute() {
 void MycroftArduino::blink(long times, unsigned long wait) {
     for (int i = 0; i < times; ++i) {
         digitalWrite(LED_BUILTIN, HIGH);
-        delay(wait);
+        this->delay(wait);
         digitalWrite(LED_BUILTIN, LOW);
-        delay(wait);
+        this->delay(wait);
     }
 }
