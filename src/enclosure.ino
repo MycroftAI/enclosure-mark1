@@ -19,12 +19,17 @@
 void processButton();
 void processVolume();
 
+void update()
+{
+  processButton();
+  processVolume();
+}
+
 void delayAndUpdate(int ms)
 {
     for (int i = 0; i < ms; ++i)
     {
-        processButton();
-        processVolume();
+        update();
         delay(1);
     }
 }
@@ -59,7 +64,7 @@ void processVolume(){
     MycroftEncoder::Direction d = encoder.getDirection();
     if (d == MycroftEncoder::Direction::RIGHT) {
         Serial.println("volume.up");
-    } 
+    }
     else if (d == MycroftEncoder::Direction::LEFT) {
         Serial.println("volume.down");
     }
@@ -67,13 +72,13 @@ void processVolume(){
 
 void processButton(){
     ClickEncoder::Button b = encoder.clickEncoder->getButton();
-    if (b != ClickEncoder::Open) { 
-        switch (b) { 
+    if (b != ClickEncoder::Open) {
+        switch (b) {
             case ClickEncoder::Pressed:
                 break;
             case ClickEncoder::Held:
                 break;
-            case ClickEncoder::Released:  
+            case ClickEncoder::Released:
                 break;
             case ClickEncoder::Clicked:
                 Serial.println("mycroft.stop");
@@ -164,8 +169,10 @@ void processMouth(String cmd) {
 }
 
 void loop() {
-    if (shouldBlink)
+    if (shouldBlink) {
+        shouldBlink = false;
         arduino.blink(1, 500);
+    }
 
     if (Serial.available() > 0) {
         String cmd = Serial.readStringUntil('\n');
@@ -177,12 +184,12 @@ void loop() {
             cmd.replace("system.", "");
             processSystem(cmd);
         }
-        
+
         else if (contains(cmd, "eyes.")) {
             cmd.replace("eyes.", "");
             processEyes(cmd);
         }
-        
+
         else if (contains(cmd, "mouth.")) {
             cmd.replace("mouth.", "");
             processMouth(cmd);
@@ -190,5 +197,6 @@ void loop() {
     }
     while (Serial.available() <= 0) {
         mouth.run();
+        update();
     }
 }
