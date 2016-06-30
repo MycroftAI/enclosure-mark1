@@ -1,7 +1,6 @@
-#include "MycroftEyes.h"
-#include "MycroftMouth.h"
 #include "MycroftArduino.h"
 #include "MycroftEncoder.h"
+#include "MycroftWeather.h"
 
 #define BUTTON_PIN 2
 #define SPEAKER_PIN 4
@@ -20,6 +19,7 @@ MycroftArduino arduino = MycroftArduino(SPEAKER_PIN);
 MycroftEyes eyes = MycroftEyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
 MycroftMouth mouth = MycroftMouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA);
 MycroftEncoder encoder = MycroftEncoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
+MycroftWeather weather = MycroftWeather(mouth, eyes);
 int16_t time = 1000;
 
 void timerIsr(){
@@ -37,6 +37,7 @@ void setup() {
     initSerial();
     eyes.start();
     arduino.start();
+    eyes.blink(35, b);
     Timer1.initialize(time);
     Timer1.attachInterrupt(timerIsr);
 }
@@ -99,6 +100,7 @@ void processEyes(String cmd) {
 
 void processMouth(String cmd) {
     if (contains(cmd, "reset")) {
+        //Serial.println("hello");
         mouth.reset();
     }
     else if (contains(cmd, "talk")) {
@@ -119,11 +121,23 @@ void processMouth(String cmd) {
     }
 }
 
+void processWeather(String cmd){
+  //if (contains(cmd, "display=")){
+      //Serial.println(cmd);
+      //mouth.smile();
+    //  cmd.replace("display=", "");
+      //int8_t cond = cmd.charAt(0);
+      //cmd.replace(&cmd[0], "");
+    //  int8_t current = (int8_t)cmd.toInt();
+    //  weather.display(cond, current);
+  //}
+}
+
 void processVolume(){
     MycroftEncoder::Direction d = encoder.getDirection();
     if (d == MycroftEncoder::Direction::RIGHT) {
         Serial.println("volume.up");
-    } 
+    }
     else if (d == MycroftEncoder::Direction::LEFT) {
         Serial.println("volume.down");
     }
@@ -131,13 +145,13 @@ void processVolume(){
 
 void processButton(){
     ClickEncoder::Button b = encoder.clickEncoder->getButton();
-    if (b != ClickEncoder::Open) { 
-        switch (b) { 
+    if (b != ClickEncoder::Open) {
+        switch (b) {
             case ClickEncoder::Pressed:
                 break;
             case ClickEncoder::Held:
                 break;
-            case ClickEncoder::Released:  
+            case ClickEncoder::Released:
                 break;
             case ClickEncoder::Clicked:
                 Serial.println("mycroft.stop");
@@ -156,8 +170,9 @@ void loop() {
     if (Serial.available() > 0) {
         String cmd = Serial.readStringUntil('\n');
         Serial.flush();
-        Serial.print(F("Command: "));
-        Serial.println(cmd);
+        Serial.print(F("Commandz: "));
+        Serial.print(cmd);
+        ///Serial.println("debug");
 
         if (contains(cmd, "system.")) {
             cmd.replace("system.", "");
@@ -170,6 +185,11 @@ void loop() {
         else if (contains(cmd, "mouth.")) {
             cmd.replace("mouth.", "");
             processMouth(cmd);
+            //Serial.println("mouth");
+        }
+        else if (contains(cmd, "weather.")) {
+            cmd.replace("weather.", "");
+            processWeather(cmd);
         }
     }
     while (Serial.available() <= 0) {

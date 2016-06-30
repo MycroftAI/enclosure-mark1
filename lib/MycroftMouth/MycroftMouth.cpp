@@ -1,12 +1,13 @@
-#include "Arduino.h"
 #include "MycroftMouth.h"
-#include "MouthImages.h"
-#include "../HT1632/font_5x4.h"
 
 MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA) {
     ht1632 = HT1632Class();
     ht1632.begin(pinCS1, pinWR, pinDATA);
     reset();
+}
+
+MycroftMouth::MycroftMouth(){
+
 }
 
 void MycroftMouth::reset() {
@@ -24,9 +25,9 @@ void MycroftMouth::run() {
         case TALK:
             this->talk();
             break;
-        case LISTEN:
-            this->listen();
-            break;
+        //case LISTEN:
+          //  this->listen();
+          //  break;
         case THINK:
             this->think();
             break;
@@ -65,16 +66,10 @@ void MycroftMouth::talk() {
     }
 }
 
-template <size_t x>
-void MycroftMouth::readBuffer(byte idx, const char(&anim)[x][16]) {
-    byte size = sizeof(buffer);
-    for (byte j = 0; j < size; j++) {
-        buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
-    }
-}
+
 
 void MycroftMouth::listen() {
-    state = LISTEN;
+    //state = LISTEN;
     byte size = 6;
     byte plates = 4;
     byte total = size * 2;

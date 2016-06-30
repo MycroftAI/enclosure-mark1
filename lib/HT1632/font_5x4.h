@@ -1,4 +1,4 @@
-/* 
+/*
  * 5-high FONT FOR RENDERING TO THE LED SCREEN.
  * Includes kerning support
  * Gaurav Manek, 2011
@@ -6,7 +6,7 @@
 
 #define FONT_5X4_HEIGHT 5
 #define FONT_5X4_STEP_GLYPH 10
-// Number of bytes per glyph 
+// Number of bytes per glyph
 
 const char FONT_5X4[] = {
         0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000,  // SPACE
@@ -79,7 +79,8 @@ const char FONT_5X4[] = {
         0b0001, 0b0000, 0b0110, 0b0000, 0b1100, 0b0000, 0b0000, 0b0001, 0b0000, 0b0000, // backslash
         0b0001, 0b0001, 0b1111, 0b0001, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, // ]
         0b0010, 0b0000, 0b0001, 0b0000, 0b0010, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, // ^
-        0b0000, 0b0001, 0b0000, 0b0001, 0b0000, 0b0001, 0b0000, 0b0000, 0b0000, 0b0000  // _
+        0b0000, 0b0001, 0b0000, 0b0001, 0b0000, 0b0001, 0b0000, 0b0000, 0b0000, 0b0000,  // _
+        0b1100, 0b0000, 0b1100, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000 // °
 };
 
 const char FONT_5X4_WIDTH[] = {
@@ -90,6 +91,6 @@ const char FONT_5X4_WIDTH[] = {
         5, 4, 3, 4, 3, 3, 3, 4,
         4, 3, 3, 4, 3, 5, 5, 4,
         3, 5, 3, 4, 3, 4, 5, 5,
-        3, 3, 4, 2, 4, 2, 3, 3
+        3, 3, 4, 2, 4, 2, 3, 3,
+        2
 };
-
