@@ -4,14 +4,14 @@ class MycroftWeather
 {
 
 public:
-  MycroftWeather(MycroftMouth mouth, MycroftEyes eyes);
+  MycroftWeather(MycroftMouth *mouth, MycroftEyes *eyes);
 
   void display(int8_t condition, int8_t current);
 
 private:
-  MycroftMouth mouth;
+  MycroftMouth *mouth;
 
-  MycroftEyes eyes;
+  MycroftEyes *eyes;
 
 
 };

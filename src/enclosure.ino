@@ -19,7 +19,7 @@ MycroftArduino arduino = MycroftArduino(SPEAKER_PIN);
 MycroftEyes eyes = MycroftEyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
 MycroftMouth mouth = MycroftMouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA);
 MycroftEncoder encoder = MycroftEncoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
-MycroftWeather weather = MycroftWeather(mouth, eyes);
+MycroftWeather weather = MycroftWeather(&mouth, &eyes);
 int16_t time = 1000;
 
 void timerIsr(){
@@ -37,7 +37,7 @@ void setup() {
     initSerial();
     eyes.start();
     arduino.start();
-    eyes.blink(35, b);
+    mouth.smile();
     Timer1.initialize(time);
     Timer1.attachInterrupt(timerIsr);
 }
@@ -100,7 +100,6 @@ void processEyes(String cmd) {
 
 void processMouth(String cmd) {
     if (contains(cmd, "reset")) {
-        //Serial.println("hello");
         mouth.reset();
     }
     else if (contains(cmd, "talk")) {
@@ -122,15 +121,13 @@ void processMouth(String cmd) {
 }
 
 void processWeather(String cmd){
-  //if (contains(cmd, "display=")){
-      //Serial.println(cmd);
-      //mouth.smile();
-    //  cmd.replace("display=", "");
-      //int8_t cond = cmd.charAt(0);
-      //cmd.replace(&cmd[0], "");
-    //  int8_t current = (int8_t)cmd.toInt();
-    //  weather.display(cond, current);
-  //}
+  if (contains(cmd, "display=")){
+      cmd.replace("display=", "");
+      int8_t cond = cmd.charAt(0) - '0';
+      cmd.remove(0,1);
+      int currentTemp = cmd.toInt();
+      weather.display(cond, currentTemp);
+  }
 }
 
 void processVolume(){
@@ -170,9 +167,8 @@ void loop() {
     if (Serial.available() > 0) {
         String cmd = Serial.readStringUntil('\n');
         Serial.flush();
-        Serial.print(F("Commandz: "));
-        Serial.print(cmd);
-        ///Serial.println("debug");
+        Serial.print(F("Command: "));
+        Serial.println(cmd);
 
         if (contains(cmd, "system.")) {
             cmd.replace("system.", "");
@@ -185,7 +181,6 @@ void loop() {
         else if (contains(cmd, "mouth.")) {
             cmd.replace("mouth.", "");
             processMouth(cmd);
-            //Serial.println("mouth");
         }
         else if (contains(cmd, "weather.")) {
             cmd.replace("weather.", "");

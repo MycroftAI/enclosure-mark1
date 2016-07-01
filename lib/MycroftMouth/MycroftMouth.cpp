@@ -4,6 +4,7 @@ MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA) {
     ht1632 = HT1632Class();
     ht1632.begin(pinCS1, pinWR, pinDATA);
     reset();
+    lastState = state = NONE;
 }
 
 MycroftMouth::MycroftMouth(){
@@ -21,13 +22,14 @@ void MycroftMouth::reset() {
 }
 
 void MycroftMouth::run() {
+
     switch (state) {
         case TALK:
             this->talk();
             break;
-        //case LISTEN:
-          //  this->listen();
-          //  break;
+        case LISTEN:
+            this->listen();
+            break;
         case THINK:
             this->think();
             break;
@@ -38,7 +40,8 @@ void MycroftMouth::run() {
             this->updateText();
             break;
         default:
-            this->reset();
+            if (lastState != NONE)
+                this->reset();
     }
 }
 
@@ -69,7 +72,7 @@ void MycroftMouth::talk() {
 
 
 void MycroftMouth::listen() {
-    //state = LISTEN;
+    state = LISTEN;
     byte size = 6;
     byte plates = 4;
     byte total = size * 2;
