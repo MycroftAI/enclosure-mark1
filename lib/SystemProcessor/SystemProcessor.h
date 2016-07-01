@@ -2,17 +2,17 @@
 #define SYSTEM_PROCESSOR_H
 
 #include <BaseProcessor.h>
-#include <MycroftArduino.h>
+#include <MycroftSystem.h>
 
 class SystemProcessor : public BaseProcessor
 {
 public:
-    SystemProcessor(MycroftArduino &arduino);
+    SystemProcessor(MycroftSystem &system);
 
 private:
     void process(String cmd);
 
-    MycroftArduino &arduino;
+    MycroftSystem &system;
 };
 
 #endif /* SYSTEM_PROCESSOR_H */

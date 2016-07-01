@@ -1,20 +1,20 @@
 #include "SystemProcessor.h"
-#include <MycroftArduino.h>
+#include "MycroftSystem.h"
 
-SystemProcessor::SystemProcessor(MycroftArduino &arduino) : BaseProcessor("arduino."), arduino(arduino) { }
+SystemProcessor::SystemProcessor(MycroftSystem &system) : BaseProcessor("system."), system(system) { }
 
 void SystemProcessor::process(String cmd) {
     if (contains(cmd, "reset")) {
-        arduino.reset();
+        system.reset();
     }
     else if (contains(cmd, "mute")) {
-        arduino.mute();
+        system.mute();
     }
     else if (contains(cmd, "unmute")) {
-        arduino.unmute();
+        system.unmute();
     }
     else if (contains(cmd, "blink=")) {
         cmd.replace("blink=", "");
-        arduino.blink(cmd.toInt(), 500);
+        system.blink(cmd.toInt(), 500);
     }
 }

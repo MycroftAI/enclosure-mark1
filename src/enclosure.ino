@@ -1,6 +1,6 @@
 #include "MycroftEyes.h"
 #include "MycroftMouth.h"
-#include "MycroftArduino.h"
+#include "MycroftSystem.h"
 #include "MycroftEncoder.h"
 
 #include "MouthProcessor.h"
@@ -20,7 +20,7 @@
 #define MOUTH_WR 8
 #define MOUTH_DATA 9
 
-MycroftArduino arduino = MycroftArduino(SPEAKER_PIN);
+MycroftSystem arduino = MycroftSystem(SPEAKER_PIN);
 MycroftEyes eyes = MycroftEyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
 MycroftMouth mouth = MycroftMouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA);
 MycroftEncoder encoder = MycroftEncoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
