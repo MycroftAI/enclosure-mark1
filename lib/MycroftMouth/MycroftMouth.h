@@ -1,3 +1,7 @@
+#ifndef MYCROFT_MOUTH_H
+#define MYCROFT_MOUTH_H
+
+#include <Arduino.h>
 #include "HT1632.h"
 
 class MycroftMouth {
@@ -47,3 +51,5 @@ private:
 
     void copyText(const char *value);
 };
+
+#endif /* MYCROFT_MOUTH_H */
