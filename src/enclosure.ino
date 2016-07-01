@@ -78,7 +78,6 @@ void processButton(){
                 break;
             case ClickEncoder::Clicked:
                 Serial.println("mycroft.stop");
-	        arduino.blink(1, 500);
                 break;
             case ClickEncoder::DoubleClicked:
             break;
