@@ -29,6 +29,8 @@ MouthProcessor mouthProcessor(mouth);
 EyesProcessor eyesProcessor(eyes);
 SystemProcessor systemProcessor(arduino);
 
+BaseProcessor *processors[3] = {&mouthProcessor, &eyesProcessor, &systemProcessor};
+
 int16_t time = 1000;
 
 void timerIsr(){
@@ -91,9 +93,9 @@ void loop() {
         Serial.print(F("Command: "));
         Serial.println(cmd);
 
-        if (systemProcessor.tryProcess(cmd));
-        else if (eyesProcessor.tryProcess(cmd));
-        else mouthProcessor.tryProcess(cmd);
+        for (auto *i:processors)
+            if (i->tryProcess(cmd))
+                break;
     }
     while (Serial.available() <= 0) {
         processVolume();
