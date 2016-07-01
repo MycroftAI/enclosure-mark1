@@ -4,6 +4,8 @@
 #include "MycroftEncoder.h"
 
 #include "MouthProcessor.h"
+#include "EyesProcessor.h"
+#include "SystemProcessor.h"
 
 #define BUTTON_PIN 2
 #define SPEAKER_PIN 4
@@ -24,6 +26,8 @@ MycroftMouth mouth = MycroftMouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA);
 MycroftEncoder encoder = MycroftEncoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
 
 MouthProcessor mouthProcessor(mouth);
+EyesProcessor eyesProcessor(eyes);
+SystemProcessor systemProcessor(arduino);
 
 int16_t time = 1000;
 
@@ -48,58 +52,6 @@ void setup() {
 
 bool contains(String value, String term) {
     return value.indexOf(term) > -1;
-}
-
-void processSystem(String cmd) {
-    if (contains(cmd, "reset")) {
-        arduino.reset();
-    }
-    else if (contains(cmd, "mute")) {
-        arduino.mute();
-    }
-    else if (contains(cmd, "unmute")) {
-        arduino.unmute();
-    }
-    else if (contains(cmd, "blink=")) {
-        cmd.replace("blink=", "");
-        arduino.blink(cmd.toInt(), 500);
-    }
-}
-
-void updateEyesColor(long code) {
-    long red = (code >> 16) & 0xFF;
-    long green = (code >> 8) & 0xFF;
-    long blue = code & 0xFF;
-    eyes.updateColor((uint8_t) red, (uint8_t) green, (uint8_t) blue);
-}
-
-void processEyes(String cmd) {
-    if (contains(cmd, "color=")) {
-        cmd.replace("color=", "");
-        updateEyesColor(cmd.toInt());
-    }
-    else if (contains(cmd, "level=")) {
-        cmd.replace("level=", "");
-        eyes.updateBrightness((uint8_t) cmd.toInt());
-    }
-    else if (contains(cmd, "on")) {
-        eyes.on();
-    }
-    else if (contains(cmd, "off")) {
-        eyes.off();
-    }
-    else if (contains(cmd, "blink=")) {
-        cmd.replace("blink=", "");
-        eyes.blink(35, cmd.charAt(0));
-    }
-    else if (contains(cmd, "narrow")) {
-        cmd.replace("narrow=", "");
-        eyes.narrow(140, cmd.charAt(0));
-    }
-    else if (contains(cmd, "look=")) {
-        cmd.replace("look=", "");
-        eyes.look(70, cmd.charAt(0));
-    }
 }
 
 void processVolume(){
@@ -139,16 +91,9 @@ void loop() {
         Serial.print(F("Command: "));
         Serial.println(cmd);
 
-        if (contains(cmd, "system.")) {
-            cmd.replace("system.", "");
-            processSystem(cmd);
-        }
-        else if (contains(cmd, "eyes.")) {
-            cmd.replace("eyes.", "");
-            processEyes(cmd);
-        }
-        else
-            mouthProcessor.tryProcess(cmd);
+        if (systemProcessor.tryProcess(cmd));
+        else if (eyesProcessor.tryProcess(cmd));
+        else mouthProcessor.tryProcess(cmd);
     }
     while (Serial.available() <= 0) {
         processVolume();

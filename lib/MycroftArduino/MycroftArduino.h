@@ -1,3 +1,8 @@
+#ifndef MYCROFT_ARDUINO_H
+#define MYCROFT_ARDUINO_H
+
+#include <Arduino.h>
+
 class MycroftArduino {
 
 public:
@@ -17,3 +22,5 @@ private:
     uint8_t speakerPin;
 
 };
+
+#endif /* MYCROFT_ARDUINO_H */
