@@ -5,7 +5,7 @@ class MycroftEyes {
 public:
     Adafruit_NeoPixel neoPixel;
 
-    MycroftEyes(uint16_t size, uint8_t pin, uint16_t type);
+    MycroftEyes(uint16_t size, uint8_t pin, uint16_t type, void (*delay)(int));
 
     void start();
 
@@ -25,6 +25,7 @@ public:
 
 private:
     uint32_t color;
+    void (*delay)(int);
 
     enum Side {
         BOTH, LEFT, RIGHT

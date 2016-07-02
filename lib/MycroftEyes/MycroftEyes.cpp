@@ -1,7 +1,8 @@
 #include "MycroftEyes.h"
 
-MycroftEyes::MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type) {
+MycroftEyes::MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type, void (*delay)(int)) {
     neoPixel = Adafruit_NeoPixel(length, pin, type);
+    this->delay = delay;
 }
 
 void MycroftEyes::start() {
@@ -53,7 +54,7 @@ void MycroftEyes::blink(Side side, byte pos, byte leftJump, unsigned long wait) 
             neoPixel.setPixelColor(mod(ro2 + leftJump, max) + max, c);
         }
         neoPixel.show();
-        delay(wait);
+        this->delay(wait);
 
         if (i == steps - 1) {
             c = color;
@@ -103,7 +104,7 @@ void MycroftEyes::narrow(Side side, byte pos, byte leftJump, unsigned long wait)
             neoPixel.setPixelColor(mod(ro2 + leftJump, max) + max, c);
         }
         neoPixel.show();
-        delay(wait);
+        this->delay(wait);
     }
 }
 
@@ -132,7 +133,7 @@ void MycroftEyes::look(byte pos, byte leftJump, unsigned long wait) {
         neoPixel.setPixelColor(mod(r1 + leftJump, max) + max, 0);
         neoPixel.setPixelColor(mod(r2 + leftJump, max) + max, 0);
         neoPixel.show();
-        delay(wait);
+        this->delay(wait);
     }
 }
 

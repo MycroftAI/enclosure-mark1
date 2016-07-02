@@ -3,10 +3,11 @@
 #include "MouthImages.h"
 #include "../HT1632/font_5x4.h"
 
-MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA) {
+MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA, void (*delay)(int)) {
     ht1632 = HT1632Class();
     ht1632.begin(pinCS1, pinWR, pinDATA);
     reset();
+    this->delay = delay;
 }
 
 void MycroftMouth::reset() {
@@ -55,7 +56,7 @@ void MycroftMouth::talk() {
             ht1632.drawImage(buffer, width, height, x, 0);
         }
         ht1632.render();
-        delay(70);
+        this->delay(70);
 
         if (i < size - 1) {
             i++;
@@ -88,7 +89,7 @@ void MycroftMouth::listen() {
             ht1632.drawImage(buffer, width, height, x, 0);
         }
         ht1632.render();
-        delay(70);
+        this->delay(70);
 
         if (i < size - 1) {
             i++;
@@ -115,7 +116,7 @@ void MycroftMouth::think() {
             ht1632.drawImage(buffer, width, height, x, 0);
         }
         ht1632.render();
-        delay(200);
+        this->delay(200);
 
         if (i < size - 1 && !back) {
             i++;
@@ -137,7 +138,7 @@ void MycroftMouth::smile() {
             ht1632.drawImage(buffer, width, height, x, 0);
         }
         ht1632.render();
-        delay(70);
+        this->delay(70);
 }
 
 void MycroftMouth::write(const char *value) {
@@ -162,5 +163,5 @@ void MycroftMouth::updateText() {
     ht1632.drawText(text, OUT_SIZE - textIdx, 2, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
     ht1632.render();
     textIdx = (textIdx + 1) % (textWd + OUT_SIZE);
-    delay(150);
+    this->delay(150);
 }

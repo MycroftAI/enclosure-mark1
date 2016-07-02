@@ -13,7 +13,7 @@ public:
     
     ClickEncoder* clickEncoder;
 
-    MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton);
+    MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton, void (*delay)(int));
  
     Direction getDirection();
 
@@ -24,5 +24,5 @@ private:
     int16_t last, value; 
 
     Direction direction;
-
+    void (*delay)(int);
 };

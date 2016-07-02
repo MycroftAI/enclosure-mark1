@@ -1,7 +1,7 @@
 class MycroftArduino {
 
 public:
-    MycroftArduino(uint8_t speakerPin);
+    MycroftArduino(uint8_t speakerPin, void (*delay)(int));
 
     void start();
 
@@ -15,5 +15,5 @@ public:
 
 private:
     uint8_t speakerPin;
-
+    void (*delay)(int);
 };

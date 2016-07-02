@@ -6,11 +6,12 @@ void MycroftEncoder::isr(){
     clickEncoder->service();
 }
 
-MycroftEncoder::MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton) {
+MycroftEncoder::MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton, void (*delay)(int)) {
     pinMode(pinButton, INPUT_PULLUP);
     clickEncoder = new ClickEncoder(pinEncoderOne, pinEncoderTwo, pinButton); 
     value = 0;
     last = 0;
+    this->delay = delay;
 }
 
 MycroftEncoder::Direction MycroftEncoder::getDirection() {
