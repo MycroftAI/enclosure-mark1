@@ -10,7 +10,7 @@ public:
 
     MycroftEyes(uint16_t size, uint8_t pin, uint16_t type);
 
-    void start();
+    void setup();
 
     void on();
 

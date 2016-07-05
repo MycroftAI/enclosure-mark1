@@ -8,7 +8,7 @@ class MycroftSystem {
 public:
     MycroftSystem(uint8_t speakerPin);
 
-    void start();
+    void setup();
 
     void reset();
 

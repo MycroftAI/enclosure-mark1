@@ -6,7 +6,7 @@ MycroftSystem::MycroftSystem(uint8_t speakerPin) {
     this->speakerPin = speakerPin;
 }
 
-void MycroftSystem::start() {
+void MycroftSystem::setup() {
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(this->speakerPin, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);

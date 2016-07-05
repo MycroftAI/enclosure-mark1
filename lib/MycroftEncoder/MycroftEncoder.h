@@ -17,6 +17,7 @@ public:
     ClickEncoder* clickEncoder;
 
     MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton);
+
     Direction getDirection();
 
     void isr();

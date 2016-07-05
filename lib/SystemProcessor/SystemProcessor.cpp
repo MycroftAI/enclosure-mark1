@@ -1,7 +1,12 @@
 #include "SystemProcessor.h"
 #include "MycroftSystem.h"
 
-SystemProcessor::SystemProcessor(MycroftSystem &system) : BaseProcessor("system."), system(system) { }
+SystemProcessor::SystemProcessor(uint8_t speakerPin) :
+BaseProcessor("system."), system(speakerPin) { }
+
+void SystemProcessor::setup() {
+    system.setup();
+}
 
 void SystemProcessor::process(String cmd) {
     if (contains(cmd, "reset")) {

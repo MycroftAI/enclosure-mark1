@@ -20,20 +20,16 @@
 #define MOUTH_WR 8
 #define MOUTH_DATA 9
 
-MycroftSystem arduino = MycroftSystem(SPEAKER_PIN);
-MycroftEyes eyes = MycroftEyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
-MycroftMouth mouth = MycroftMouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA);
-MycroftEncoder encoder = MycroftEncoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
-
-MouthProcessor mouthProcessor(mouth);
-EyesProcessor eyesProcessor(eyes);
-SystemProcessor systemProcessor(arduino);
-
+MouthProcessor mouthProcessor(MOUTH_CS1, MOUTH_WR, MOUTH_DATA);
+EyesProcessor eyesProcessor(EYES_SIZE, EYES_PIN, EYES_TYPE);
+SystemProcessor systemProcessor(SPEAKER_PIN);
 BaseProcessor *processors[3] = {&mouthProcessor, &eyesProcessor, &systemProcessor};
+
+MycroftEncoder encoder = MycroftEncoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
 
 int16_t time = 1000;
 
-void timerIsr(){
+void timerIsr() {
     encoder.isr();
 }
 
@@ -46,8 +42,8 @@ void initSerial() {
 
 void setup() {
     initSerial();
-    eyes.start();
-    arduino.start();
+    eyesProcessor.setup();
+    systemProcessor.setup();
     Timer1.initialize(time);
     Timer1.attachInterrupt(timerIsr);
 }
@@ -56,7 +52,7 @@ bool contains(String value, String term) {
     return value.indexOf(term) > -1;
 }
 
-void processVolume(){
+void processVolume() {
     MycroftEncoder::Direction d = encoder.getDirection();
     if (d == MycroftEncoder::Direction::RIGHT) {
         Serial.println("volume.up");
@@ -66,7 +62,7 @@ void processVolume(){
     }
 }
 
-void processButton(){
+void processButton() {
     ClickEncoder::Button b = encoder.clickEncoder->getButton();
     if (b != ClickEncoder::Open) {
         switch (b) {
@@ -99,6 +95,6 @@ void loop() {
     while (Serial.available() <= 0) {
         processVolume();
         processButton();
-        mouth.run();
+        mouthProcessor.drawAnimation();
     }
 }

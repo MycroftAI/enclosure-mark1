@@ -6,8 +6,7 @@ bool BaseProcessor::contains(String value, String term) {
 
 BaseProcessor::BaseProcessor(const char *cmdName) : cmdName(cmdName) { }
 
-bool BaseProcessor::tryProcess(String cmd)
-{
+bool BaseProcessor::tryProcess(String cmd) {
     if (contains(cmd, cmdName)) {
         cmd.replace(cmdName, "");
         process(cmd);

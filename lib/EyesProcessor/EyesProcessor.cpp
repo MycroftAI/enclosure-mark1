@@ -1,8 +1,12 @@
 #include "EyesProcessor.h"
 #include <MycroftEyes.h>
 
-EyesProcessor::EyesProcessor(MycroftEyes &eyes) :
-BaseProcessor("eyes."), eyes(eyes) { }
+EyesProcessor::EyesProcessor(uint16_t size, uint8_t pin, uint16_t type) :
+BaseProcessor("eyes."), eyes(size, pin, type) { }
+
+void EyesProcessor::setup() {
+    eyes.setup();
+}
 
 void EyesProcessor::updateEyesColor(long code) {
     long red = (code >> 16) & 0xFF;

@@ -1,7 +1,12 @@
 #include "MouthProcessor.h"
 #include <MycroftMouth.h>
 
-MouthProcessor::MouthProcessor(MycroftMouth &mouth) : BaseProcessor("mouth."), mouth(mouth) { }
+MouthProcessor::MouthProcessor(int pinCS1, int pinWR, int pinDATA) :
+BaseProcessor("mouth."), mouth(pinCS1, pinWR, pinDATA) { }
+
+void MouthProcessor::drawAnimation() {
+    mouth.drawAnimation();
+}
 
 void MouthProcessor::process(String cmd) {
     if (contains(cmd, "reset")) {

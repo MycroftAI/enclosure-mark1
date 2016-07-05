@@ -7,12 +7,13 @@
 class SystemProcessor : public BaseProcessor
 {
 public:
-    SystemProcessor(MycroftSystem &system);
+    SystemProcessor(uint8_t speakerPin);
+    void setup();
 
 private:
     void process(String cmd);
 
-    MycroftSystem &system;
+    MycroftSystem system;
 };
 
 #endif /* SYSTEM_PROCESSOR_H */

@@ -5,15 +5,15 @@
 #include <MycroftMouth.h>
 
 
-class MouthProcessor : public BaseProcessor
-{
+class MouthProcessor : public BaseProcessor {
 public:
-    MouthProcessor(MycroftMouth &mouth);
+    MouthProcessor(int pinCS1, int pinWR, int pinDATA);
+    void drawAnimation();
 
 private:
     void process(String cmd);
 
-    MycroftMouth &mouth;
+    MycroftMouth mouth;
 };
 
 #endif /* MOUTH_PROCESSOR_H */
