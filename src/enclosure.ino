@@ -1,7 +1,10 @@
+#include <Arduino.h>
+
 #include "MycroftEyes.h"
 #include "MycroftMouth.h"
 #include "MycroftArduino.h"
 #include "MycroftEncoder.h"
+#include "MycroftModule.h"
 
 #define BUTTON_PIN 2
 #define SPEAKER_PIN 4
@@ -33,12 +36,28 @@ void initSerial() {
     Serial.println(F("Mycroft Hardware v0.1.3 - Connected"));
 }
 
+void processVolume();
+void processButton();
+
+void update() {
+    processVolume();
+    processButton();
+}
+
+void delayAndUpdate(int ms) {
+    for (int i = 0; i < ms; ++i) {
+        update();
+        delay(1);
+    }
+}
+
 void setup() {
     initSerial();
     eyes.start();
     arduino.start();
     Timer1.initialize(time);
     Timer1.attachInterrupt(timerIsr);
+    MycroftModule::setDelayFunc(delayAndUpdate);
 }
 
 bool contains(String value, String term) {
@@ -123,7 +142,7 @@ void processVolume(){
     MycroftEncoder::Direction d = encoder.getDirection();
     if (d == MycroftEncoder::Direction::RIGHT) {
         Serial.println("volume.up");
-    } 
+    }
     else if (d == MycroftEncoder::Direction::LEFT) {
         Serial.println("volume.down");
     }
@@ -131,13 +150,13 @@ void processVolume(){
 
 void processButton(){
     ClickEncoder::Button b = encoder.clickEncoder->getButton();
-    if (b != ClickEncoder::Open) { 
-        switch (b) { 
+    if (b != ClickEncoder::Open) {
+        switch (b) {
             case ClickEncoder::Pressed:
                 break;
             case ClickEncoder::Held:
                 break;
-            case ClickEncoder::Released:  
+            case ClickEncoder::Released:
                 break;
             case ClickEncoder::Clicked:
                 Serial.println("mycroft.stop");
@@ -174,5 +193,6 @@ void loop() {
     }
     while (Serial.available() <= 0) {
         mouth.run();
+        update();
     }
 }

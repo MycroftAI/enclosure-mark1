@@ -1,6 +1,7 @@
 #include "Adafruit_NeoPixel.h"
+#include <MycroftModule.h>
 
-class MycroftEyes {
+class MycroftEyes : private MycroftModule {
 
 public:
     Adafruit_NeoPixel neoPixel;

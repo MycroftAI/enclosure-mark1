@@ -1,6 +1,7 @@
 #include "HT1632.h"
+#include <MycroftModule.h>
 
-class MycroftMouth {
+class MycroftMouth : private MycroftModule {
 
 public:
     HT1632Class ht1632;
