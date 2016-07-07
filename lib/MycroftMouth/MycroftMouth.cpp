@@ -43,6 +43,7 @@ void MycroftMouth::run() {
             if (lastState != NONE)
                 this->reset();
     }
+    lastState = state;
 }
 
 void MycroftMouth::talk() {
