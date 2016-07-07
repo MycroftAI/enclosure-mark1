@@ -2,6 +2,7 @@
 #include "Arduino.h"
 #include "MouthImages.h"
 #include "../HT1632/mycroft_font_5x4.h"
+#include "font_8x4.h"
 
 #pragma once
 
