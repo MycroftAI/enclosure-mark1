@@ -188,6 +188,8 @@ void loop() {
         }
     }
     while (Serial.available() <= 0) {
+        processVolume();
+        processButton();
         mouth.run();
     }
 }

@@ -8,7 +8,7 @@ void MycroftEncoder::isr(){
 
 MycroftEncoder::MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton) {
     pinMode(pinButton, INPUT_PULLUP);
-    clickEncoder = new ClickEncoder(pinEncoderOne, pinEncoderTwo, pinButton); 
+    clickEncoder = new ClickEncoder(pinEncoderOne, pinEncoderTwo, pinButton);
     value = 0;
     last = 0;
 }
@@ -17,10 +17,10 @@ MycroftEncoder::Direction MycroftEncoder::getDirection() {
     direction = Direction::NONE;
     value += clickEncoder->getValue();
     if (value != last) {
-        if (value > last) {
+        if (value < last) {
             direction = Direction::LEFT;
         }
-        else if (value < last) {
+        else if (value > last) {
             direction = Direction::RIGHT;
         }
         else{
@@ -30,5 +30,3 @@ MycroftEncoder::Direction MycroftEncoder::getDirection() {
     }
     return direction;
 }
-
-
