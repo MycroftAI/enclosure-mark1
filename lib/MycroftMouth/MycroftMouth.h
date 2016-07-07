@@ -1,7 +1,7 @@
-#include "Mycroft_HT1632.h"
+#include "MycroftHT1632.h"
 #include "Arduino.h"
 #include "MouthImages.h"
-#include "../HT1632/mycroft_font_5x4.h"
+#include "../HT1632/font_5x4.h"
 #include "font_8x4.h"
 
 #pragma once
@@ -9,7 +9,7 @@
 class MycroftMouth {
 
 public:
-    HT1632Class ht1632;
+    MycroftHT1632 ht1632;
 
     MycroftMouth(int pinCS1, int pinWR, int pinDATA);
 

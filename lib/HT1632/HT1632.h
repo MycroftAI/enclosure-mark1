@@ -107,7 +107,7 @@
 
 class HT1632Class
 {
-  private:
+protected:
     char _pinCS [4];
     char _numActivePins;
     char _pinWR;
