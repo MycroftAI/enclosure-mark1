@@ -161,8 +161,6 @@ void processButton(){
 }
 
 void loop() {
-  processVolume();
-  processButton();
     if (Serial.available() > 0) {
         String cmd = Serial.readStringUntil('\n');
         Serial.flush();
@@ -187,6 +185,8 @@ void loop() {
         }
     }
     while (Serial.available() <= 0) {
+        processVolume();
+        processButton();
         mouth.run();
     }
 }
