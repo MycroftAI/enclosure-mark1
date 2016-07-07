@@ -21,6 +21,14 @@ public:
 
     char buffer[16];
 
+    template <size_t y>
+    void drawImage(int8_t pos, int8_t index, const char(&imgs)[y][16]){
+        readBuffer(index, imgs);
+        ht1632.drawImage(buffer, width, height, pos, 0);
+    }
+
+    void staticText(String text, int8_t pos, int8_t fontIndex);
+
     void reset();
 
     void run();
@@ -34,14 +42,6 @@ public:
     void smile();
 
     void write(const char *value);
-
-    template <size_t x>
-    void readBuffer(byte idx, const char(&anim)[x][16]) {
-        byte size = sizeof(buffer);
-        for (byte j = 0; j < size; j++) {
-            buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
-        }
-    }
 
 private:
     enum State {
@@ -59,4 +59,12 @@ private:
     void updateText();
 
     void copyText(const char *value);
+
+    template <size_t x>
+    void readBuffer(byte idx, const char(&anim)[x][16]) {
+        byte size = sizeof(buffer);
+        for (byte j = 0; j < size; j++) {
+            buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
+        }
+    }
 };

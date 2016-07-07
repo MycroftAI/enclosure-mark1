@@ -11,6 +11,15 @@ MycroftMouth::MycroftMouth(){
 
 }
 
+void MycroftMouth::staticText(String text, int8_t pos, int8_t fontIndex){
+      if (fontIndex == 0){
+          ht1632.drawText(text.c_str(), pos, 0, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
+      }
+      else if (fontIndex == 1){
+          ht1632.drawText(text.c_str(), pos, 0, FONT_8X4, FONT_8X4_WIDTH, FONT_8X4_HEIGHT, FONT_8X4_STEP_GLYPH);
+      }
+}
+
 void MycroftMouth::reset() {
     state = NONE;
     width = 8;

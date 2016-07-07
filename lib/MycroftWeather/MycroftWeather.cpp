@@ -6,16 +6,10 @@ MycroftWeather::MycroftWeather(MycroftMouth* mouth, MycroftEyes* eyes) {
 }
 
 void MycroftWeather::display(int8_t condition, int8_t current){
-    byte x = 0;
-    this->mouth->readBuffer(0, FULL_PLATES);
-    this->mouth->ht1632.clear();
-    this->mouth->ht1632.drawImage(mouth->buffer, mouth->width, mouth->height, x, 0);
-    x += 8;
-    this->mouth->readBuffer(condition, WEATHER_CONDS);
-    this->mouth->ht1632.drawImage(mouth->buffer, mouth->width, mouth->height, x, 0);
-    x += 8;
+    this->mouth->reset();
+    this->mouth->drawImage(8, condition, WEATHER_CONDS);
     String currentStr = String(current);
     currentStr += "\\";
-    this->mouth->ht1632.drawText(currentStr.c_str(), x, 0, FONT_8X4, FONT_8X4_WIDTH, FONT_8X4_HEIGHT, FONT_8X4_STEP_GLYPH);
+    this->mouth->staticText(currentStr, 16, 1);
     this->mouth->ht1632.render();
 }
