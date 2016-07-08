@@ -15,12 +15,6 @@ public:
 
     MycroftMouth();
 
-    char width;
-
-    char height;
-
-    char buffer[16];
-
     template <size_t y>
     void drawImage(int8_t pos, int8_t index, const char(&imgs)[y][16]){
         readBuffer(index, imgs);
@@ -49,6 +43,12 @@ private:
     };
 
     char text[64];
+
+    char width;
+
+    char height;
+
+    char buffer[16];
 
     int textWd;
 
