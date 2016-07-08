@@ -125,8 +125,7 @@ void processWeather(String cmd){
       cmd.replace("display=", "");
       int8_t cond = cmd.charAt(0) - '0';
       cmd.remove(0,1);
-      int currentTemp = cmd.toInt();
-      weather.display(cond, currentTemp);
+      weather.display(cond, cmd);
   }
 }
 
