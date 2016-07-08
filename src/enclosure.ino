@@ -1,8 +1,4 @@
-#include "MycroftEyes.h"
-#include "MycroftMouth.h"
-#include "MycroftArduino.h"
 #include "MycroftEncoder.h"
-
 #include "MouthProcessor.h"
 #include "EyesProcessor.h"
 #include "ArduinoProcessor.h"
