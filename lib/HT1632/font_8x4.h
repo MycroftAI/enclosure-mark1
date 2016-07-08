@@ -4,6 +4,7 @@
  * 8-high FONT FOR RENDERING TO THE LED SCREEN.
  * Includes kerning support
  * Gaurav Manek, 2011 (and Isaac Ward, 2016)
+ * 8x4 characters: numbers 0-9, degree symbol (backslash)
  */
 
 #define FONT_8X4_HEIGHT 8
