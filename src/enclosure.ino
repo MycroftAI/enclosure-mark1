@@ -1,11 +1,11 @@
 #include "MycroftEyes.h"
 #include "MycroftMouth.h"
-#include "MycroftSystem.h"
+#include "MycroftArduino.h"
 #include "MycroftEncoder.h"
 
 #include "MouthProcessor.h"
 #include "EyesProcessor.h"
-#include "SystemProcessor.h"
+#include "ArduinoProcessor.h"
 
 #define BUTTON_PIN 2
 #define SPEAKER_PIN 4
@@ -22,8 +22,8 @@
 
 MouthProcessor mouthProcessor(MOUTH_CS1, MOUTH_WR, MOUTH_DATA);
 EyesProcessor eyesProcessor(EYES_SIZE, EYES_PIN, EYES_TYPE);
-SystemProcessor systemProcessor(SPEAKER_PIN);
-BaseProcessor *processors[3] = {&mouthProcessor, &eyesProcessor, &systemProcessor};
+ArduinoProcessor arduinoProcessor(SPEAKER_PIN);
+BaseProcessor *processors[3] = {&mouthProcessor, &eyesProcessor, &arduinoProcessor};
 
 MycroftEncoder encoder = MycroftEncoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
 
@@ -43,7 +43,7 @@ void initSerial() {
 void setup() {
     initSerial();
     eyesProcessor.setup();
-    systemProcessor.setup();
+    arduinoProcessor.setup();
     Timer1.initialize(time);
     Timer1.attachInterrupt(timerIsr);
 }
