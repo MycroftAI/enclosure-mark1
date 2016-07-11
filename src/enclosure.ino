@@ -16,12 +16,13 @@
 #define MOUTH_WR 8
 #define MOUTH_DATA 9
 
+// Must be initialized first
+MycroftEncoder encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
+
 MouthProcessor mouthProcessor(MOUTH_CS1, MOUTH_WR, MOUTH_DATA);
 EyesProcessor eyesProcessor(EYES_SIZE, EYES_PIN, EYES_TYPE);
 ArduinoProcessor arduinoProcessor(SPEAKER_PIN);
 BaseProcessor *processors[3] = {&mouthProcessor, &eyesProcessor, &arduinoProcessor};
-
-MycroftEncoder encoder = MycroftEncoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
 
 int16_t time = 1000;
 
