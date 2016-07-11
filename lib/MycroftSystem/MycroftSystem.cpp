@@ -1,32 +1,32 @@
 #include <Arduino.h>
-#include "MycroftArduino.h"
+#include "MycroftSystem.h"
 
 
-MycroftArduino::MycroftArduino(uint8_t speakerPin) {
+MycroftSystem::MycroftSystem(uint8_t speakerPin) {
     this->speakerPin = speakerPin;
 }
 
-void MycroftArduino::setup() {
+void MycroftSystem::start() {
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(this->speakerPin, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);
     digitalWrite(this->speakerPin, HIGH);
 }
 
-void MycroftArduino::reset() {
+void MycroftSystem::reset() {
     blink(1, 1000);
     asm volatile ("  jmp 0");
 }
 
-void MycroftArduino::mute() {
+void MycroftSystem::mute() {
     digitalWrite(this->speakerPin, LOW);
 }
 
-void MycroftArduino::unmute() {
+void MycroftSystem::unmute() {
     digitalWrite(this->speakerPin, HIGH);
 }
 
-void MycroftArduino::blink(long times, unsigned long wait) {
+void MycroftSystem::blink(long times, unsigned long wait) {
     for (int i = 0; i < times; ++i) {
         digitalWrite(LED_BUILTIN, HIGH);
         delay(wait);
