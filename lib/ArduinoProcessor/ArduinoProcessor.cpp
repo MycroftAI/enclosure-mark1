@@ -2,7 +2,7 @@
 #include "MycroftArduino.h"
 
 ArduinoProcessor::ArduinoProcessor(uint8_t speakerPin) :
-BaseProcessor("system."), arduino(speakerPin) { }
+BaseProcessor("system"), arduino(speakerPin) { }
 
 void ArduinoProcessor::setup() {
     arduino.setup();

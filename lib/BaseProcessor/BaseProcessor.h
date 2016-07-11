@@ -14,7 +14,7 @@ protected:
     virtual void process(String cmd) = 0;
 
 private:
-    const char *cmdName;
+    String cmdStr;
 };
 
 #endif /* BASE_PROCESSOR_H */
