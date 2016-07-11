@@ -49,8 +49,9 @@ void MycroftMouth::run() {
             this->updateText();
             break;
         default:
-            if (lastState != NONE)
+            if (lastState != NONE){
                 this->reset();
+            }
     }
     lastState = state;
 }
