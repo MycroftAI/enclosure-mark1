@@ -1,8 +1,7 @@
 #include "MycroftEyes.h"
 
-MycroftEyes::MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type) {
-	neoPixel = Adafruit_NeoPixel(length, pin, type);
-}
+MycroftEyes::MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type) :
+neoPixel(length, pin, type) { }
 
 void MycroftEyes::setup() {
 	neoPixel.begin();

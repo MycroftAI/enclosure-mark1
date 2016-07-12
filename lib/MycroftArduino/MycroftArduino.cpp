@@ -1,9 +1,7 @@
 #include <Arduino.h>
 #include "MycroftArduino.h"
 
-MycroftArduino::MycroftArduino(uint8_t speakerPin) {
-	this->speakerPin = speakerPin;
-}
+MycroftArduino::MycroftArduino(uint8_t speakerPin) : speakerPin(speakerPin) { }
 
 void MycroftArduino::setup() {
 	pinMode(LED_BUILTIN, OUTPUT);

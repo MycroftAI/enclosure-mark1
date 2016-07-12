@@ -9,10 +9,7 @@ public:
 
 	enum class Direction {
 		LEFT, RIGHT, NONE
-
 	};
-
-
 
 	ClickEncoder* clickEncoder;
 
