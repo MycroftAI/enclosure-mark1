@@ -1,5 +1,4 @@
-#ifndef WEATHER_PROCESSOR_H
-#define WEATHER_PROCESSOR_H
+#pragma once
 
 #include "BaseProcessor.h"
 #include "MycroftWeather.h"
@@ -17,5 +16,3 @@ private:
 
 	MycroftWeather weather;
 };
-
-#endif /* WEATHER_PROCESSOR_H */

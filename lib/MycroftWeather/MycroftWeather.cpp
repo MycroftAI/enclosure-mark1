@@ -2,10 +2,8 @@
 #include "MycroftMouth.h"
 #include "MouthImages.h"
 
-MycroftWeather::MycroftWeather(MycroftMouth* mouth, MycroftEyes* eyes) {
-	this->mouth = mouth;
-	this->eyes = eyes;
-}
+MycroftWeather::MycroftWeather(MycroftMouth &mouth, MycroftEyes &eyes) :
+mouth(mouth), eyes(eyes) { }
 
 void MycroftWeather::calculateImagePosition(String temperature) {
 	char first = temperature.charAt(0);
@@ -40,9 +38,9 @@ void MycroftWeather::calculateTemperaturePosition(String temperature) {
 void MycroftWeather::display(int8_t condition, String temperature) {
 	calculateImagePosition(temperature);
 	calculateTemperaturePosition(temperature);
-	this->mouth->reset();
-	this->mouth->drawImage(imgPos, condition, WEATHER_CONDS);
+	mouth.reset();
+	mouth.drawImage(imgPos, condition, WEATHER_CONDS);
 	temperature += "\\";
-	this->mouth->staticText(temperature, tempPos, 1);
-	this->mouth->ht1632.render();
+	mouth.staticText(temperature, tempPos, 1);
+	mouth.ht1632.render();
 }

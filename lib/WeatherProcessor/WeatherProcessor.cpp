@@ -4,7 +4,7 @@
 #include "MycroftEyes.h"
 
 WeatherProcessor::WeatherProcessor(MycroftMouth &mouth, MycroftEyes &eyes) :
-BaseProcessor("weather"), weather(&mouth, &eyes) { }
+BaseProcessor("weather"), weather(mouth, eyes) { }
 
 void WeatherProcessor::process(String cmd) {
 	if (contains(cmd, "display=")) {

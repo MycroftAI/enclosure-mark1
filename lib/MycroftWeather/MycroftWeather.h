@@ -7,14 +7,14 @@ class MycroftEyes;
 
 class MycroftWeather {
 public:
-	MycroftWeather(MycroftMouth *mouth, MycroftEyes *eyes);
+	MycroftWeather(MycroftMouth &mouth, MycroftEyes &eyes);
 
 	void display(int8_t condition, String temperature);
 
 private:
-	MycroftMouth *mouth;
+	MycroftMouth &mouth;
 
-	MycroftEyes *eyes;
+	MycroftEyes &eyes;
 
 	char imgPos, tempPos;
 
