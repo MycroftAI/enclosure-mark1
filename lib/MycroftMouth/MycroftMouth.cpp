@@ -30,8 +30,7 @@ void MycroftMouth::reset() {
     ht1632.render();
 }
 
-void MycroftMouth::run() {
-
+void MycroftMouth::drawAnimation() {
     switch (state) {
         case TALK:
             this->talk();

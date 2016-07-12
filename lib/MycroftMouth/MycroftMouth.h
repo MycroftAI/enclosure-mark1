@@ -1,10 +1,11 @@
+#ifndef MYCROFT_MOUTH_H
+#define MYCROFT_MOUTH_H
+
 #include "MycroftHT1632.h"
-#include "Arduino.h"
+#include <Arduino.h>
 #include "MouthImages.h"
 #include "../HT1632/font_5x4.h"
 #include "font_8x4.h"
-
-#pragma once
 
 class MycroftMouth {
 
@@ -25,7 +26,7 @@ public:
 
     void reset();
 
-    void run();
+    void drawAnimation();
 
     void talk();
 
@@ -68,3 +69,5 @@ private:
         }
     }
 };
+
+#endif /* MYCROFT_MOUTH_H */

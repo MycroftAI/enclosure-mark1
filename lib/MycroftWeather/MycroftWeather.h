@@ -1,8 +1,11 @@
+#ifndef MYCROFT_WEATHER_H
+#define MYCROFT_WEATHER_H
+
 #include "MycroftEyes.h"
 #include "MycroftMouth.h"
+
 class MycroftWeather
 {
-
 public:
   MycroftWeather(MycroftMouth *mouth, MycroftEyes *eyes);
 
@@ -19,3 +22,5 @@ private:
 
   void calculateTemperaturePosition(String temperature);
 };
+
+#endif /* MYCROFT_WEATHER_H */
