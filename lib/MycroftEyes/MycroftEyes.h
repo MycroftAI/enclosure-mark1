@@ -1,3 +1,6 @@
+#ifndef MYCROFT_EYES_H
+#define MYCROFT_EYES_H
+
 #include "Adafruit_NeoPixel.h"
 
 class MycroftEyes {
@@ -7,9 +10,7 @@ public:
 
     MycroftEyes(uint16_t size, uint8_t pin, uint16_t type);
 
-    MycroftEyes();
-
-    void start();
+    void setup();
 
     void on();
 
@@ -42,3 +43,4 @@ private:
 
     uint16_t mod(long a, long b);
 };
+#endif /* MYCROFT_EYES_H */

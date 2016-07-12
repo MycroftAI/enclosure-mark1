@@ -1,5 +1,4 @@
 #include "Arduino.h"
-#include "MycroftArduino.h"
 #include "MycroftEncoder.h"
 
 void MycroftEncoder::isr(){

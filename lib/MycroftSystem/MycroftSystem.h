@@ -1,14 +1,14 @@
-#ifndef MYCROFT_ARDUINO_H
-#define MYCROFT_ARDUINO_H
+#ifndef MYCROFT_SYSTEM_H
+#define MYCROFT_SYSTEM_H
 
 #include <Arduino.h>
 
-class MycroftArduino {
+class MycroftSystem {
 
 public:
-    MycroftArduino(uint8_t speakerPin);
+    MycroftSystem(uint8_t speakerPin);
 
-    void setup();
+    void start();
 
     void reset();
 
@@ -23,4 +23,4 @@ private:
 
 };
 
-#endif /* MYCROFT_ARDUINO_H */
+#endif /* MYCROFT_SYSTEM_H */
