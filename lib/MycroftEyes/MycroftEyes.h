@@ -43,5 +43,4 @@ private:
 
     uint16_t mod(long a, long b);
 };
-
 #endif /* MYCROFT_EYES_H */

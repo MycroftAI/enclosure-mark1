@@ -1,12 +1,23 @@
-#include "Arduino.h"
 #include "MycroftMouth.h"
-#include "MouthImages.h"
-#include "../HT1632/font_5x4.h"
 
 MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA) {
-    ht1632 = HT1632Class();
+    ht1632 = MycroftHT1632();
     ht1632.begin(pinCS1, pinWR, pinDATA);
     reset();
+    lastState = state = NONE;
+}
+
+MycroftMouth::MycroftMouth(){
+
+}
+
+void MycroftMouth::staticText(String text, int8_t pos, int8_t fontIndex){
+      if (fontIndex == 0){
+          ht1632.drawTextPgm(text.c_str(), pos, 0, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
+      }
+      else if (fontIndex == 1){
+          ht1632.drawTextPgm(text.c_str(), pos, 0, FONT_8X4, FONT_8X4_WIDTH, FONT_8X4_HEIGHT, FONT_8X4_STEP_GLYPH);
+      }
 }
 
 void MycroftMouth::reset() {
@@ -37,8 +48,11 @@ void MycroftMouth::drawAnimation() {
             this->updateText();
             break;
         default:
-            this->reset();
+            if (lastState != NONE){
+                this->reset();
+            }
     }
+    lastState = state;
 }
 
 void MycroftMouth::talk() {
@@ -65,13 +79,7 @@ void MycroftMouth::talk() {
     }
 }
 
-template <size_t x>
-void MycroftMouth::readBuffer(byte idx, const char(&anim)[x][16]) {
-    byte size = sizeof(buffer);
-    for (byte j = 0; j < size; j++) {
-        buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
-    }
-}
+
 
 void MycroftMouth::listen() {
     state = LISTEN;
@@ -159,7 +167,7 @@ void MycroftMouth::copyText(const char *value) {
 void MycroftMouth::updateText() {
     ht1632.transition(TRANSITION_BUFFER_SWAP);
     ht1632.clear();
-    ht1632.drawText(text, OUT_SIZE - textIdx, 2, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
+    ht1632.drawTextPgm(text, OUT_SIZE - textIdx, 2, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
     ht1632.render();
     textIdx = (textIdx + 1) % (textWd + OUT_SIZE);
     delay(150);

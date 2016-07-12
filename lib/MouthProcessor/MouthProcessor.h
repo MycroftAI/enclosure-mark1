@@ -7,13 +7,13 @@
 
 class MouthProcessor : public BaseProcessor {
 public:
-    MouthProcessor(int pinCS1, int pinWR, int pinDATA);
+    MouthProcessor(MycroftMouth &mouth);
     void drawAnimation();
 
 private:
     void process(String cmd);
 
-    MycroftMouth mouth;
+    MycroftMouth &mouth;
 };
 
 #endif /* MOUTH_PROCESSOR_H */

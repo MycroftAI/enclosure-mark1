@@ -7,14 +7,14 @@
 
 class EyesProcessor : public BaseProcessor {
 public:
-    EyesProcessor(uint16_t size, uint8_t pin, uint16_t type);
+    EyesProcessor(MycroftEyes &eyes);
     void setup();
 
 private:
     void updateEyesColor(long code);
     void process(String cmd);
 
-    MycroftEyes eyes;
+    MycroftEyes &eyes;
 };
 
 #endif /* EYE_PROCESSOR_H */

@@ -1,7 +1,11 @@
+#include "MycroftMouth.h"
+#include "MycroftEyes.h"
+
 #include "MycroftEncoder.h"
 #include "MouthProcessor.h"
 #include "EyesProcessor.h"
 #include "ArduinoProcessor.h"
+#include "WeatherProcessor.h"
 
 #define BUTTON_PIN 2
 #define SPEAKER_PIN 4
@@ -18,11 +22,19 @@
 
 // Must be initialized first
 MycroftEncoder encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
+MycroftEyes eyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
+MycroftMouth mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA);
 
-MouthProcessor mouthProcessor(MOUTH_CS1, MOUTH_WR, MOUTH_DATA);
-EyesProcessor eyesProcessor(EYES_SIZE, EYES_PIN, EYES_TYPE);
+MouthProcessor mouthProcessor(mouth);
+EyesProcessor eyesProcessor(eyes);
 ArduinoProcessor arduinoProcessor(SPEAKER_PIN);
-BaseProcessor *processors[3] = {&mouthProcessor, &eyesProcessor, &arduinoProcessor};
+WeatherProcessor weatherProcessor(mouth, eyes);
+BaseProcessor *processors[] = {
+    &mouthProcessor,
+    &eyesProcessor,
+    &arduinoProcessor,
+    &weatherProcessor
+};
 
 int16_t time = 1000;
 
@@ -43,10 +55,6 @@ void setup() {
     arduinoProcessor.setup();
     Timer1.initialize(time);
     Timer1.attachInterrupt(timerIsr);
-}
-
-bool contains(String value, String term) {
-    return value.indexOf(term) > -1;
 }
 
 void processVolume() {

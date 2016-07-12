@@ -16,10 +16,10 @@ MycroftEncoder::Direction MycroftEncoder::getDirection() {
     direction = Direction::NONE;
     value += clickEncoder->getValue();
     if (value != last) {
-        if (value > last) {
+        if (value < last) {
             direction = Direction::LEFT;
         }
-        else if (value < last) {
+        else if (value > last) {
             direction = Direction::RIGHT;
         }
         else{

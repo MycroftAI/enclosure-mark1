@@ -1,15 +1,28 @@
 #ifndef MYCROFT_MOUTH_H
 #define MYCROFT_MOUTH_H
 
+#include "MycroftHT1632.h"
 #include <Arduino.h>
-#include "HT1632.h"
+#include "MouthImages.h"
+#include "../HT1632/font_5x4.h"
+#include "font_8x4.h"
 
 class MycroftMouth {
 
 public:
-    HT1632Class ht1632;
+    MycroftHT1632 ht1632;
 
     MycroftMouth(int pinCS1, int pinWR, int pinDATA);
+
+    MycroftMouth();
+
+    template <size_t y>
+    void drawImage(int8_t pos, int8_t index, const char(&imgs)[y][16]){
+        readBuffer(index, imgs);
+        ht1632.drawImage(buffer, width, height, pos, 0);
+    }
+
+    void staticText(String text, int8_t pos, int8_t fontIndex);
 
     void reset();
 
@@ -30,26 +43,31 @@ private:
         NONE, TALK, LISTEN, THINK, SMILE, TEXT
     };
 
+    char text[64];
+
     char width;
 
     char height;
 
-    char text[64];
+    char buffer[16];
 
     int textWd;
 
     int textIdx;
 
-    char buffer[16];
-
-    State state;
+    State state, lastState;
 
     void updateText();
 
-    template<size_t x>
-    void readBuffer(byte idx, const char (&anim)[x][16]);
-
     void copyText(const char *value);
+
+    template <size_t x>
+    void readBuffer(byte idx, const char(&anim)[x][16]) {
+        byte size = sizeof(buffer);
+        for (byte j = 0; j < size; j++) {
+            buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
+        }
+    }
 };
 
 #endif /* MYCROFT_MOUTH_H */

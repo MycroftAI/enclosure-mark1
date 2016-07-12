@@ -1,8 +1,8 @@
 #include "EyesProcessor.h"
 #include <MycroftEyes.h>
 
-EyesProcessor::EyesProcessor(uint16_t size, uint8_t pin, uint16_t type) :
-BaseProcessor("eyes"), eyes(size, pin, type) { }
+EyesProcessor::EyesProcessor(MycroftEyes &eyes) :
+BaseProcessor("eyes"), eyes(eyes) { }
 
 void EyesProcessor::setup() {
     eyes.setup();
