@@ -1,8 +1,8 @@
 #ifndef WEATHER_PROCESSOR_H
 #define WEATHER_PROCESSOR_H
 
-#include <BaseProcessor.h>
-#include <MycroftWeather.h>
+#include "BaseProcessor.h"
+#include "MycroftWeather.h"
 
 class MycroftMouth;
 class MycroftEyes;

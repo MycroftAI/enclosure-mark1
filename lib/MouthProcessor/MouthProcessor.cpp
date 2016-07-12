@@ -1,5 +1,5 @@
 #include "MouthProcessor.h"
-#include <MycroftMouth.h>
+#include "MycroftMouth.h"
 
 MouthProcessor::MouthProcessor(MycroftMouth &mouth) :
 BaseProcessor("mouth"), mouth(mouth) { }

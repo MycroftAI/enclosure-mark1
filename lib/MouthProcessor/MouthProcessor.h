@@ -1,7 +1,7 @@
 #pragma once
 
-#include <BaseProcessor.h>
-#include <MycroftMouth.h>
+#include "BaseProcessor.h"
+#include "MycroftMouth.h"
 
 class MouthProcessor : public BaseProcessor {
 public:

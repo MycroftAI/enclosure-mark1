@@ -1,7 +1,7 @@
 #include "WeatherProcessor.h"
-#include <MycroftWeather.h>
-#include <MycroftMouth.h>
-#include <MycroftEyes.h>
+#include "MycroftWeather.h"
+#include "MycroftMouth.h"
+#include "MycroftEyes.h"
 
 WeatherProcessor::WeatherProcessor(MycroftMouth &mouth, MycroftEyes &eyes) :
 BaseProcessor("weather"), weather(&mouth, &eyes) { }

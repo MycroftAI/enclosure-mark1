@@ -1,7 +1,7 @@
 #pragma once
 
-#include <BaseProcessor.h>
-#include <MycroftEyes.h>
+#include "BaseProcessor.h"
+#include "MycroftEyes.h"
 
 class EyesProcessor : public BaseProcessor {
 public:

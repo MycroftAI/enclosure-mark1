@@ -1,7 +1,7 @@
 #pragma once 
 
-#include <BaseProcessor.h>
-#include <MycroftArduino.h>
+#include "BaseProcessor.h"
+#include "MycroftArduino.h"
 
 class ArduinoProcessor : public BaseProcessor
 {

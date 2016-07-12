@@ -1,5 +1,5 @@
 #include "EyesProcessor.h"
-#include <MycroftEyes.h>
+#include "MycroftEyes.h"
 
 EyesProcessor::EyesProcessor(MycroftEyes &eyes) :
 BaseProcessor("eyes"), eyes(eyes) { }
