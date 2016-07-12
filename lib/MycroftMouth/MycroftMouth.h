@@ -57,8 +57,6 @@ private:
 
     boolean notUpdated, back;
 
-    char buffer[16];
-
     State state, lastState;
 
     void updateText();
