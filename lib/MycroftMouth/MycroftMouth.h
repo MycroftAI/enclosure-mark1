@@ -1,5 +1,4 @@
-#ifndef MYCROFT_MOUTH_H
-#define MYCROFT_MOUTH_H
+#pragma once
 
 #include "MycroftHT1632.h"
 #include <Arduino.h>
@@ -69,5 +68,3 @@ private:
         }
     }
 };
-
-#endif /* MYCROFT_MOUTH_H */

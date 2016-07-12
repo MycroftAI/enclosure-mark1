@@ -1,5 +1,4 @@
-#ifndef MYCROFT_WEATHER_H
-#define MYCROFT_WEATHER_H
+#pragma once
 
 #include "MycroftEyes.h"
 #include "MycroftMouth.h"
@@ -21,5 +20,3 @@ private:
 
 	void calculateTemperaturePosition(String temperature);
 };
-
-#endif /* MYCROFT_WEATHER_H */

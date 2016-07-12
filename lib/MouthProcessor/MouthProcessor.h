@@ -1,5 +1,4 @@
-#ifndef MOUTH_PROCESSOR_H
-#define MOUTH_PROCESSOR_H
+#pragma once
 
 #include <BaseProcessor.h>
 #include <MycroftMouth.h>
@@ -14,5 +13,3 @@ private:
 
 	MycroftMouth &mouth;
 };
-
-#endif /* MOUTH_PROCESSOR_H */

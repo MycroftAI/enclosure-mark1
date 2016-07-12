@@ -1,5 +1,4 @@
-#ifndef EYE_PROCESSOR_H
-#define EYE_PROCESSOR_H
+#pragma once
 
 #include <BaseProcessor.h>
 #include <MycroftEyes.h>
@@ -15,5 +14,3 @@ private:
 
 	MycroftEyes &eyes;
 };
-
-#endif /* EYE_PROCESSOR_H */

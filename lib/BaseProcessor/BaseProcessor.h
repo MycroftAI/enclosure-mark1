@@ -1,5 +1,4 @@
-#ifndef BASE_PROCESSOR_H
-#define BASE_PROCESSOR_H
+#pragma once
 
 #include <Arduino.h>
 
@@ -16,5 +15,3 @@ protected:
 private:
 	String cmdStr;
 };
-
-#endif /* BASE_PROCESSOR_H */

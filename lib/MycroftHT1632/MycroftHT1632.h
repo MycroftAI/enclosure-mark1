@@ -1,3 +1,5 @@
+#pragma once
+
 #include "HT1632.h"
 #include <avr/pgmspace.h>
 #include <Arduino.h>

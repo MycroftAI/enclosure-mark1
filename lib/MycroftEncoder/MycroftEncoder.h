@@ -1,5 +1,4 @@
-#ifndef MYCROFT_ENCODER_H
-#define MYCROFT_ENCODER_H
+#pragma once
 
 #include "ClickEncoder.h"
 #include "TimerOne.h"
@@ -26,5 +25,3 @@ private:
 	Direction direction;
 
 };
-
-#endif /* MYCROFT_ENCODER_H */

@@ -1,5 +1,4 @@
-#ifndef MYCROFT_ARDUINO_H
-#define MYCROFT_ARDUINO_H
+#pragma once
 
 #include <Arduino.h>
 
@@ -21,5 +20,3 @@ private:
 	uint8_t speakerPin;
 
 };
-
-#endif /* MYCROFT_ARDUINO_H */
