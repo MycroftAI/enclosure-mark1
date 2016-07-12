@@ -1,15 +1,32 @@
-#include "HT1632.h"
+#ifndef MYCROFT_MOUTH_H
+#define MYCROFT_MOUTH_H
+
+#include "MycroftHT1632.h"
+#include <Arduino.h>
+#include "MouthImages.h"
+#include "../HT1632/font_5x4.h"
+#include "font_8x4.h"
 
 class MycroftMouth {
 
 public:
-    HT1632Class ht1632;
+    MycroftHT1632 ht1632;
 
     MycroftMouth(int pinCS1, int pinWR, int pinDATA);
 
+    MycroftMouth();
+
+    template <size_t y>
+    void drawImage(int8_t pos, int8_t index, const char(&imgs)[y][16]){
+        readBuffer(index, imgs);
+        ht1632.drawImage(buffer, width, height, pos, 0);
+    }
+
+    void staticText(String text, int8_t pos, int8_t fontIndex);
+
     void reset();
 
-    void run();
+    void drawAnimation();
 
     void talk();
 
@@ -26,19 +43,15 @@ private:
         NONE, TALK, LISTEN, THINK, SMILE, TEXT
     };
 
-    byte i;
-
-    byte count;
-
-    char width;
-
-    char height;
+    byte i, count;
 
     char text[64];
 
-    int textWd;
+    char width, height;
 
-    int textIdx;
+    char buffer[16];
+
+    int textWd, textIdx;
 
     unsigned long nextTime;
 
@@ -50,9 +63,6 @@ private:
 
     void updateText();
 
-    template<size_t x>
-    void readBuffer(byte idx, const char (&anim)[x][16]);
-
     void copyText(const char *value);
 
     void resetCounters();
@@ -62,4 +72,15 @@ private:
     void drawListen(byte i, byte plates);
 
     void drawThink(byte i, byte plates);
+
+    template <size_t x>
+    void readBuffer(byte idx, const char(&anim)[x][16]) {
+        byte size = sizeof(buffer);
+        for (byte j = 0; j < size; j++) {
+            buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
+        }
+    }
+
 };
+
+#endif /* MYCROFT_MOUTH_H */

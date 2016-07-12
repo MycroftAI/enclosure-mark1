@@ -1,10 +1,10 @@
 /*
   HT1632.h - Library for communicating with the popular HT1632/HT1632C
   LED controllers. This library provides higher-level access (including
-  text drawing) for these chips. Currently, the library supports writing 
+  text drawing) for these chips. Currently, the library supports writing
   to a single chip at a time, and has been tested with a single
   Sure Electronics 3208 5mm red board.
-  
+
   Created by Gaurav Manek, April 8, 2011.
   Released into the public domain.
 */
@@ -22,7 +22,7 @@
 // COM_SIZE MUST be either 8 or 16.
 
 // Target buffer
-// Each board has a "render" buffer, and all boards share one "secondary" buffer. All calls to 
+// Each board has a "render" buffer, and all boards share one "secondary" buffer. All calls to
 //   render() draw the contents of the render buffer of the currently selected board to the board
 //   itself. All calls to any drawing function (including clear()) only affect the selected buffer
 //   of the selected board. you can move the contents of the secondary buffer to the render
@@ -64,16 +64,16 @@
  * END USER OPTIONS
  * Don't edit anything below unless you know what you are doing!
  */
- 
+
 // Meta-data masks
 #define MASK_NEEDS_REWRITING 0b00010000
 
 // Round up to multiple of 4 function
 
 // NO-OP Definition
-#define NOP(); __asm__("nop\n\t"); 
+#define NOP(); __asm__("nop\n\t");
 // The HT1632 requires at least 50 ns between the change in data and the rising
-// edge of the WR signal. On a 16MHz processor, this provides 62.5ns per NOP. 
+// edge of the WR signal. On a 16MHz processor, this provides 62.5ns per NOP.
 
 // Standard command list.
 // This list is modified from original code by Bill Westfield
@@ -107,7 +107,7 @@
 
 class HT1632Class
 {
-  private:  
+protected:
     char _pinCS [4];
     char _numActivePins;
     char _pinWR;
@@ -122,11 +122,11 @@ class HT1632Class
     void initialize(int, int);
     void select();
     void select(char mask);
-    
+
     // Debugging functions, write to Serial.
     void writeInt(int);
     void recursiveWriteUInt(int);
-    
+
   public:
     void begin(int pinCS1, int pinWR,  int pinDATA);
     void begin(int pinCS1, int pinCS2, int pinWR,   int pinDATA);
@@ -138,6 +138,7 @@ class HT1632Class
     void transition(char mode, int time = 1000); // Time is in miliseconds.
     void clear();
     void drawImage(const char * img, char width, char height, char x, char y, int offset = 0);
+    void drawImagePgm(const char * img, char width, char height, char x, char y, int offset = 0);
     void drawText(const char [], int x, int y, const char font [], const char font_width [], char font_height, int font_glyph_step, char gutter_space = 1);
     int getTextWidth(const char [], const char font_width [], char font_height, char gutter_space = 1);
     void setBrightness(char brightness, char selectionmask = 0b00010000);
