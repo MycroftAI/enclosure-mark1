@@ -26,6 +26,10 @@ private:
         NONE, TALK, LISTEN, THINK, SMILE, TEXT
     };
 
+    byte i;
+
+    byte count;
+
     char width;
 
     char height;
@@ -36,9 +40,13 @@ private:
 
     int textIdx;
 
+    unsigned long nextTime;
+
+    boolean notUpdated, back;
+
     char buffer[16];
 
-    State state;
+    State state, lastState;
 
     void updateText();
 
@@ -46,4 +54,12 @@ private:
     void readBuffer(byte idx, const char (&anim)[x][16]);
 
     void copyText(const char *value);
+
+    void resetCounters();
+
+    void drawTalk(byte i, byte plates);
+
+    void drawListen(byte i, byte plates);
+
+    void drawThink(byte i, byte plates);
 };
