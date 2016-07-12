@@ -5,28 +5,28 @@
 #include "TimerOne.h"
 
 class MycroftEncoder {
-
 public:
-    enum class Direction {
-        LEFT, RIGHT, NONE
 
-    };
+	enum class Direction {
+		LEFT, RIGHT, NONE
+
+	};
 
 
 
-    ClickEncoder* clickEncoder;
+	ClickEncoder* clickEncoder;
 
-    MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton);
+	MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton);
 
-    Direction getDirection();
+	Direction getDirection();
 
-    void isr();
+	void isr();
 
 
 private:
-    int16_t last, value;
+	int16_t last, value;
 
-    Direction direction;
+	Direction direction;
 
 };
 

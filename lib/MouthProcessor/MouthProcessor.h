@@ -4,16 +4,15 @@
 #include <BaseProcessor.h>
 #include <MycroftMouth.h>
 
-
 class MouthProcessor : public BaseProcessor {
 public:
-    MouthProcessor(MycroftMouth &mouth);
-    void drawAnimation();
+	MouthProcessor(MycroftMouth &mouth);
+	void drawAnimation();
 
 private:
-    void process(String cmd);
+	void process(String cmd);
 
-    MycroftMouth &mouth;
+	MycroftMouth &mouth;
 };
 
 #endif /* MOUTH_PROCESSOR_H */

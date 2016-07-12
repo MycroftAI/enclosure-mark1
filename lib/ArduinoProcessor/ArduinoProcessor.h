@@ -4,16 +4,15 @@
 #include <BaseProcessor.h>
 #include <MycroftArduino.h>
 
-class ArduinoProcessor : public BaseProcessor
-{
+class ArduinoProcessor : public BaseProcessor {
 public:
-    ArduinoProcessor(uint8_t speakerPin);
-    void setup();
+	ArduinoProcessor(uint8_t speakerPin);
+	void setup();
 
 private:
-    void process(String cmd);
+	void process(String cmd);
 
-    MycroftArduino arduino;
+	MycroftArduino arduino;
 };
 
 #endif /* SYSTEM_ARDUINO_H */
