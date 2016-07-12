@@ -1,4 +1,6 @@
 #include "MycroftWeather.h"
+#include "MycroftMouth.h"
+#include "MouthImages.h"
 
 MycroftWeather::MycroftWeather(MycroftMouth* mouth, MycroftEyes* eyes) {
 	this->mouth = mouth;

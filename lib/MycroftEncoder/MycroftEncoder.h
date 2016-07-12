@@ -1,7 +1,6 @@
 #pragma once
 
-#include "ClickEncoder.h"
-#include "TimerOne.h"
+class ClickEncoder;
 
 class MycroftEncoder {
 public:
@@ -23,5 +22,4 @@ private:
 	int16_t last, value;
 
 	Direction direction;
-
 };

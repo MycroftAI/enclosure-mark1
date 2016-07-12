@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "MycroftEncoder.h"
+#include "ClickEncoder.h"
 
 void MycroftEncoder::isr() {
 	clickEncoder->service();

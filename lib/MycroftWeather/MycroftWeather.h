@@ -1,7 +1,9 @@
 #pragma once
 
-#include "MycroftEyes.h"
-#include "MycroftMouth.h"
+#include <Arduino.h>
+
+class MycroftMouth;
+class MycroftEyes;
 
 class MycroftWeather {
 public:

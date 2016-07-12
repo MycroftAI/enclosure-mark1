@@ -1,7 +1,10 @@
+#include "ClickEncoder.h"
+#include "TimerOne.h"
+
 #include "MycroftMouth.h"
 #include "MycroftEyes.h"
-
 #include "MycroftEncoder.h"
+
 #include "MouthProcessor.h"
 #include "EyesProcessor.h"
 #include "ArduinoProcessor.h"

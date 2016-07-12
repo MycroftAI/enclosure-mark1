@@ -1,10 +1,7 @@
 #pragma once
 
-#include "MycroftHT1632.h"
 #include <Arduino.h>
-#include "MouthImages.h"
-#include "../HT1632/font_5x4.h"
-#include "font_8x4.h"
+#include "MycroftHT1632.h"
 
 class MycroftMouth {
 
