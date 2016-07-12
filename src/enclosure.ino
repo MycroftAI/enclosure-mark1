@@ -39,8 +39,6 @@ BaseProcessor *processors[] = {
 	&weatherProcessor
 };
 
-int16_t time = 1000;
-
 void timerIsr() {
 	encoder.isr();
 }
@@ -56,7 +54,8 @@ void setup() {
 	initSerial();
 	eyesProcessor.setup();
 	arduinoProcessor.setup();
-	Timer1.initialize(time);
+	int16_t period = 1000;
+	Timer1.initialize(period);
 	Timer1.attachInterrupt(timerIsr);
 }
 
@@ -95,7 +94,7 @@ void loop() {
 		Serial.print(F("Command: "));
 		Serial.println(cmd);
 
-		for (auto *i : processors)
+		for (BaseProcessor *i : processors)
 			if (i->tryProcess(cmd))
 				break;
 	}
