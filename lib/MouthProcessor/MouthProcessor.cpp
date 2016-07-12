@@ -1,8 +1,8 @@
 #include "MouthProcessor.h"
 #include <MycroftMouth.h>
 
-MouthProcessor::MouthProcessor(int pinCS1, int pinWR, int pinDATA) :
-BaseProcessor("mouth"), mouth(pinCS1, pinWR, pinDATA) { }
+MouthProcessor::MouthProcessor(MycroftMouth &mouth) :
+BaseProcessor("mouth"), mouth(mouth) { }
 
 void MouthProcessor::drawAnimation() {
     mouth.drawAnimation();
