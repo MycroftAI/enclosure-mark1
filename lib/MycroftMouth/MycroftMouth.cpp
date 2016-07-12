@@ -50,7 +50,7 @@ void MycroftMouth::drawAnimation() {
         default:
         //Serial.println("default");
         if (lastState != NONE){
-            state = lastState;
+            this->reset();
         }
     }
     lastState = state;
@@ -60,19 +60,15 @@ void MycroftMouth::talk() {
     byte size = 4;
     byte plates = 4;
     byte total = (size * 2) - 2;
-    if (state == NONE){
+    if (state != TALK){
         state = TALK;
         resetCounters();
         nextTime = millis() + 70;
         drawTalk(i, plates);
-        String str = "drew talk frame" + String(i);
-        Serial.println(str);
         i++;
     }
     if (millis() > nextTime){
         drawTalk(i, plates);
-        String str = "drew talk frame" + String(i);
-        Serial.println(str);
         if (i < size - 1) {
             i++;
         } else {
@@ -80,12 +76,12 @@ void MycroftMouth::talk() {
         }
         nextTime = millis() + 70;
     }
-    if (count >= total){
+    /*if (count >= total){
       resetCounters();
       lastState = state;
       state = NONE;
       //reset();
-    }
+  }*/
 }
 
 void MycroftMouth::drawTalk(byte i, byte plates){
@@ -122,11 +118,11 @@ void MycroftMouth::listen() {
       }
       nextTime = millis() + 70;
   }
-  if (count >= total){
+  /*if (count >= total){
     resetCounters();
     state = NONE;
     //reset();
-  }
+}*/
 }
 
 void MycroftMouth::drawListen(byte i, byte plates){
@@ -164,11 +160,11 @@ void MycroftMouth::think() {
       }
       nextTime = millis() + 200;
   }
-  if (count >= total){
+  /*if (count >= total){
     resetCounters();
     state = NONE;
     //reset();
-  }
+}*/
 }
 
 void MycroftMouth::drawThink(byte i, byte plates){
