@@ -48,7 +48,6 @@ void MycroftMouth::drawAnimation() {
             this->updateText();
             break;
         default:
-        //Serial.println("default");
         if (lastState != NONE){
             this->reset();
         }
@@ -76,12 +75,9 @@ void MycroftMouth::talk() {
         }
         nextTime = millis() + 70;
     }
-    /*if (count >= total){
+    if (count >= total){
       resetCounters();
-      lastState = state;
-      state = NONE;
-      //reset();
-  }*/
+  }
 }
 
 void MycroftMouth::drawTalk(byte i, byte plates){
@@ -118,17 +114,12 @@ void MycroftMouth::listen() {
       }
       nextTime = millis() + 70;
   }
-  /*if (count >= total){
-    resetCounters();
-    state = NONE;
-    //reset();
-}*/
 }
 
 void MycroftMouth::drawListen(byte i, byte plates){
   ht1632.clear();
-  for (byte j = 0; j < 4; j++) {
-      byte idx = (i * 4) + j;
+  for (byte j = 0; j < plates; j++) {
+      byte idx = (i * plates) + j;
       byte x = j * 8;
       this->readBuffer(idx,LISTEN_ANIMATION);
       ht1632.drawImage(buffer, width, height, x, 0);
@@ -143,34 +134,37 @@ void MycroftMouth::think() {
     byte plates = 4;
     byte total = (size * 2)-1;
     if (state == NONE){
-      state = THINK;
-      back = false;
-      resetCounters();
-      drawThink(i, plates);
-      i++;
-      nextTime = millis() + 200;
+        state = THINK;
+        back = false;
+        resetCounters();
+        drawThink(i, plates);
+        i++;
+        nextTime = millis() + 200;
     }
     if (millis() > nextTime){
-      drawThink(i, plates);
-      if (i < (size - 1) && !back) {
-          i++;
-      } else {
-          back = true;
-          i--;
-      }
-      nextTime = millis() + 200;
-  }
-  /*if (count >= total){
-    resetCounters();
-    state = NONE;
-    //reset();
-}*/
+        drawThink(i, plates);
+        if (i < (size - 1) && !back) {
+            i++;
+        } else {
+            back = true;
+            i--;
+        }
+        nextTime = millis() + 200;
+    }
+    if (count >= total){
+        resetCounters();
+        back = false;
+    }
 }
 
 void MycroftMouth::drawThink(byte i, byte plates){
+    Serial.println("i:");
+    Serial.print(i);
   ht1632.clear();
   for (byte j = 0; j < plates; j++) {
       byte idx = (i * plates) + j;
+      Serial.println("idx:");
+      Serial.println(idx);
       byte x = j * 8;
       this->readBuffer(idx,THINK_ANIMATION);
       ht1632.drawImage(buffer, width, height, x, 0);
