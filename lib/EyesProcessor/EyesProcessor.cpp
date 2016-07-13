@@ -8,6 +8,10 @@ void EyesProcessor::setup() {
     eyes.setup();
 }
 
+void EyesProcessor::updateAnimation(){
+    eyes.updateAnimation();
+}
+
 void EyesProcessor::updateEyesColor(long code) {
     long red = (code >> 16) & 0xFF;
     long green = (code >> 8) & 0xFF;

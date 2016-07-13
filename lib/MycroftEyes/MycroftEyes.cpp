@@ -4,6 +4,22 @@ MycroftEyes::MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type) {
     neoPixel = Adafruit_NeoPixel(length, pin, type);
 }
 
+void MycroftEyes::updateAnimation(){
+    switch (anim) {
+        case BLINK:
+            this->blink();
+            break;
+        case NARROW:
+            this->narrow();
+            break;
+        case LOOK:
+            this->look();
+            break;
+        default:
+            this->on();
+    }
+}
+
 void MycroftEyes::setup() {
     neoPixel.begin();
     color = neoPixel.Color(255, 255, 255);
