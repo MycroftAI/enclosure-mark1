@@ -8,76 +8,76 @@
 #include "font_8x4.h"
 
 class MycroftMouth {
-
 public:
-    MycroftHT1632 ht1632;
+	MycroftHT1632 ht1632;
 
-    MycroftMouth(int pinCS1, int pinWR, int pinDATA);
+	MycroftMouth(int pinCS1, int pinWR, int pinDATA);
 
-    MycroftMouth();
+	MycroftMouth();
 
-    template <size_t y>
-    void drawImage(int8_t pos, int8_t index, const char(&imgs)[y][16]){
-        readBuffer(index, imgs);
-        ht1632.drawImage(buffer, width, height, pos, 0);
-    }
+	template <size_t y>
+	void drawImage(int8_t pos, int8_t index, const char(&imgs)[y][16]) {
+		readBuffer(index, imgs);
+		ht1632.drawImage(buffer, width, height, pos, 0);
+	}
 
-    void staticText(String text, int8_t pos, int8_t fontIndex);
+	void staticText(String text, int8_t pos, int8_t fontIndex);
 
-    void reset();
+	void reset();
 
-    void drawAnimation();
+	void drawAnimation();
 
-    void talk();
+	void talk();
 
-    void think();
+	void think();
 
-    void listen();
+	void listen();
 
-    void smile();
+	void smile();
 
-    void write(const char *value);
+	void write(const char *value);
 
 private:
-    enum State {
-        NONE, TALK, LISTEN, THINK, SMILE, TEXT
-    };
 
-    byte i, count;
+	enum State {
+		NONE, TALK, LISTEN, THINK, SMILE, TEXT
+	};
 
-    char text[64];
+	byte i, count;
 
-    char width, height;
+	char text[64];
 
-    char buffer[16];
+	char width, height;
 
-    int textWd, textIdx;
+	char buffer[16];
 
-    unsigned long nextTime;
+	int textWd, textIdx;
 
-    boolean notUpdated, back;
+	unsigned long nextTime;
 
-    State state, lastState;
+	boolean notUpdated, back;
 
-    void updateText();
+	State state, lastState;
 
-    void copyText(const char *value);
+	void updateText();
 
-    void resetCounters();
+	void copyText(const char *value);
 
-    void drawTalk(byte i, byte plates);
+	void resetCounters();
 
-    void drawListen(byte i, byte plates);
+	void drawTalk(byte i, byte plates);
 
-    void drawThink(byte i, byte plates);
+	void drawListen(byte i, byte plates);
 
-    template <size_t x>
-    void readBuffer(byte idx, const char(&anim)[x][16]) {
-        byte size = sizeof(buffer);
-        for (byte j = 0; j < size; j++) {
-            buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
-        }
-    }
+	void drawThink(byte i, byte plates);
+
+	template <size_t x>
+	void readBuffer(byte idx, const char(&anim)[x][16]) {
+		byte size = sizeof (buffer);
+		for (byte j = 0; j < size; j++) {
+			buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
+		}
+	}
 
 };
 
