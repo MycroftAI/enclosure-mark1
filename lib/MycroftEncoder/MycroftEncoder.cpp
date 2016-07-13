@@ -7,7 +7,7 @@ void MycroftEncoder::isr() {
 }
 
 MycroftEncoder::MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton) : 
-last(0), value(0), clickEncoder(new ClickEncoder(pinEncoderOne, pinEncoderTwo, pinButton)) { }
+last(0), value(0), clickEncoder(new ClickEncoder(pinEncoderOne, pinEncoderTwo, pinButton, 2)) { }
 
 MycroftEncoder::Direction MycroftEncoder::getDirection() {
 	direction = Direction::NONE;
