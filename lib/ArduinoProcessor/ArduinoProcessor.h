@@ -1,8 +1,7 @@
-#ifndef SYSTEM_ARDUINO_H
-#define SYSTEM_ARDUINO_H
+#pragma once 
 
-#include <BaseProcessor.h>
-#include <MycroftArduino.h>
+#include "BaseProcessor.h"
+#include "MycroftArduino.h"
 
 class ArduinoProcessor : public BaseProcessor
 {
@@ -15,5 +14,3 @@ private:
 
     MycroftArduino arduino;
 };
-
-#endif /* SYSTEM_ARDUINO_H */
