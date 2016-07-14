@@ -60,11 +60,11 @@ void MycroftMouth::talk() {
 		state = TALK;
 		resetCounters();
 		nextTime = millis() + 70;
-		drawTalk(i, plates);
+		drawFrame(i, plates, state);
 		i++;
 	}
 	if (millis() > nextTime) {
-		drawTalk(i, plates);
+		drawFrame(i, plates, state);
 		if (i < size - 1) {
 			i++;
 		} else {
@@ -77,18 +77,6 @@ void MycroftMouth::talk() {
 	}
 }
 
-void MycroftMouth::drawTalk(byte i, byte plates) {
-	ht1632.clear();
-	for (byte j = 0; j < plates; j++) {
-		byte idx = (i * plates) + j;
-		byte x = j * 8;
-		this->readBuffer(idx, TALK_ANIMATION);
-		ht1632.drawImage(buffer, width, height, x, 0);
-	}
-	ht1632.render();
-	count++;
-}
-
 void MycroftMouth::listen() {
 	byte size = 6;
 	byte plates = 4;
@@ -97,11 +85,11 @@ void MycroftMouth::listen() {
 		state = LISTEN;
 		resetCounters();
 		nextTime = millis() + 70;
-		drawListen(i, plates);
+		drawFrame(i, plates, state);
 		i++;
 	}
 	if (millis() > nextTime) {
-		drawListen(i, plates);
+		drawFrame(i, plates, state);
 		if (i < (size - 1)) {
 			i++;
 		} else {
@@ -109,18 +97,6 @@ void MycroftMouth::listen() {
 		}
 		nextTime = millis() + 70;
 	}
-}
-
-void MycroftMouth::drawListen(byte i, byte plates) {
-	ht1632.clear();
-	for (byte j = 0; j < plates; j++) {
-		byte idx = (i * plates) + j;
-		byte x = j * 8;
-		this->readBuffer(idx, LISTEN_ANIMATION);
-		ht1632.drawImage(buffer, width, height, x, 0);
-	}
-	ht1632.render();
-	count++;
 }
 
 void MycroftMouth::think() {
@@ -131,12 +107,12 @@ void MycroftMouth::think() {
 		state = THINK;
 		back = false;
 		resetCounters();
-		drawThink(i, plates);
+		drawFrame(i, plates, state);
 		i++;
 		nextTime = millis() + 200;
 	}
 	if (millis() > nextTime) {
-		drawThink(i, plates);
+		drawFrame(i, plates, state);
 		if (i < (size - 1) && !back) {
 			i++;
 		} else {
@@ -151,12 +127,20 @@ void MycroftMouth::think() {
 	}
 }
 
-void MycroftMouth::drawThink(byte i, byte plates) {
+void MycroftMouth::drawFrame(byte i, byte plates, State anim) {
 	ht1632.clear();
 	for (byte j = 0; j < plates; j++) {
 		byte idx = (i * plates) + j;
 		byte x = j * 8;
-		this->readBuffer(idx, THINK_ANIMATION);
+		if (anim == THINK){
+			this->readBuffer(idx, THINK_ANIMATION);
+		}
+		else if (anim == LISTEN){
+			this->readBuffer(idx, LISTEN_ANIMATION);
+		}
+		else if (anim == TALK){
+			this->readBuffer(idx, TALK_ANIMATION);
+		}
 		ht1632.drawImage(buffer, width, height, x, 0);
 	}
 	ht1632.render();

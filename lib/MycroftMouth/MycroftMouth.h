@@ -65,11 +65,7 @@ private:
 
 	void resetCounters();
 
-	void drawTalk(byte i, byte plates);
-
-	void drawListen(byte i, byte plates);
-
-	void drawThink(byte i, byte plates);
+	void drawFrame(byte i, byte plates, State anim);
 
 	template <size_t x>
 	void readBuffer(byte idx, const char(&anim)[x][16]) {
