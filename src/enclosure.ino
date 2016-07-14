@@ -54,8 +54,7 @@ void setup() {
 	initSerial();
 	eyesProcessor.setup();
 	arduinoProcessor.setup();
-	int16_t period = 1000;
-	Timer1.initialize(period);
+	Timer1.initialize(1000);
 	Timer1.attachInterrupt(timerIsr);
 }
 
