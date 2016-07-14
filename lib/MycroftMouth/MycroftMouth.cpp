@@ -152,13 +152,9 @@ void MycroftMouth::think() {
 }
 
 void MycroftMouth::drawThink(byte i, byte plates) {
-	Serial.println("i:");
-	Serial.print(i);
 	ht1632.clear();
 	for (byte j = 0; j < plates; j++) {
 		byte idx = (i * plates) + j;
-		Serial.println("idx:");
-		Serial.println(idx);
 		byte x = j * 8;
 		this->readBuffer(idx, THINK_ANIMATION);
 		ht1632.drawImage(buffer, width, height, x, 0);
