@@ -11,7 +11,7 @@ public:
 	enum Animation {
 		BLINK, NARROW, LOOK, NONE
 	};
-	
+
 	void setup();
 
 	void on();
@@ -39,8 +39,10 @@ private:
 	Side currentSide;
 
 	enum State {
-		OPEN, LOOKING, CLOSED
+		OPEN, LOOKING, NARROWED, CLOSED, ANIMATING
 	};
+
+	State currentState;
 
 	Animation currentAnim;
 

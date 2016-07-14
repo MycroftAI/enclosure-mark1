@@ -15,7 +15,9 @@ void MycroftEyes::updateAnimation(){
             this->runAnim();
             break;
         default:
+            if (currentState == OPEN){
             this->on();
+        }
     }
 }
 
@@ -43,7 +45,6 @@ void MycroftEyes::off() {
 
 void MycroftEyes::startAnim(Animation anim, const char side){
     animSetup(anim, side);
-    firstFrame = true;
     runAnim();
 }
 
@@ -51,7 +52,9 @@ void MycroftEyes::animSetup(Animation anim, const char side){
     currentAnim = anim;
     setSide(side);
     this->on();
+    currentState = ANIMATING;
     setVars();
+    firstFrame = true;
     resetCounters();
 }
 
@@ -66,13 +69,16 @@ void MycroftEyes::runAnim(){
 		    neoPixel.setPixelColor(mod(r1 + leftJump, max) + max, 0);
 		    neoPixel.setPixelColor(mod(r2 + leftJump, max) + max, 0);
 		    neoPixel.show();
-		    delay(delayTime);
         }
         else if (currentAnim == BLINK || currentAnim == NARROW){
             uint16_t r1 = mod(pos + i, max);
 		    uint16_t r2 = mod(pos - 1 - i, max);
 	    	uint16_t ro1 = mod(r1 + opJump, max);
 		    uint16_t ro2 = mod(r2 + opJump, max);
+            Serial.println(r1);
+            Serial.println(r2);
+            Serial.println(ro1);
+            Serial.println(ro2);
 		    if (currentSide == RIGHT || currentSide == BOTH) {
 			    neoPixel.setPixelColor(r1, c);
 			    neoPixel.setPixelColor(r2, c);
@@ -86,7 +92,6 @@ void MycroftEyes::runAnim(){
 			    neoPixel.setPixelColor(mod(ro2 + leftJump, max) + max, c);
 		    }
 		    neoPixel.show();
-		    delay(delayTime);
         }
         updateCounters();
         nextTime = millis() + delayTime;
@@ -96,7 +101,15 @@ void MycroftEyes::runAnim(){
 void MycroftEyes::updateCounters(){
     if (currentAnim == NARROW || currentAnim == LOOK){
         i++;
+        Serial.println("i:");
+        Serial.println(i);
         if(i >= steps){
+            if(currentAnim == NARROW){
+                currentState = NARROWED;
+            }
+            else{
+                currentState = LOOKING;
+            }
             currentAnim = NONE;
         }
     }
@@ -111,6 +124,7 @@ void MycroftEyes::updateCounters(){
 		}
         j--;
         if (j <= 0){
+            currentState = OPEN;
             currentAnim = NONE;
         }
     }
@@ -157,19 +171,21 @@ void MycroftEyes::setVars(){
         }
     }
     max = neoPixel.numPixels() / 2;
-    steps = max / 4;
     leftJump = max + leftJump;
     if(currentAnim == BLINK || currentAnim == NARROW){
         opJump = max / 2;
         c = 0;
     }
     if (currentAnim == BLINK){
+        steps = max / 4;
         delayTime = 35;
     }
     else if (currentAnim == LOOK){
+        steps = (max / 4) + 2;
         delayTime = 70;
     }
     else if (currentAnim == NARROW){
+        steps = (max / 4) + 1;
         delayTime = 140;
     }
 }
