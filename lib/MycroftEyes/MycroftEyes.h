@@ -8,23 +8,24 @@ public:
 
 	MycroftEyes(uint16_t size, uint8_t pin, uint16_t type);
 
+	enum Animation {
+		BLINK, NARROW, LOOK, NONE
+	};
+	
 	void setup();
 
 	void on();
 
 	void off();
 
+	void startAnim(Animation anim, const char side);
+
 	void updateAnimation();
-
-	void blink(const char side);
-
-	void narrow(const char side);
-
-	void look(const char side);
 
 	void updateColor(uint8_t r, uint8_t g, uint8_t b);
 
 	void updateBrightness(uint8_t level);
+
 
 private:
 	uint32_t color;
@@ -32,22 +33,36 @@ private:
 	unsigned long nextTime;
 
 	enum Side {
-		BOTH, LEFT, RIGHT
+		BOTH, LEFT, RIGHT, UP, DOWN, CROSS
 	};
 
-	enum Animation {
-		BLINK, NARROW, LOOK, NONE
+	Side currentSide;
+
+	enum State {
+		OPEN, LOOKING, CLOSED
 	};
 
-	Animation anim;
+	Animation currentAnim;
+
+	boolean firstFrame;
+
+	byte max, pos, opJump, steps, leftJump, delayTime, i, j;
+
+	uint32_t c;
 
 	void set(uint32_t color);
 
-	void blink(Side side, byte pos, byte leftJump);
+	void animSetup(Animation anim, const char side);
 
-	void narrow(Side side, byte pos, byte leftJump);
+	void runAnim();
 
-	void look(byte pos, byte leftJump);
+	void updateCounters();
+
+	void setSide(const char side);
+
+	void setVars();
+
+	void resetCounters();
 
 	uint16_t mod(long a, long b);
 };

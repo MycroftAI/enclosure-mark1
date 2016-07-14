@@ -2,6 +2,9 @@
 
 #include <Arduino.h>
 #include "MycroftHT1632.h"
+#include "font_5x4.h"
+#include "font_8x4.h"
+#include "MouthImages.h"
 
 class MycroftMouth {
 public:

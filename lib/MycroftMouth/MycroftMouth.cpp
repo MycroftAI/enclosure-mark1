@@ -1,7 +1,4 @@
 #include "MycroftMouth.h"
-#include "MouthImages.h"
-#include "font_5x4.h"
-#include "font_8x4.h"
 
 MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA) {
 	ht1632 = MycroftHT1632();
@@ -124,7 +121,7 @@ void MycroftMouth::drawListen(byte i, byte plates) {
 	}
 	ht1632.render();
 	count++;
-}
+    }
 
 void MycroftMouth::think() {
 	byte size = 8;

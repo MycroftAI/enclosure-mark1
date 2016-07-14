@@ -32,12 +32,12 @@ void EyesProcessor::process(String cmd) {
 		eyes.off();
 	} else if (contains(cmd, "blink=")) {
 		cmd.replace("blink=", "");
-		eyes.blink(35, cmd.charAt(0));
+		eyes.startAnim(MycroftEyes::BLINK, cmd.charAt(0));
 	} else if (contains(cmd, "narrow")) {
 		cmd.replace("narrow=", "");
-		eyes.narrow(140, cmd.charAt(0));
+		eyes.startAnim(MycroftEyes::NARROW, cmd.charAt(0));
 	} else if (contains(cmd, "look=")) {
 		cmd.replace("look=", "");
-		eyes.look(70, cmd.charAt(0));
+		eyes.startAnim(MycroftEyes::LOOK, cmd.charAt(0));
 	}
 }
