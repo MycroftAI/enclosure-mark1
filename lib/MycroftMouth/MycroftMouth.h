@@ -11,7 +11,7 @@ class MycroftMouth {
 public:
 	MycroftHT1632 ht1632;
 
-	MycroftMouth(int pinCS1, int pinWR, int pinDATA);
+	MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates);
 
 	MycroftMouth();
 
@@ -51,11 +51,11 @@ private:
 
 	char buffer[16];
 
-	int textWd, textIdx;
+	int textWd, textIdx, plates;
 
 	unsigned long nextTime;
 
-	boolean notUpdated, back;
+	boolean back;
 
 	State state, lastState;
 
@@ -63,17 +63,11 @@ private:
 
 	void copyText(const char *value);
 
-	void resetCounters();
+	void resetCounters(State state);
 
-	void drawFrame(byte i, byte plates, State anim);
+	void drawFrame(byte i, State anim);
 
-	template <size_t x>
-	void readBuffer(byte idx, const char(&anim)[x][16]) {
-		byte size = sizeof (buffer);
-		for (byte j = 0; j < size; j++) {
-			buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
-		}
-	}
+	void readBuffer(byte idx, const char(&anim));
 
 };
 
