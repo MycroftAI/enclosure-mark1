@@ -1,26 +1,22 @@
-#ifndef MYCROFT_SYSTEM_H
-#define MYCROFT_SYSTEM_H
+#pragma once
 
 #include <Arduino.h>
 
 class MycroftSystem {
-
 public:
-    MycroftSystem(uint8_t speakerPin);
+	MycroftSystem(uint8_t speakerPin);
 
-    void start();
+	void start();
 
-    void reset();
+	void reset();
 
-    void mute();
+	void mute();
 
-    void unmute();
+	void unmute();
 
-    void blink(long times, unsigned long wait);
+	void blink(long times, unsigned long wait);
 
 private:
-    uint8_t speakerPin;
+	uint8_t speakerPin;
 
 };
-
-#endif /* MYCROFT_SYSTEM_H */

@@ -1,26 +1,22 @@
-#ifndef MYCROFT_ARDUINO_H
-#define MYCROFT_ARDUINO_H
+#pragma once
 
 #include <Arduino.h>
 
 class MycroftArduino {
-
 public:
-    MycroftArduino(uint8_t speakerPin);
+	MycroftArduino(uint8_t speakerPin);
 
-    void setup();
+	void setup();
 
-    void reset();
+	void reset();
 
-    void mute();
+	void mute();
 
-    void unmute();
+	void unmute();
 
-    void blink(long times, unsigned long wait);
+	void blink(long times, unsigned long wait);
 
 private:
-    uint8_t speakerPin;
+	uint8_t speakerPin;
 
 };
-
-#endif /* MYCROFT_ARDUINO_H */

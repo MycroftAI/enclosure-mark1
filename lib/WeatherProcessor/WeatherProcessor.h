@@ -1,21 +1,18 @@
-#ifndef WEATHER_PROCESSOR_H
-#define WEATHER_PROCESSOR_H
+#pragma once
 
-#include <BaseProcessor.h>
-#include <MycroftWeather.h>
+#include "BaseProcessor.h"
+#include "MycroftWeather.h"
 
 class MycroftMouth;
 class MycroftEyes;
 
 class WeatherProcessor : public BaseProcessor {
 public:
-    WeatherProcessor(MycroftMouth &mouth, MycroftEyes &eyes);
-    void drawAnimation();
+	WeatherProcessor(MycroftMouth &mouth, MycroftEyes &eyes);
+	void drawAnimation();
 
 private:
-    void process(String cmd);
+	void process(String cmd);
 
-    MycroftWeather weather;
+	MycroftWeather weather;
 };
-
-#endif /* WEATHER_PROCESSOR_H */

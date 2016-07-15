@@ -1,33 +1,25 @@
-#ifndef MYCROFT_ENCODER_H
-#define MYCROFT_ENCODER_H
+#pragma once
 
-#include "ClickEncoder.h"
-#include "TimerOne.h"
+class ClickEncoder;
 
 class MycroftEncoder {
-
 public:
-    enum class Direction {
-        LEFT, RIGHT, NONE
 
-    };
+	enum class Direction {
+		LEFT, RIGHT, NONE
+	};
 
+	ClickEncoder* clickEncoder;
 
+	MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton);
 
-    ClickEncoder* clickEncoder;
+	Direction getDirection();
 
-    MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton);
-
-    Direction getDirection();
-
-    void isr();
+	void isr();
 
 
 private:
-    int16_t last, value;
+	int16_t last, value;
 
-    Direction direction;
-
+	Direction direction;
 };
-
-#endif /* MYCROFT_ENCODER_H */

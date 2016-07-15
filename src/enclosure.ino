@@ -1,7 +1,10 @@
+#include "ClickEncoder.h"
+#include "TimerOne.h"
+
 #include "MycroftMouth.h"
 #include "MycroftEyes.h"
-
 #include "MycroftEncoder.h"
+
 #include "MouthProcessor.h"
 #include "EyesProcessor.h"
 #include "ArduinoProcessor.h"
@@ -30,76 +33,73 @@ EyesProcessor eyesProcessor(eyes);
 ArduinoProcessor arduinoProcessor(SPEAKER_PIN);
 WeatherProcessor weatherProcessor(mouth, eyes);
 BaseProcessor *processors[] = {
-    &mouthProcessor,
-    &eyesProcessor,
-    &arduinoProcessor,
-    &weatherProcessor
+	&mouthProcessor,
+	&eyesProcessor,
+	&arduinoProcessor,
+	&weatherProcessor
 };
 
-int16_t time = 1000;
-
 void timerIsr() {
-    encoder.isr();
+	encoder.isr();
 }
 
 void initSerial() {
-    Serial.begin(9600);
-    while (!Serial);
-    Serial.flush();
-    Serial.println(F("Mycroft Hardware v0.1.3 - Connected"));
+	Serial.begin(9600);
+	while (!Serial);
+	Serial.flush();
+	Serial.println(F("Mycroft Hardware v0.1.3 - Connected"));
 }
 
 void setup() {
-    initSerial();
-    eyesProcessor.setup();
-    arduinoProcessor.setup();
-    Timer1.initialize(time);
-    Timer1.attachInterrupt(timerIsr);
+	initSerial();
+	eyesProcessor.setup();
+	arduinoProcessor.setup();
+	Timer1.initialize(1000);
+	Timer1.attachInterrupt(timerIsr);
 }
 
 void processVolume() {
-    MycroftEncoder::Direction d = encoder.getDirection();
-    if (d == MycroftEncoder::Direction::RIGHT) {
-        Serial.println("volume.up");
-    }
-    else if (d == MycroftEncoder::Direction::LEFT) {
-        Serial.println("volume.down");
-    }
+	MycroftEncoder::Direction d = encoder.getDirection();
+	if (d == MycroftEncoder::Direction::RIGHT) {
+		Serial.println("volume.up");
+	} else if (d == MycroftEncoder::Direction::LEFT) {
+		Serial.println("volume.down");
+	}
 }
 
 void processButton() {
-    ClickEncoder::Button b = encoder.clickEncoder->getButton();
-    if (b != ClickEncoder::Open) {
-        switch (b) {
-            case ClickEncoder::Pressed:
-                break;
-            case ClickEncoder::Held:
-                break;
-            case ClickEncoder::Released:
-                break;
-            case ClickEncoder::Clicked:
-                Serial.println("mycroft.stop");
-                break;
-            case ClickEncoder::DoubleClicked:
-            break;
-        }
-    }
+	ClickEncoder::Button b = encoder.clickEncoder->getButton();
+	if (b != ClickEncoder::Open) {
+		switch (b) {
+			case ClickEncoder::Pressed:
+				break;
+			case ClickEncoder::Held:
+				break;
+			case ClickEncoder::Released:
+				break;
+			case ClickEncoder::Clicked:
+				Serial.println("mycroft.stop");
+				break;
+			case ClickEncoder::DoubleClicked:
+				break;
+		}
+	}
 }
 
 void loop() {
-    if (Serial.available() > 0) {
-        String cmd = Serial.readStringUntil('\n');
-        Serial.flush();
-        Serial.print(F("Command: "));
-        Serial.println(cmd);
+	if (Serial.available() > 0) {
+		String cmd = Serial.readStringUntil('\n');
+		Serial.flush();
+		Serial.print(F("Command: "));
+		Serial.println(cmd);
 
-        for (auto *i:processors)
-            if (i->tryProcess(cmd))
-                break;
-    }
-    while (Serial.available() <= 0) {
-        processVolume();
-        processButton();
-        mouthProcessor.drawAnimation();
-    }
+		for (BaseProcessor *i : processors)
+			if (i->tryProcess(cmd))
+				break;
+	}
+	while (Serial.available() <= 0) {
+		processVolume();
+		processButton();
+		mouthProcessor.drawAnimation();
+	}
 }
