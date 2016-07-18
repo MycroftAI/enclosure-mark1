@@ -4,64 +4,73 @@
 #include "MycroftHT1632.h"
 
 class MycroftMouth {
-
 public:
-    MycroftHT1632 ht1632;
+	MycroftHT1632 ht1632;
 
-    MycroftMouth(int pinCS1, int pinWR, int pinDATA);
+	MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates);
 
-    MycroftMouth();
+	MycroftMouth();
 
-    template <size_t y>
-    void drawImage(int8_t pos, int8_t index, const char(&imgs)[y][16]){
-        readBuffer(index, imgs);
-        ht1632.drawImage(buffer, width, height, pos, 0);
-    }
+	template <size_t y>
+	void drawImage(int8_t pos, int8_t index, const char(&imgs)[y][16]) {
+		readBuffer(index, imgs);
+		ht1632.drawImage(buffer, width, height, pos, 0);
+	}
 
-    void staticText(String text, int8_t pos, int8_t fontIndex);
+	void staticText(String text, int8_t pos, int8_t fontIndex);
 
-    void reset();
+	void reset();
 
-    void drawAnimation();
+	void drawAnimation();
 
-    void talk();
+	void talk();
 
-    void think();
+	void think();
 
-    void listen();
+	void listen();
 
-    void smile();
+	void smile();
 
-    void write(const char *value);
+	void write(const char *value);
 
 private:
-    enum State {
-        NONE, TALK, LISTEN, THINK, SMILE, TEXT
-    };
 
-    char text[64];
+	enum State {
+		NONE, TALK, LISTEN, THINK, SMILE, TEXT
+	};
 
-    char width;
+	byte i, total, size;
 
-    char height;
+	char text[64];
 
-    char buffer[16];
+	char width, height;
 
-    int textWd;
+	char buffer[16];
 
-    int textIdx;
+	int textWd, textIdx, plates;
 
-    State state, lastState;
+	unsigned long nextTime;
 
-    void updateText();
+	boolean back;
 
-    void copyText(const char *value);
+	State state, lastState;
 
-    template <size_t x>
+	void updateText();
+
+	void copyText(const char *value);
+
+	void resetCounters(State state);
+
+	void drawFrame(byte i, State anim);
+
+	    template <size_t x>
     void readBuffer(byte idx, const char(&anim)[x][16]) {
         byte size = sizeof(buffer);
         for (byte j = 0; j < size; j++) {
             buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
         }
-    }
+   }
+
+   void readBufferState(byte idx, State anim);
+
 };
