@@ -25,13 +25,12 @@
 #define MOUTH_CS1 7
 #define MOUTH_WR 8
 #define MOUTH_DATA 9
-#define MOUTH_PLATES 4
 
 // Must be initialized first
 MycroftArduino arduino(SPEAKER_PIN);
 MycroftEncoder encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
 MycroftEyes eyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
-MycroftMouth mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, MOUTH_PLATES);
+MycroftMouth mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA);
 HardwareTester hardwareTester;
 
 MouthProcessor mouthProcessor(mouth);

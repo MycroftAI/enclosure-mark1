@@ -39,8 +39,8 @@ void MycroftWeather::display(int8_t condition, String temperature) {
 	calculateImagePosition(temperature);
 	calculateTemperaturePosition(temperature);
 	mouth.reset();
-	mouth.drawImage(imgPos, condition, WEATHER_CONDS);
+	mouth.display.drawIconPgm(imgPos, condition, WEATHER_CONDS);
 	temperature += "\\";
 	mouth.staticText(temperature, tempPos, 1);
-	mouth.ht1632.render();
+	mouth.display.render();
 }
