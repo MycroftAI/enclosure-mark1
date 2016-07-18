@@ -117,18 +117,22 @@ void MycroftMouth::drawFrame(byte i, State anim) {
 	for (byte j = 0; j < this->plates; j++) {
 		byte idx = (i * this->plates) + j;
 		byte x = j * 8;
-		if (anim == THINK){
-			this->readBuffer(idx, THINK_ANIMATION);
-		}
-		else if (anim == LISTEN){
-			this->readBuffer(idx, LISTEN_ANIMATION);
-		}
-		else if (anim == TALK){
-			this->readBuffer(idx, TALK_ANIMATION);
-		}
+		readBufferState(idx, anim);
 		ht1632.drawImage(buffer, width, height, x, 0);
 	}
 	ht1632.render();
+}
+
+void MycroftMouth::readBufferState(byte idx, State anim){
+	if (anim == THINK){
+		this->readBuffer(idx, THINK_ANIMATION);
+	}
+	else if (anim == LISTEN){
+		this->readBuffer(idx, LISTEN_ANIMATION);
+	}
+	else if (anim == TALK){
+		this->readBuffer(idx, TALK_ANIMATION);
+	}
 }
 
 void MycroftMouth::smile() {

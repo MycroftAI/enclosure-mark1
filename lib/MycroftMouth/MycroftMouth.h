@@ -75,6 +75,8 @@ private:
         }
    }
 
+   void readBufferState(byte idx, State anim);
+
 };
 
 #endif /* MYCROFT_MOUTH_H */
