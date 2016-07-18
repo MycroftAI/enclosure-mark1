@@ -54,10 +54,10 @@ void MycroftMouth::drawAnimation() {
 }
 
 void MycroftMouth::talk() {
-	byte size = 4;
-	byte total = (size * 2) - 2;
 	if (state != TALK) {
 		resetCounters(TALK);
+		size = 4;
+		total = (size * 2) - 2;
 	}
 	if (millis() > nextTime) {
 		drawFrame(i, state);
@@ -67,15 +67,15 @@ void MycroftMouth::talk() {
 			i--;
 		}
 		nextTime = millis() + 70;
+		total--;
 	}
-	if (count >= total) {
+	if (total == 0) {
 		resetCounters(TALK);
 	}
 }
 
 void MycroftMouth::listen() {
-	byte size = 6;
-	byte total = size * 2;
+	size = 6;
 	if (state != LISTEN) {
 		resetCounters(LISTEN);
 	}
@@ -91,10 +91,10 @@ void MycroftMouth::listen() {
 }
 
 void MycroftMouth::think() {
-	byte size = 8;
-	byte total = (size * 2) - 1;
-	if (state == NONE) {
+	if (state != THINK) {
 		resetCounters(THINK);
+		size = 8;
+		total = (size * 2) - 1;
 	}
 	if (millis() > nextTime) {
 		drawFrame(i, state);
@@ -105,8 +105,9 @@ void MycroftMouth::think() {
 			i--;
 		}
 		nextTime = millis() + 200;
+		total--;
 	}
-	if (count >= total) {
+	if (total == 0) {
 		resetCounters(THINK);
 	}
 }
@@ -128,7 +129,6 @@ void MycroftMouth::drawFrame(byte i, State anim) {
 		ht1632.drawImage(buffer, width, height, x, 0);
 	}
 	ht1632.render();
-	count++;
 }
 
 void MycroftMouth::smile() {
@@ -175,13 +175,5 @@ void MycroftMouth::resetCounters(State anim) {
 	state = anim;
 	back = false;
 	i = 0;
-	count = 0;
 	nextTime = 0;
 }
-
-void readBuffer(byte idx, const char[][16] &anim) {
-	  byte size = sizeof(buffer);
-	  for (byte j = 0; j < size; j++) {
-		  buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
-	  }
-  }

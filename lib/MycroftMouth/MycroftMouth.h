@@ -43,7 +43,7 @@ private:
 		NONE, TALK, LISTEN, THINK, SMILE, TEXT
 	};
 
-	byte i, count;
+	byte i, total, size;
 
 	char text[64];
 
@@ -67,7 +67,13 @@ private:
 
 	void drawFrame(byte i, State anim);
 
-	void readBuffer(byte idx, const char(&anim));
+	    template <size_t x>
+    void readBuffer(byte idx, const char(&anim)[x][16]) {
+        byte size = sizeof(buffer);
+        for (byte j = 0; j < size; j++) {
+            buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
+        }
+   }
 
 };
 
