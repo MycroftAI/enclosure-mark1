@@ -4,7 +4,7 @@
  * 8-high FONT FOR RENDERING TO THE LED SCREEN.
  * Includes kerning support
  * Gaurav Manek, 2011 (and Isaac Ward, 2016)
- * 8x4 characters: numbers 0-9, degree symbol (backslash)
+ * 8x4 characters: numbers 0-9, degree symbol (backslash), dash
  */
 
 #define FONT_8X4_HEIGHT 8
@@ -26,7 +26,7 @@ const PROGMEM char FONT_8X4[] = {
         0b0101, 0b0000, 0b0010, 0b0000, 0b0101, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000,  // *
         0b0100, 0b0000, 0b0100, 0b0000, 0b1111, 0b0001, 0b0100, 0b0000, 0b0100, 0b0000,  // +
         0b0000, 0b0001, 0b1000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000,  // ,
-        0b0100, 0b0000, 0b0100, 0b0000, 0b0100, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000,  // -
+        0b1000, 0b0000, 0b1000, 0b0000, 0b1000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000,  // -
         0b0000, 0b0001, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000,  // .
         0b0000, 0b0001, 0b1100, 0b0000, 0b0110, 0b0000, 0b0001, 0b0000, 0b0000, 0b0000,  // /
 
