@@ -1,9 +1,10 @@
 #include "MycroftMouth.h"
 
-MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA) {
+MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates) {
 	ht1632 = MycroftHT1632();
 	ht1632.begin(pinCS1, pinWR, pinDATA);
 	reset();
+	this->plates = plates;
 	lastState = state = NONE;
 }
 
@@ -53,55 +54,33 @@ void MycroftMouth::drawAnimation() {
 }
 
 void MycroftMouth::talk() {
-	byte size = 4;
-	byte plates = 4;
-	byte total = (size * 2) - 2;
 	if (state != TALK) {
-		state = TALK;
-		resetCounters();
-		nextTime = millis() + 70;
-		drawTalk(i, plates);
-		i++;
+		resetCounters(TALK);
+		size = 4;
+		total = (size * 2) - 2;
 	}
 	if (millis() > nextTime) {
-		drawTalk(i, plates);
+		drawFrame(i, state);
 		if (i < size - 1) {
 			i++;
 		} else {
 			i--;
 		}
 		nextTime = millis() + 70;
+		total--;
 	}
-	if (count >= total) {
-		resetCounters();
+	if (total == 0) {
+		resetCounters(TALK);
 	}
-}
-
-void MycroftMouth::drawTalk(byte i, byte plates) {
-	ht1632.clear();
-	for (byte j = 0; j < plates; j++) {
-		byte idx = (i * plates) + j;
-		byte x = j * 8;
-		this->readBuffer(idx, TALK_ANIMATION);
-		ht1632.drawImage(buffer, width, height, x, 0);
-	}
-	ht1632.render();
-	count++;
 }
 
 void MycroftMouth::listen() {
-	byte size = 6;
-	byte plates = 4;
-	byte total = size * 2;
-	if (state == NONE) {
-		state = LISTEN;
-		resetCounters();
-		nextTime = millis() + 70;
-		drawListen(i, plates);
-		i++;
+	size = 6;
+	if (state != LISTEN) {
+		resetCounters(LISTEN);
 	}
 	if (millis() > nextTime) {
-		drawListen(i, plates);
+		drawFrame(i, state);
 		if (i < (size - 1)) {
 			i++;
 		} else {
@@ -111,32 +90,14 @@ void MycroftMouth::listen() {
 	}
 }
 
-void MycroftMouth::drawListen(byte i, byte plates) {
-	ht1632.clear();
-	for (byte j = 0; j < plates; j++) {
-		byte idx = (i * plates) + j;
-		byte x = j * 8;
-		this->readBuffer(idx, LISTEN_ANIMATION);
-		ht1632.drawImage(buffer, width, height, x, 0);
-	}
-	ht1632.render();
-	count++;
-    }
-
 void MycroftMouth::think() {
-	byte size = 8;
-	byte plates = 4;
-	byte total = (size * 2) - 1;
-	if (state == NONE) {
-		state = THINK;
-		back = false;
-		resetCounters();
-		drawThink(i, plates);
-		i++;
-		nextTime = millis() + 200;
+	if (state != THINK) {
+		resetCounters(THINK);
+		size = 8;
+		total = (size * 2) - 1;
 	}
 	if (millis() > nextTime) {
-		drawThink(i, plates);
+		drawFrame(i, state);
 		if (i < (size - 1) && !back) {
 			i++;
 		} else {
@@ -144,33 +105,39 @@ void MycroftMouth::think() {
 			i--;
 		}
 		nextTime = millis() + 200;
+		total--;
 	}
-	if (count >= total) {
-		resetCounters();
-		back = false;
+	if (total == 0) {
+		resetCounters(THINK);
 	}
 }
 
-void MycroftMouth::drawThink(byte i, byte plates) {
-	Serial.println("i:");
-	Serial.print(i);
+void MycroftMouth::drawFrame(byte i, State anim) {
 	ht1632.clear();
-	for (byte j = 0; j < plates; j++) {
-		byte idx = (i * plates) + j;
-		Serial.println("idx:");
-		Serial.println(idx);
+	for (byte j = 0; j < this->plates; j++) {
+		byte idx = (i * this->plates) + j;
 		byte x = j * 8;
-		this->readBuffer(idx, THINK_ANIMATION);
+		readBufferState(idx, anim);
 		ht1632.drawImage(buffer, width, height, x, 0);
 	}
 	ht1632.render();
-	count++;
+}
+
+void MycroftMouth::readBufferState(byte idx, State anim){
+	if (anim == THINK){
+		this->readBuffer(idx, THINK_ANIMATION);
+	}
+	else if (anim == LISTEN){
+		this->readBuffer(idx, LISTEN_ANIMATION);
+	}
+	else if (anim == TALK){
+		this->readBuffer(idx, TALK_ANIMATION);
+	}
 }
 
 void MycroftMouth::smile() {
 	state = SMILE;
-	byte size = 4;
-	for (byte j = 0; j < size; j++) {
+	for (byte j = 0; j < this->plates; j++) {
 		byte idx = j;
 		byte x = j * 8;
 		this->readBuffer(idx, SMILE_IMAGE);
@@ -183,9 +150,9 @@ void MycroftMouth::smile() {
 void MycroftMouth::write(const char *value) {
 	state = TEXT;
 	copyText(value);
-	notUpdated = true;
 	textWd = HT1632.getTextWidth(text, FONT_5X4_WIDTH, FONT_5X4_HEIGHT);
 	textIdx = 0;
+	resetCounters(TEXT);
 	this->updateText();
 }
 
@@ -198,18 +165,19 @@ void MycroftMouth::copyText(const char *value) {
 }
 
 void MycroftMouth::updateText() {
-	if ((millis() > nextTime) || notUpdated) {
+	if (millis() > nextTime) {
 		ht1632.transition(TRANSITION_BUFFER_SWAP);
 		ht1632.clear();
 		ht1632.drawTextPgm(text, OUT_SIZE - textIdx, 2, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
 		ht1632.render();
 		textIdx = (textIdx + 1) % (textWd + OUT_SIZE);
 		nextTime = millis() + 150;
-		notUpdated = false;
 	}
 }
 
-void MycroftMouth::resetCounters() {
+void MycroftMouth::resetCounters(State anim) {
+	state = anim;
+	back = false;
 	i = 0;
-	count = 0;
+	nextTime = 0;
 }

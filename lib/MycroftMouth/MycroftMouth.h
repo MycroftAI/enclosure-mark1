@@ -1,16 +1,17 @@
-#pragma once
+#ifndef MYCROFT_MOUTH_H
+#define MYCROFT_MOUTH_H
 
-#include <Arduino.h>
 #include "MycroftHT1632.h"
-#include "font_5x4.h"
-#include "font_8x4.h"
+#include <Arduino.h>
 #include "MouthImages.h"
+#include "../HT1632/font_5x4.h"
+#include "font_8x4.h"
 
 class MycroftMouth {
 public:
 	MycroftHT1632 ht1632;
 
-	MycroftMouth(int pinCS1, int pinWR, int pinDATA);
+	MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates);
 
 	MycroftMouth();
 
@@ -42,7 +43,7 @@ private:
 		NONE, TALK, LISTEN, THINK, SMILE, TEXT
 	};
 
-	byte i, count;
+	byte i, total, size;
 
 	char text[64];
 
@@ -50,11 +51,11 @@ private:
 
 	char buffer[16];
 
-	int textWd, textIdx;
+	int textWd, textIdx, plates;
 
 	unsigned long nextTime;
 
-	boolean notUpdated, back;
+	boolean back;
 
 	State state, lastState;
 
@@ -62,20 +63,20 @@ private:
 
 	void copyText(const char *value);
 
-	void resetCounters();
+	void resetCounters(State state);
 
-	void drawTalk(byte i, byte plates);
+	void drawFrame(byte i, State anim);
 
-	void drawListen(byte i, byte plates);
+	    template <size_t x>
+    void readBuffer(byte idx, const char(&anim)[x][16]) {
+        byte size = sizeof(buffer);
+        for (byte j = 0; j < size; j++) {
+            buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
+        }
+   }
 
-	void drawThink(byte i, byte plates);
-
-	template <size_t x>
-	void readBuffer(byte idx, const char(&anim)[x][16]) {
-		byte size = sizeof (buffer);
-		for (byte j = 0; j < size; j++) {
-			buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
-		}
-	}
+   void readBufferState(byte idx, State anim);
 
 };
+
+#endif /* MYCROFT_MOUTH_H */
