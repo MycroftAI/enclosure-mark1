@@ -133,18 +133,14 @@ void MycroftMouth::readBufferState(byte idx, State anim){
 	else if (anim == TALK){
 		this->readBuffer(idx, TALK_ANIMATION);
 	}
+    else if (anim == SMILE){
+        this->readBuffer(idx, SMILE_IMAGE);
+    }
 }
 
 void MycroftMouth::smile() {
 	state = SMILE;
-	for (byte j = 0; j < this->plates; j++) {
-		byte idx = j;
-		byte x = j * 8;
-		this->readBuffer(idx, SMILE_IMAGE);
-		ht1632.drawImage(buffer, width, height, x, 0);
-	}
-	ht1632.render();
-	delay(70);
+	drawFrame(0, SMILE);
 }
 
 void MycroftMouth::write(const char *value) {
