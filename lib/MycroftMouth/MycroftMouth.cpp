@@ -31,7 +31,7 @@ void MycroftMouth::reset() {
 	ht1632.render();
 }
 
-void MycroftMouth::drawAnimation() {
+void MycroftMouth::update() {
 	switch (state) {
 		case TALK:
 			this->talk();
@@ -136,9 +136,9 @@ void MycroftMouth::readBufferState(byte idx, State anim){
 	else if (anim == TALK){
 		this->readBuffer(idx, TALK_ANIMATION);
 	}
-    else if (anim == SMILE){
-        this->readBuffer(idx, SMILE_IMAGE);
-    }
+	else if (anim == SMILE){
+		this->readBuffer(idx, SMILE_IMAGE);
+	}
 }
 
 void MycroftMouth::smile() {
