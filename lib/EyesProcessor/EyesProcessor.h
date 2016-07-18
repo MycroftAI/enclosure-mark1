@@ -7,6 +7,7 @@ class EyesProcessor : public BaseProcessor {
 public:
 	EyesProcessor(MycroftEyes &eyes);
 	void setup();
+	void updateAnimation();
 
 private:
 	void updateEyesColor(long code);

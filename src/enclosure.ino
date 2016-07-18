@@ -102,5 +102,6 @@ void loop() {
 		processVolume();
 		processButton();
 		mouthProcessor.drawAnimation();
+		eyesProcessor.updateAnimation();
 	}
 }
