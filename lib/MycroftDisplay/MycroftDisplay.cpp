@@ -6,15 +6,21 @@ MycroftDisplay::MycroftDisplay(int pinCS1, int pinWR, int pinDATA) {
 	ht1632.render();
 }
 
-void MycroftDisplay::drawFrame(byte index, const char (*IMG)[16]) {
-	index *= 4;
+void MycroftDisplay::drawFrame(const char (&IMG)[4][16]) {
 	for (byte panel = 0; panel < 4; ++panel) {
-		draw8x8(8 * panel, index + panel, IMG);
+		ht1632.drawImage(IMG[panel], 8, 8, 8 * panel, 0);
 	}
 }
 
-void MycroftDisplay::drawIcon(byte pos, byte index, const char (*ICONS)[16]) {
-	draw8x8(pos, index, ICONS);
+void MycroftDisplay::drawFramePgm(byte index, const char (*IMG)[16]) {
+	index *= 4;
+	for (byte panel = 0; panel < 4; ++panel) {
+		draw8x8Pgm(8 * panel, index + panel, IMG);
+	}
+}
+
+void MycroftDisplay::drawIconPgm(byte pos, byte index, const char (*ICONS)[16]) {
+	draw8x8Pgm(pos, index, ICONS);
 }
 
 void MycroftDisplay::drawText(String text, int8_t pos, bool small) {
@@ -37,7 +43,7 @@ void MycroftDisplay::render() {
 	ht1632.render();
 }
 
-void MycroftDisplay::draw8x8(byte pos, byte index, const char (*IMG)[16]) {
+void MycroftDisplay::draw8x8Pgm(byte pos, byte index, const char (*IMG)[16]) {
 	readBuffer(index, IMG);
 	ht1632.drawImage(currentImage, 8, 8, pos, 0);
 }
