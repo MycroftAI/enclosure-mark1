@@ -46,9 +46,7 @@ private:
 
 	Animation currentAnim;
 
-	boolean firstFrame;
-
-	byte max, pos, opJump, steps, leftJump, delayTime, i, j;
+	byte MAX, pos, opJump, steps, leftJump, delayTime, i, j;
 
 	uint32_t c;
 

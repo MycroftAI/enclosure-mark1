@@ -8,7 +8,7 @@ void EyesProcessor::setup() {
 	eyes.setup();
 }
 
-void EyesProcessor::updateAnimation(){
+void EyesProcessor::updateAnimation() {
     eyes.updateAnimation();
 }
 
