@@ -74,6 +74,7 @@ void MycroftMouth::talk() {
 	}
 	if (total == 0) {
 		resetCounters(TALK);
+		total = (size * 2) - 2;
 	}
 }
 
@@ -112,6 +113,7 @@ void MycroftMouth::think() {
 	}
 	if (total == 0) {
 		resetCounters(THINK);
+		total = (size*2) -1;
 	}
 }
 
