@@ -102,13 +102,11 @@ void MycroftMouth::think() {
 	}
 	if (millis() > nextTime) {
 		drawFrame(i, state);
-		if (i < (size - 1) && !back) {
-			i++;
-		} else {
-			back = true;
-			i--;
+		i++;
+		if (i == size) {
+			i = 0;
 		}
-		nextTime = millis() + 200;
+		nextTime = millis() + 120;
 		total--;
 	}
 	if (total == 0) {
@@ -178,7 +176,6 @@ void MycroftMouth::updateText() {
 
 void MycroftMouth::resetCounters(State anim) {
 	state = anim;
-	back = false;
 	i = 0;
 	nextTime = 0;
 }
