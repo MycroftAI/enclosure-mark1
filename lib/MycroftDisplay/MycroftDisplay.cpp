@@ -10,6 +10,7 @@ void MycroftDisplay::drawFrame(const char (&IMG)[4][16]) {
 	for (byte panel = 0; panel < 4; ++panel) {
 		ht1632.drawImage(IMG[panel], 8, 8, 8 * panel, 0);
 	}
+	render();
 }
 
 void MycroftDisplay::drawFramePgm(byte index, const char (*IMG)[16]) {
@@ -17,6 +18,7 @@ void MycroftDisplay::drawFramePgm(byte index, const char (*IMG)[16]) {
 	for (byte panel = 0; panel < 4; ++panel) {
 		draw8x8Pgm(8 * panel, index + panel, IMG);
 	}
+	render();
 }
 
 void MycroftDisplay::drawIconPgm(byte pos, byte index, const char (*ICONS)[16]) {
