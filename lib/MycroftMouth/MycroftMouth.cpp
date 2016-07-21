@@ -63,7 +63,6 @@ void MycroftMouth::talk() {
 		total = (size * 2) - 2;
 	}
 	if (millis() > nextTime) {
-		Serial.println(total);
 		drawFrame(i, state);
 		if (i < size - 1) {
 			i++;
