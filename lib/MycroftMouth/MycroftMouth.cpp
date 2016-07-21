@@ -101,8 +101,8 @@ void MycroftMouth::think() {
 	}
 	if (millis() > nextTime) {
 		drawFrame(i, state);
-		++i;
-		if (i >= size) {
+		i++;
+		if (i == size) {
 			i = 0;
 		}
 		nextTime = millis() + 120;
