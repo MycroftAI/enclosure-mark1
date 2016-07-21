@@ -7,22 +7,22 @@ MycroftDisplay::MycroftDisplay(int pinCS1, int pinWR, int pinDATA) {
 }
 
 void MycroftDisplay::drawFrame(const char (&IMG)[4][16]) {
-	for (byte panel = 0; panel < 4; ++panel) {
-		ht1632.drawImage(IMG[panel], 8, 8, 8 * panel, 0);
+	for (byte panel = 0; panel < NUM_PANELS; ++panel) {
+		ht1632.drawImage(IMG[panel], PANEL_SX, PANEL_SY, PANEL_SX * panel, 0);
 	}
 	render();
 }
 
 void MycroftDisplay::drawFramePgm(byte index, const char (*IMG)[16]) {
-	index *= 4;
-	for (byte panel = 0; panel < 4; ++panel) {
-		draw8x8Pgm(8 * panel, index + panel, IMG);
+	index *= NUM_PANELS;
+	for (byte panel = 0; panel < NUM_PANELS; ++panel) {
+		drawPanelPgm(PANEL_SX * panel, index + panel, IMG);
 	}
 	render();
 }
 
 void MycroftDisplay::drawIconPgm(byte pos, byte index, const char (*ICONS)[16]) {
-	draw8x8Pgm(pos, index, ICONS);
+	drawPanelPgm(pos, index, ICONS);
 }
 
 void MycroftDisplay::drawText(String text, int8_t pos, bool small) {
@@ -45,9 +45,9 @@ void MycroftDisplay::render() {
 	ht1632.render();
 }
 
-void MycroftDisplay::draw8x8Pgm(byte pos, byte index, const char (*IMG)[16]) {
+void MycroftDisplay::drawPanelPgm(byte pos, byte index, const char (*IMG)[16]) {
 	readBuffer(index, IMG);
-	ht1632.drawImage(currentImage, 8, 8, pos, 0);
+	ht1632.drawImage(currentImage, PANEL_SX, PANEL_SY, pos, 0);
 }
 
 void MycroftDisplay::readBuffer(byte idx, const char (*IMG)[16]) {
