@@ -10,5 +10,5 @@ fi
 ./compile.sh
 echo "Deploying to" ${MYCROFT_HOSTNAME}
 sshpass -p 'mycroft' ssh ${MYCROFT_HOSTNAME} "sudo mkdir -p /opt/enclosure"
-sshpass -p 'mycroft' scp ${PWD}/build/enclosure.ino.hex ${MYCROFT_HOSTNAME}:/tmp/enclosure.ino.hex
-sshpass -p 'mycroft' ssh ${MYCROFT_HOSTNAME} "sudo mv /tmp/enclosure.ino.hex /opt/enclosure"
+sshpass -p 'mycroft' scp ${PWD}/build/arduinotest_clickbutton.ino.hex ${MYCROFT_HOSTNAME}:/tmp/arduinotest_clickbutton.ino.hex
+sshpass -p 'mycroft' ssh ${MYCROFT_HOSTNAME} "sudo mv /tmp/arduinotest_clickbutton.ino.hex /opt/enclosure"
