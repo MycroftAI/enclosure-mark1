@@ -39,5 +39,8 @@ void EyesProcessor::process(String cmd) {
 	} else if (contains(cmd, "look=")) {
 		cmd.replace("look=", "");
 		eyes.startAnim(MycroftEyes::LOOK, cmd.charAt(0));
+	} else if (contains(cmd, "widen=")){
+		cmd.replace("widen=", "");
+		eyes.startAnim(MycroftEyes::WIDEN, cmd.charAt(0));
 	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Adafruit_NeoPixel.h"
+#include "EyeFrames.h"
 
 class MycroftEyes {
 public:
@@ -9,7 +10,7 @@ public:
 	MycroftEyes(uint16_t size, uint8_t pin, uint16_t type);
 
 	enum Animation {
-		BLINK, NARROW, LOOK, NONE
+		BLINK, NARROW, LOOK, WIDEN, NONE
 	};
 
 	void setup();
@@ -46,7 +47,7 @@ private:
 
 	Animation currentAnim;
 
-	byte MAX, pos, opJump, steps, leftJump, delayTime, i, j;
+	byte MAX, pos, opJump, steps, leftJump, delayTime, i, j, update;
 
 	uint32_t c;
 
@@ -63,6 +64,8 @@ private:
 	void setVars();
 
 	void resetCounters();
+
+	void eyesNarrow(uint32_t c, int wait);
 
 	uint16_t mod(long a, long b);
 };
