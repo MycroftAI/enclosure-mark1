@@ -17,7 +17,11 @@
 #define MOUTH_WR 8
 #define MOUTH_DATA 9
 boolean hasTested = false;
-boolean micTested = false;
+boolean red = false;
+boolean green = false;
+boolean blue = false;
+boolean white = false;
+boolean mic = false;
 int16_t last, value;
 char buffer[16];
 
@@ -44,69 +48,50 @@ void setup() {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   Timer1.initialize(1000);
   Timer1.attachInterrupt(timerIsr);
-}
-
-
-
-void testEyes() {
   neoPixel.setBrightness(30);
-  for (uint16_t i = 0; i < neoPixel.numPixels(); i++) {
-    neoPixel.setPixelColor(i, 255, 0, 0);
-  }
-  neoPixel.show();
-  delay(1000);
-  for (uint16_t i = 0; i < neoPixel.numPixels(); i++) {
-    neoPixel.setPixelColor(i, 0, 255, 0);
-  }
-  neoPixel.show();
-  delay(1000);
-  for (uint16_t i = 0; i < neoPixel.numPixels(); i++) {
-    neoPixel.setPixelColor(i, 0, 0, 255);
-  }
-  neoPixel.show();
-  delay(1000);
-  for (uint16_t i = 0; i < neoPixel.numPixels(); i++) {
-    neoPixel.setPixelColor(i, 255, 255, 255);
-  }
-  neoPixel.show();
-  delay(1000);
 }
 
-void eyesOn() {
-  for (uint16_t i = 0; i < neoPixel.numPixels(); i++) {
-    neoPixel.setPixelColor(i, 255, 255, 255);
-  }
-  neoPixel.show();
+// private:
+enum class State {
+  BOTH, LEFT, RIGHT
+};
+
+typedef struct Color {
+  byte r, g, b;
+};
+Color color;
+
+State state;
+
+bool leftOn() {
+  return state == State::BOTH || state == State::LEFT;
 }
 
-void eyesOff() {
-  for (uint16_t i = 0; i < neoPixel.numPixels(); i++) {
+bool rightOn() {
+  return state == State::BOTH || state == State::RIGHT;
+}
+
+void setEyes(byte r, byte g, byte b) {
+  color.r = r;
+  color.g = g;
+  color.b = b;
+  const byte NUM_PIX = neoPixel.numPixels();
+  const byte BEGIN = leftOn() ? 0 : NUM_PIX/2;
+  const byte END = rightOn() ? NUM_PIX : NUM_PIX/2;
+  for (uint16_t i = 0; i < BEGIN; i++) {
+    neoPixel.setPixelColor(i, 0, 0, 0);
+  }
+  for (uint16_t i = BEGIN; i < END; i++) {
+    neoPixel.setPixelColor(i, r, g, b);
+  }
+  for (uint16_t i = END; i < NUM_PIX; i++) {
     neoPixel.setPixelColor(i, 0, 0, 0);
   }
   neoPixel.show();
 }
 
-void rightOn() {
-  eyesOff();
-  for (uint16_t i = 0; i < neoPixel.numPixels() / 2; i++) {
-    neoPixel.setPixelColor(i, 255, 255, 255);
-  }
-  neoPixel.show();
-}
-
-void leftOn() {
-  eyesOff();
-  for (uint16_t i = neoPixel.numPixels() / 2; i < neoPixel.numPixels(); i++) {
-    neoPixel.setPixelColor(i, 255, 255, 255);
-  }
-  neoPixel.show();
-}
-
-void read_buffer_anim(byte idx) {
-  byte size = sizeof(buffer);
-  for (byte j = 0; j < size; j++) {
-    buffer[j] = (char) pgm_read_byte(&(TEST_ANIMATION[idx][j]));
-  }
+void updateEyes() {
+  setEyes(color.r, color.g, color.b);
 }
 
 void read_buffer_image(byte idx) {
@@ -128,115 +113,49 @@ void test_image() {
   delay(70);
 }
 
-void test_anim() {
-  byte size = 32;
-  byte plates = 4;
-  byte total = (size * 2) - 1;
-  boolean back = false;
-  for (byte i = 0, count = 0; count < total; count++) {
-    ht1632.clear();
-    for (byte j = 0; j < plates; j++) {
-      byte idx = (i * plates) + j;
-      byte x = j * 8;
-      read_buffer_anim(idx);
-      ht1632.drawImage(buffer, 8, 8, x, 0);
-    }
-    ht1632.render();
-    delay(50);
-
-    if (i < size - 1 && !back) {
-      i++;
-    } else {
-      back = true;
-      i--;
-    }
-  }
-}
-void testMouth() {
-  test_image();
-  delay(300);
-  test_anim();
+void pause() {
+  while (encoder->getButton() != ClickEncoder::Clicked) delay(1);
 }
 
-void rollEyes(){
-  eyesOff();
-  for (uint16_t i = 0; i < neoPixel.numPixels() / 2; i++) {
-    neoPixel.setPixelColor(i, 255, 255, 255);
-    neoPixel.show();
-    delay(50);
+void setState(const char side){
+  if(side == 'l'){
+  state = State::LEFT;
+  updateEyes();
   }
-  for (uint16_t i = neoPixel.numPixels()/2; i < neoPixel.numPixels(); i++) {
-    neoPixel.setPixelColor(i, 255, 255, 255);
-    neoPixel.show();
-    delay(50);
+  else if (side == 'r'){
+  state = State::RIGHT;
+  updateEyes();
   }
-  
+  else if (side == 'b'){
+    state = State::BOTH;
+    updateEyes();
+  }
 }
-
-int framesHeld = 0, framesOff = 0, prevFramesHeld = 0;
 
 void loop() {
-  value += encoder->getValue();
-
-  if (value != last) {
-    if (hasTested) {
-      eyesOff();
-      if (value > last) {
-        rightOn();
-      }
-      else {
-        leftOn();
-      }
-    }
-    last = value;
-  }
-
- /* if (digitalRead(2) == LOW) {
-      ++framesHeld;
-      if (framesHeld == 500) {
-          Serial.println("mic.test");
-      }
-      if (prevFramesHeld > 0) {
-          prevFramesHeld = 0;
-          // Double clicked
-          Serial.println("Double clicked!");
-      }
-      framesOff = 0;
-      
-  } else {
-      if (framesHeld > 0)
-      {
-        prevFramesHeld = framesHeld;
-        framesHeld = 0;
-      }
-      if (++framesOff > 500)
-          prevFramesHeld = 0;
-  }
-  delay(1);*/
-
-  ClickEncoder::Button b = encoder->getButton();
-  if (b != ClickEncoder::Open) {
-    switch (b) {
-      case ClickEncoder::Pressed:
+  setEyes(255,255,255);
+  test_image();
+  while (encoder->getButton() != ClickEncoder::DoubleClicked) {
+    delay(1);
+    int change = encoder->getValue();
+    switch(change) {
+      case -1:
+        setState('r');
         break;
-      case ClickEncoder::Held:
-        /*test_image();
-        Serial.println("mic.test");*/
+      case 1:
+        setState('l');
         break;
-      case ClickEncoder::Released:
-        break;
-      case ClickEncoder::Clicked:
-        if(hasTested){
-          test_image();
-          Serial.println("mic.test");
-        }
-        break;
-      case ClickEncoder::DoubleClicked: 
-        rollEyes();
-        testEyes();
-        testMouth();
-        hasTested = true;
+      default:
         break;
     }
   }
+  setState('b');
+  setEyes(255,0,0);
+  pause();
+  setEyes(0,255,0);
+  pause();
+  setEyes(0,0,255);
+  pause();
+  Serial.println("mic.test");
+  
 }
