@@ -101,6 +101,6 @@ void loop() {
 	while (Serial.available() <= 0) {
 		processVolume();
 		processButton();
-		mouthProcessor.drawAnimation();
+		mouth.update();
 	}
 }

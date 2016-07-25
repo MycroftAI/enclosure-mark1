@@ -6,7 +6,6 @@
 class MouthProcessor : public BaseProcessor {
 public:
 	MouthProcessor(MycroftMouth &mouth);
-	void drawAnimation();
 
 private:
 	void process(String cmd);
