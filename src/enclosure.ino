@@ -11,6 +11,8 @@
 #include "ArduinoProcessor.h"
 #include "WeatherProcessor.h"
 
+#include "HardwareTester.h"
+
 #define BUTTON_PIN 2
 #define SPEAKER_PIN 4
 #define ENC1_PIN 14
@@ -30,6 +32,8 @@ MycroftArduino arduino(SPEAKER_PIN);
 MycroftEncoder encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
 MycroftEyes eyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
 MycroftMouth mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, MOUTH_PLATES);
+
+HardwareTester hardwareTester;
 
 MouthProcessor mouthProcessor(mouth);
 EyesProcessor eyesProcessor(eyes);
@@ -65,6 +69,8 @@ void processVolume() {
 	MycroftEncoder::Direction d = encoder.getDirection();
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		Serial.println("volume.up");
+	} else if (d == MycroftEncoder::Direction::LEFT) {
+		Serial.println("volume.down");
 	}
 }
 
@@ -72,7 +78,7 @@ void processButton() {
 	if (encoder.isClicked()) {
 		Serial.println("mycroft.stop");
 	}
-	if (encoder.getFramesHeld() > 3 * 1000) {
+	if (encoder.getFramesHeld() > 5 * 1000) {
 		hardwareTester.run(encoder, eyes, mouth, arduino);
 	}
 }
