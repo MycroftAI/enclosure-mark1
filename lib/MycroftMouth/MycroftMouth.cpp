@@ -13,6 +13,14 @@ MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates) {
 
 MycroftMouth::MycroftMouth() { }
 
+void MycroftMouth::setPanel(int8_t pos, const char (&IMG)[16]) {
+	ht1632.drawImage(IMG, width, height, pos, 0);
+}
+
+void MycroftMouth::render() {
+	ht1632.render();
+}
+
 void MycroftMouth::staticText(String text, int8_t pos, int8_t fontIndex) {
 	if (fontIndex == 0) {
 		ht1632.drawTextPgm(text.c_str(), pos, 0, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
@@ -97,7 +105,7 @@ void MycroftMouth::listen() {
 void MycroftMouth::think() {
 	if (state != THINK) {
 		resetCounters(THINK);
-		size = 8;
+		size = 11;
 		total = (size * 2) - 1;
 	}
 	if (millis() > nextTime) {
