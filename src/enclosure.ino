@@ -1,6 +1,7 @@
 #include "ClickEncoder.h"
 #include "TimerOne.h"
 
+#include "MycroftArduino.h"
 #include "MycroftMouth.h"
 #include "MycroftEyes.h"
 #include "MycroftEncoder.h"
@@ -25,13 +26,14 @@
 #define MOUTH_PLATES 4
 
 // Must be initialized first
+MycroftArduino arduino(SPEAKER_PIN);
 MycroftEncoder encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
 MycroftEyes eyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
 MycroftMouth mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, MOUTH_PLATES);
 
 MouthProcessor mouthProcessor(mouth);
 EyesProcessor eyesProcessor(eyes);
-ArduinoProcessor arduinoProcessor(SPEAKER_PIN);
+ArduinoProcessor arduinoProcessor(arduino);
 WeatherProcessor weatherProcessor(mouth, eyes);
 BaseProcessor *processors[] = {
 	&mouthProcessor,
