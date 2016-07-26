@@ -65,27 +65,15 @@ void processVolume() {
 	MycroftEncoder::Direction d = encoder.getDirection();
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		Serial.println("volume.up");
-	} else if (d == MycroftEncoder::Direction::LEFT) {
-		Serial.println("volume.down");
 	}
 }
 
 void processButton() {
-	ClickEncoder::Button b = encoder.clickEncoder->getButton();
-	if (b != ClickEncoder::Open) {
-		switch (b) {
-			case ClickEncoder::Pressed:
-				break;
-			case ClickEncoder::Held:
-				break;
-			case ClickEncoder::Released:
-				break;
-			case ClickEncoder::Clicked:
-				Serial.println("mycroft.stop");
-				break;
-			case ClickEncoder::DoubleClicked:
-				break;
-		}
+	if (encoder.isClicked()) {
+		Serial.println("mycroft.stop");
+	}
+	if (encoder.getFramesHeld() > 3 * 1000) {
+		hardwareTester.run(encoder, eyes, mouth, arduino);
 	}
 }
 
