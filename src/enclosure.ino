@@ -5,13 +5,13 @@
 #include "MycroftMouth.h"
 #include "MycroftEyes.h"
 #include "MycroftEncoder.h"
+#include "HardwareTester.h"
 
 #include "MouthProcessor.h"
 #include "EyesProcessor.h"
 #include "ArduinoProcessor.h"
 #include "WeatherProcessor.h"
-
-#include "HardwareTester.h"
+#include "HardwareTestProcessor.h"
 
 #define BUTTON_PIN 2
 #define SPEAKER_PIN 4
@@ -32,18 +32,19 @@ MycroftArduino arduino(SPEAKER_PIN);
 MycroftEncoder encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
 MycroftEyes eyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
 MycroftMouth mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, MOUTH_PLATES);
-
 HardwareTester hardwareTester;
 
 MouthProcessor mouthProcessor(mouth);
 EyesProcessor eyesProcessor(eyes);
 ArduinoProcessor arduinoProcessor(arduino);
 WeatherProcessor weatherProcessor(mouth, eyes);
+HardwareTestProcessor hardwareTestProcessor(hardwareTester, encoder, eyes, mouth, arduino);
 BaseProcessor *processors[] = {
 	&mouthProcessor,
 	&eyesProcessor,
 	&arduinoProcessor,
-	&weatherProcessor
+	&weatherProcessor,
+	&hardwareTestProcessor
 };
 
 void timerIsr() {
