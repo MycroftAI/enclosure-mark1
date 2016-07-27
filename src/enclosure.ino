@@ -1,14 +1,17 @@
 #include "ClickEncoder.h"
 #include "TimerOne.h"
 
+#include "MycroftArduino.h"
 #include "MycroftMouth.h"
 #include "MycroftEyes.h"
 #include "MycroftEncoder.h"
+#include "HardwareTester.h"
 
 #include "MouthProcessor.h"
 #include "EyesProcessor.h"
 #include "ArduinoProcessor.h"
 #include "WeatherProcessor.h"
+#include "HardwareTestProcessor.h"
 
 #define BUTTON_PIN 2
 #define SPEAKER_PIN 4
@@ -25,19 +28,23 @@
 #define MOUTH_PLATES 4
 
 // Must be initialized first
+MycroftArduino arduino(SPEAKER_PIN);
 MycroftEncoder encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
 MycroftEyes eyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
 MycroftMouth mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, MOUTH_PLATES);
+HardwareTester hardwareTester;
 
 MouthProcessor mouthProcessor(mouth);
 EyesProcessor eyesProcessor(eyes);
-ArduinoProcessor arduinoProcessor(SPEAKER_PIN);
+ArduinoProcessor arduinoProcessor(arduino);
 WeatherProcessor weatherProcessor(mouth, eyes);
+HardwareTestProcessor hardwareTestProcessor(hardwareTester, encoder, eyes, mouth, arduino);
 BaseProcessor *processors[] = {
 	&mouthProcessor,
 	&eyesProcessor,
 	&arduinoProcessor,
-	&weatherProcessor
+	&weatherProcessor,
+	&hardwareTestProcessor
 };
 
 void timerIsr() {
@@ -69,21 +76,11 @@ void processVolume() {
 }
 
 void processButton() {
-	ClickEncoder::Button b = encoder.clickEncoder->getButton();
-	if (b != ClickEncoder::Open) {
-		switch (b) {
-			case ClickEncoder::Pressed:
-				break;
-			case ClickEncoder::Held:
-				break;
-			case ClickEncoder::Released:
-				break;
-			case ClickEncoder::Clicked:
-				Serial.println("mycroft.stop");
-				break;
-			case ClickEncoder::DoubleClicked:
-				break;
-		}
+	if (encoder.isClicked()) {
+		Serial.println("mycroft.stop");
+	}
+	if (encoder.getFramesHeld() > 5 * 1000) {
+		hardwareTester.run(encoder, eyes, mouth, arduino);
 	}
 }
 

@@ -4,6 +4,10 @@
 
 class MycroftEyes {
 public:
+	enum Side {
+		BOTH, LEFT, RIGHT
+	};
+
 	Adafruit_NeoPixel neoPixel;
 
 	MycroftEyes(uint16_t size, uint8_t pin, uint16_t type);
@@ -24,14 +28,16 @@ public:
 
 	void updateBrightness(uint8_t level);
 
+	void set(Side side, uint32_t color);
+
+	void set(uint32_t color);
+
 private:
 	uint32_t color;
 
-	enum Side {
-		BOTH, LEFT, RIGHT
-	};
+	static bool leftOn(Side side);
 
-	void set(uint32_t color);
+	static bool rightOn(Side side);
 
 	void blink(Side side, byte pos, byte leftJump, unsigned long wait);
 

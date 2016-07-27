@@ -15,11 +15,20 @@ public:
 
 	Direction getDirection();
 
+	int getFramesHeld();
+
+	bool isClicked();
+
 	void isr();
 
-
 private:
+	const byte PIN_BUTTON;
+
 	int16_t last, value;
+
+	int framesHeld;
+
+	bool clicked;
 
 	Direction direction;
 };

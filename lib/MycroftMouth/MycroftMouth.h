@@ -15,8 +15,12 @@ public:
 	template <size_t y>
 	void drawImage(int8_t pos, int8_t index, const char(&imgs)[y][16]) {
 		readBuffer(index, imgs);
-		ht1632.drawImage(buffer, width, height, pos, 0);
+		setPanel(pos, buffer);
 	}
+	
+	void setPanel(int8_t pos, const char (&IMG)[16]);
+
+	void render();
 
 	void staticText(String text, int8_t pos, int8_t fontIndex);
 
