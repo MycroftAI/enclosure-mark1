@@ -56,11 +56,9 @@ void HardwareTester::testKnob(MycroftEncoder &encoder, MycroftEyes &eyes) {
 }
 
 void HardwareTester::testMute(MycroftArduino &arduino) {
-	// 7/2 seconds == 3.5 seconds
-	const byte SEC_NUM = 7;
-	const byte SEC_DEN = 2;
-	const byte TIMES_PER_SEC = 16;
-	for (int i = 0; i < (SEC_NUM * TIMES_PER_SEC) / SEC_DEN; ++i) {
+	const byte SECONDS = 5;
+	const byte TIMES_PER_SEC = 2;
+	for (int i = 0; i < SECONDS * TIMES_PER_SEC; ++i) {
 		// 1/3 Mute and 2/3 Unmute
 		arduino.mute();
 		delay(1000 / (3 * TIMES_PER_SEC));
@@ -87,6 +85,7 @@ void HardwareTester::run(MycroftEncoder &encoder, MycroftEyes &eyes, MycroftMout
 
 	setEyes(eyes, 255,255,255);
 	Serial.println("mic.test");
+	delay(8 * 1000);
 	testMute(arduino);
 	Serial.println("system.test.end");
 	mouth.reset();
