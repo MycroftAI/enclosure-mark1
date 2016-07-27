@@ -17,7 +17,7 @@ private:
 	void setEyeSide(MycroftEyes &eyes, MycroftEyes::Side side);
 	void setEyes(MycroftEyes &eyes, byte r, byte g, byte b);
 	void pause(MycroftEncoder &encoder);
-	void testKnob(MycroftEncoder &encoder);
+	void testKnob(MycroftEncoder &encoder, MycroftEyes &eyes);
 	void testMute(MycroftArduino &arduino);
 
 	static const char WHITE_PANEL[16];

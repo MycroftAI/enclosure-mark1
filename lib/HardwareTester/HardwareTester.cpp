@@ -39,7 +39,7 @@ void HardwareTester::pause(MycroftEncoder &encoder) {
 	}
 }
 
-void HardwareTester::testKnob(MycroftEncoder &encoder) {
+void HardwareTester::testKnob(MycroftEncoder &encoder, MycroftEyes &eyes) {
 	while (!encoder.isClicked()) {
 		delay(1);
 		switch(encoder.getDirection()) {
@@ -60,7 +60,7 @@ void HardwareTester::testMute(MycroftArduino &arduino) {
 	const byte SEC_NUM = 7;
 	const byte SEC_DEN = 2;
 	const byte TIMES_PER_SEC = 16;
-	for (int i = 0; i < (SEC_NUM * SECS * TIMES_PER_SEC) / (2 * SEC_DEN); ++i) {
+	for (int i = 0; i < (SEC_NUM * TIMES_PER_SEC) / SEC_DEN; ++i) {
 		// 1/3 Mute and 2/3 Unmute
 		arduino.mute();
 		delay(1000 / (3 * TIMES_PER_SEC));
@@ -73,7 +73,7 @@ void HardwareTester::run(MycroftEncoder &encoder, MycroftEyes &eyes, MycroftMout
 	setEyes(eyes, 255,255,255);
 	drawWhiteScreen(mouth);
 	Serial.println("system.test.begin");
-	testKnob(encoder);
+	testKnob(encoder, eyes);
 
 	setEyeSide(eyes, MycroftEyes::Side::BOTH);
 	setEyes(eyes, 255,0,0);
