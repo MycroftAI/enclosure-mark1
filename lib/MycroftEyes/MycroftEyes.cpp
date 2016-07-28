@@ -36,11 +36,25 @@ void MycroftEyes::setup() {
 	this->on();
 }
 
-void MycroftEyes::set(uint32_t color) {
-	for (uint16_t i = 0; i < neoPixel.numPixels(); i++) {
+void MycroftEyes::set(Side side, uint32_t color) {
+	const byte NUM_PIX = neoPixel.numPixels();
+	const byte BEGIN = rightOn(side) ? 0 : NUM_PIX/2;
+	const byte END = leftOn(side) ? NUM_PIX : NUM_PIX/2;
+
+	for (uint16_t i = 0; i < BEGIN; i++) {
+		neoPixel.setPixelColor(i, 0);
+	}
+	for (uint16_t i = BEGIN; i < END; i++) {
 		neoPixel.setPixelColor(i, color);
 	}
+	for (uint16_t i = END; i < NUM_PIX; i++) {
+		neoPixel.setPixelColor(i, 0);
+	}
 	neoPixel.show();
+}
+
+void MycroftEyes::set(uint32_t color) {
+	set(BOTH, color);
 }
 
 void MycroftEyes::on() {
@@ -51,7 +65,7 @@ void MycroftEyes::off() {
 	this->set(0);
 }
 
-void MycroftEyes:: startTransition(Animation transition, Animation anim, const char side){
+void MycroftEyes::startTransition(Animation transition, Animation anim, const char side){
 	queuedAnim = anim;
 	queuedSide = side;
 	isQueued = true;
@@ -88,6 +102,13 @@ void MycroftEyes::animSetup(Animation anim, const char side) {
 	currentState = ANIMATING;
 	setVars();
 	resetCounters();
+}
+bool MycroftEyes::leftOn(Side side) {
+	return side == BOTH || side == LEFT;
+}
+
+bool MycroftEyes::rightOn(Side side) {
+	return side == BOTH || side == RIGHT;
 }
 
 void MycroftEyes::runAnim() {
@@ -147,6 +168,7 @@ void MycroftEyes::runAnim() {
 			    }
 		    }
 		    break;
+
 		}
 		neoPixel.show();
 		updateCounters();

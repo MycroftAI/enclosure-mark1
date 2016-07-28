@@ -1,16 +1,17 @@
 #pragma once 
 
 #include "BaseProcessor.h"
-#include "MycroftArduino.h"
+
+class MycroftArduino;
 
 class ArduinoProcessor : public BaseProcessor
 {
 public:
-    ArduinoProcessor(uint8_t speakerPin);
+    ArduinoProcessor(MycroftArduino &arduino);
     void setup();
 
 private:
     void process(String cmd);
 
-    MycroftArduino arduino;
+    MycroftArduino &arduino;
 };

@@ -1,8 +1,8 @@
 #include "ArduinoProcessor.h"
 #include "MycroftArduino.h"
 
-ArduinoProcessor::ArduinoProcessor(uint8_t speakerPin) :
-BaseProcessor("system"), arduino(speakerPin) { }
+ArduinoProcessor::ArduinoProcessor(MycroftArduino &arduino) :
+BaseProcessor("system"), arduino(arduino) { }
 
 void ArduinoProcessor::setup() {
 	arduino.setup();

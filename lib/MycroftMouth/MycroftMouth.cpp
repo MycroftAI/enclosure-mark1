@@ -13,6 +13,14 @@ MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates) {
 
 MycroftMouth::MycroftMouth() { }
 
+void MycroftMouth::setPanel(int8_t pos, const char (&IMG)[16]) {
+	ht1632.drawImage(IMG, width, height, pos, 0);
+}
+
+void MycroftMouth::render() {
+	ht1632.render();
+}
+
 void MycroftMouth::staticText(String text, int8_t pos, int8_t fontIndex) {
 	if (fontIndex == 0) {
 		ht1632.drawTextPgm(text.c_str(), pos, 0, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
@@ -31,7 +39,7 @@ void MycroftMouth::reset() {
 	ht1632.render();
 }
 
-void MycroftMouth::drawAnimation() {
+void MycroftMouth::update() {
 	switch (state) {
 		case TALK:
 			this->talk();
@@ -74,6 +82,7 @@ void MycroftMouth::talk() {
 	}
 	if (total == 0) {
 		resetCounters(TALK);
+		total = (size * 2) - 2;
 	}
 }
 
@@ -96,22 +105,21 @@ void MycroftMouth::listen() {
 void MycroftMouth::think() {
 	if (state != THINK) {
 		resetCounters(THINK);
-		size = 8;
+		size = 11;
 		total = (size * 2) - 1;
 	}
 	if (millis() > nextTime) {
 		drawFrame(i, state);
-		if (i < (size - 1) && !back) {
-			i++;
-		} else {
-			back = true;
-			i--;
+		i++;
+		if (i == size) {
+			i = 0;
 		}
-		nextTime = millis() + 200;
+		nextTime = millis() + 120;
 		total--;
 	}
 	if (total == 0) {
 		resetCounters(THINK);
+		total = (size*2) -1;
 	}
 }
 
@@ -136,9 +144,9 @@ void MycroftMouth::readBufferState(byte idx, State anim){
 	else if (anim == TALK){
 		this->readBuffer(idx, TALK_ANIMATION);
 	}
-    else if (anim == SMILE){
-        this->readBuffer(idx, SMILE_IMAGE);
-    }
+	else if (anim == SMILE){
+		this->readBuffer(idx, SMILE_IMAGE);
+	}
 }
 
 void MycroftMouth::smile() {
@@ -176,7 +184,6 @@ void MycroftMouth::updateText() {
 
 void MycroftMouth::resetCounters(State anim) {
 	state = anim;
-	back = false;
 	i = 0;
 	nextTime = 0;
 }

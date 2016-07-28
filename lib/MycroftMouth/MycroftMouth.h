@@ -2,8 +2,9 @@
 
 #include <Arduino.h>
 #include "MycroftHT1632.h"
+#include "MycroftComponent.h"
 
-class MycroftMouth {
+class MycroftMouth : public MycroftComponent {
 public:
 	MycroftHT1632 ht1632;
 
@@ -14,14 +15,18 @@ public:
 	template <size_t y>
 	void drawImage(int8_t pos, int8_t index, const char(&imgs)[y][16]) {
 		readBuffer(index, imgs);
-		ht1632.drawImage(buffer, width, height, pos, 0);
+		setPanel(pos, buffer);
 	}
+	
+	void setPanel(int8_t pos, const char (&IMG)[16]);
+
+	void render();
 
 	void staticText(String text, int8_t pos, int8_t fontIndex);
 
 	void reset();
-
-	void drawAnimation();
+	
+	void update();
 
 	void talk();
 
@@ -63,12 +68,12 @@ private:
 
 	void drawFrame(byte i, State anim);
 
-	    template <size_t x>
-    void readBuffer(byte idx, const char(&anim)[x][16]) {
-        byte size = sizeof(buffer);
-        for (byte j = 0; j < size; j++) {
-            buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
-        }
+	template <size_t x>
+	void readBuffer(byte idx, const char(&anim)[x][16]) {
+		byte size = sizeof(buffer);
+		for (byte j = 0; j < size; j++) {
+			buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
+		}
    }
 
    void readBufferState(byte idx, State anim);
