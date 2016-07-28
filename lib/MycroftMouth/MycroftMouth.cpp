@@ -105,7 +105,7 @@ void MycroftMouth::listen() {
 void MycroftMouth::think() {
 	if (state != THINK) {
 		resetCounters(THINK);
-		size = 8;
+		size = 11;
 		total = (size * 2) - 1;
 	}
 	if (millis() > nextTime) {
