@@ -4,10 +4,6 @@
 MouthProcessor::MouthProcessor(MycroftMouth &mouth) :
 BaseProcessor("mouth"), mouth(mouth) { }
 
-void MouthProcessor::drawAnimation() {
-	mouth.drawAnimation();
-}
-
 void MouthProcessor::process(String cmd) {
 	if (contains(cmd, "reset")) {
 		mouth.reset();
