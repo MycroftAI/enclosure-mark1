@@ -19,6 +19,7 @@ private:
 	void pause(MycroftEncoder &encoder);
 	void testKnob(MycroftEncoder &encoder, MycroftEyes &eyes);
 	void testMute(MycroftArduino &arduino);
+	void testAnimation(MycroftMouth &mouth);
 
 	static const char WHITE_PANEL[16];
 	uint32_t color;
