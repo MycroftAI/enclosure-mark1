@@ -65,19 +65,19 @@ void MycroftEyes::off() {
 	this->set(0);
 }
 
-void MycroftEyes::startTransition(Animation transition, Animation anim, const char side){
+void MycroftEyes::startTransition(Animation transition, Animation anim, Side side){
 	queuedAnim = anim;
 	queuedSide = side;
 	isQueued = true;
 	if(transition == WIDEN){
-	    startAnim(WIDEN,'b');
+	    startAnim(WIDEN, BOTH);
     }
 	else if (transition == UNLOOK){
 		startAnim(UNLOOK, lookSide);
 	}
 }
 
-void MycroftEyes::startAnim(Animation anim, const char side) {
+void MycroftEyes::startAnim(Animation anim, Side side) {
 	if (currentState == NARROWED && anim != WIDEN){
 		startTransition(WIDEN,anim, side);
 		return;
@@ -90,12 +90,12 @@ void MycroftEyes::startAnim(Animation anim, const char side) {
 	runAnim();
 }
 
-void MycroftEyes::animSetup(Animation anim, const char side) {
+void MycroftEyes::animSetup(Animation anim, Side side) {
 	currentAnim = anim;
 	if(currentAnim == LOOK){
 		lookSide = side;
 	}
-	setSide(side);
+	currentSide = side;
 	if (currentAnim != WIDEN && currentAnim != UNLOOK){
 	    this->on();
     }
@@ -243,29 +243,6 @@ void MycroftEyes::updateCounters() {
 			}
 		}
 	break;
-	}
-}
-
-void MycroftEyes::setSide(const char side) {
-	switch(side){
-	case 'l':
-		currentSide = LEFT;
-		break;
-	case 'r':
-		currentSide = RIGHT;
-		break;
-	case 'b':
-		currentSide = BOTH;
-		break;
-	case 'u':
-		currentSide = UP;
-		break;
-	case 'd':
-		currentSide = DOWN;
-		break;
-	case 'c':
-		currentSide = CROSS;
-		break;
 	}
 }
 

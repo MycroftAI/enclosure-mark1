@@ -30,20 +30,49 @@ void EyesProcessor::process(String cmd) {
 		eyes.on();
 	} else if (contains(cmd, "off")) {
 		eyes.off();
-	} else if (contains(cmd, "blink=")) {
-		cmd.replace("blink=", "");
-		eyes.startAnim(MycroftEyes::BLINK, cmd.charAt(0));
-	} else if (contains(cmd, "narrow")) {
-		cmd.replace("narrow=", "");
-		eyes.startAnim(MycroftEyes::NARROW, cmd.charAt(0));
-	} else if (contains(cmd, "look=")) {
-		cmd.replace("look=", "");
-		eyes.startAnim(MycroftEyes::LOOK, cmd.charAt(0));
-	} else if (contains(cmd, "widen=")){
-		cmd.replace("widen=", "");
-		eyes.startAnim(MycroftEyes::WIDEN, cmd.charAt(0));
-	} else if (contains(cmd, "unlook=")){
-		cmd.replace("unlook=", "");
-		eyes.startAnim(MycroftEyes::UNLOOK, cmd.charAt(0));
+	} else if (checkEyeAnim(cmd, "blink", MycroftEyes::BLINK)) {
+		return;
+	} else if (checkEyeAnim(cmd, "narrow", MycroftEyes::NARROW)) {
+		return;
+	} else if (checkEyeAnim(cmd, "look", MycroftEyes::LOOK)) {
+		return;
+	} else if (checkEyeAnim(cmd, "widen", MycroftEyes::WIDEN)) {
+		return;
+	} else if (checkEyeAnim(cmd, "unlook", MycroftEyes::UNLOOK)) {
+		return;
 	}
+}
+
+bool EyesProcessor::checkEyeAnim(String cmd, String term, MycroftEyes::Animation anim){
+	if (contains(cmd, term)) {
+		term += '=';
+		cmd.replace(term, "");
+		MycroftEyes::Side side = toSide(cmd.charAt(0));
+		eyes.startAnim(anim, side);
+	}
+}
+
+MycroftEyes::Side EyesProcessor::toSide(const char SIDE_CHAR){
+	MycroftEyes::Side side;
+	switch(SIDE_CHAR) {
+	case 'l':
+		side = MycroftEyes::LEFT;
+		break;
+	case 'r':
+		side = MycroftEyes::RIGHT;
+		break;
+	case 'b':
+		side = MycroftEyes::BOTH;
+		break;
+	case 'u':
+		side = MycroftEyes::UP;
+		break;
+	case 'd':
+		side = MycroftEyes::DOWN;
+		break;
+	case 'c':
+		side = MycroftEyes::CROSS;
+		break;
+	}
+	return side;
 }

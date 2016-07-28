@@ -24,7 +24,7 @@ public:
 
 	void off();
 
-	void startAnim(Animation anim, const char side);
+	void startAnim(Animation anim, Side side);
 
 	void updateAnimation();
 
@@ -43,7 +43,7 @@ private:
 
 	unsigned long nextTime;
 
-	Side currentSide;
+	Side currentSide, queuedSide, lookSide;
 
 	enum State {
 		OPEN, LOOKING, NARROWED, CLOSED, ANIMATING
@@ -52,8 +52,6 @@ private:
 	State currentState;
 
 	Animation currentAnim, queuedAnim;
-
-	char queuedSide, lookSide;
 
 	boolean isQueued;
 
@@ -65,15 +63,13 @@ private:
 
 	static bool rightOn(Side side);
 
-	void animSetup(Animation anim, const char side);
+	void animSetup(Animation anim, Side side);
 
 	void runAnim();
 
-	void startTransition(Animation transition, Animation anim, const char side);
+	void startTransition(Animation transition, Animation anim, Side side);
 
 	void updateCounters();
-
-	void setSide(const char side);
 
 	void setVars();
 
