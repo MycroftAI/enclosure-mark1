@@ -55,7 +55,7 @@ void initSerial() {
 	Serial.begin(9600);
 	while (!Serial);
 	Serial.flush();
-	Serial.println(F("Mycroft Hardware v0.1.3 - Connected"));
+	Serial.println(F("Mycroft Hardware v0.1.9 - Connected"));
 }
 
 void setup() {
