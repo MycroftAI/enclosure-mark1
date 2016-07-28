@@ -20,6 +20,11 @@ void MycroftEyes::updateAnimation() {
 		case UNLOOK:
 			runAnim();
 			break;
+		case VOLUME:
+			if(millis() > nextTime) {
+				currentAnim = NONE;
+			}
+			break;
 		default:
 			if (currentState == OPEN) {
 			    this->on();
@@ -34,6 +39,37 @@ void MycroftEyes::setup() {
 	currentAnim = NONE;
 	MAX = neoPixel.numPixels() / 2;
 	this->on();
+}
+
+void MycroftEyes::setEyePixels(const char side, uint8_t pixels) {
+	setSide(side);
+	setEyePixels(pixels);
+}
+
+void MycroftEyes::setEyePixels(uint8_t pixels) {
+	Serial.println(pixels);
+	volumePix = pixels;
+	currentAnim = VOLUME;
+	for (uint16_t j = 0; j < MAX; j++) {
+		if(j <= volumePix) {
+			if (currentSide == LEFT || currentSide == BOTH) {
+				neoPixel.setPixelColor(j, color);
+			}
+			if (currentSide == RIGHT || currentSide == BOTH) {
+				neoPixel.setPixelColor(j+MAX, color);
+			}
+		}
+		else {
+			if (currentSide == LEFT || currentSide == BOTH) {
+				neoPixel.setPixelColor(j, 0);
+			}
+			if(currentSide == RIGHT || currentSide == BOTH) {
+				neoPixel.setPixelColor(j+MAX, 0);
+			}
+		}
+	}
+	neoPixel.show();
+	nextTime = millis() + 3000;
 }
 
 void MycroftEyes::set(uint32_t color) {
@@ -51,24 +87,24 @@ void MycroftEyes::off() {
 	this->set(0);
 }
 
-void MycroftEyes:: startTransition(Animation transition, Animation anim, const char side){
+void MycroftEyes:: startTransition(Animation transition, Animation anim, const char side) {
 	queuedAnim = anim;
 	queuedSide = side;
 	isQueued = true;
-	if(transition == WIDEN){
+	if(transition == WIDEN) {
 	    startAnim(WIDEN,'b');
     }
-	else if (transition == UNLOOK){
+	else if (transition == UNLOOK) {
 		startAnim(UNLOOK, lookSide);
 	}
 }
 
 void MycroftEyes::startAnim(Animation anim, const char side) {
-	if (currentState == NARROWED && anim != WIDEN){
+	if (currentState == NARROWED && anim != WIDEN) {
 		startTransition(WIDEN,anim, side);
 		return;
 	}
-	if (currentState == LOOKING && anim != UNLOOK){
+	if (currentState == LOOKING && anim != UNLOOK) {
 		startTransition(UNLOOK, anim, side);
 		return;
 	}
@@ -78,11 +114,11 @@ void MycroftEyes::startAnim(Animation anim, const char side) {
 
 void MycroftEyes::animSetup(Animation anim, const char side) {
 	currentAnim = anim;
-	if(currentAnim == LOOK){
+	if(currentAnim == LOOK) {
 		lookSide = side;
 	}
 	setSide(side);
-	if (currentAnim != WIDEN && currentAnim != UNLOOK){
+	if (currentAnim != WIDEN && currentAnim != UNLOOK) {
 	    this->on();
     }
 	currentState = ANIMATING;
@@ -92,7 +128,7 @@ void MycroftEyes::animSetup(Animation anim, const char side) {
 
 void MycroftEyes::runAnim() {
 	if (millis() >= nextTime) {
-		switch(currentAnim){
+		switch(currentAnim) {
 		case LOOK:
 			r1 = mod(pos + i, MAX);
 			r2 = mod(pos - 1 - i, MAX);
@@ -128,21 +164,21 @@ void MycroftEyes::runAnim() {
 			}
 		    break;
 		case NARROW:
-		    for (byte index = 0; index < 4; index++){
-		 	    if(currentSide == LEFT || currentSide == BOTH){
+		    for (byte index = 0; index < 4; index++) {
+		 	    if(currentSide == LEFT || currentSide == BOTH) {
 					neoPixel.setPixelColor(neoPixelSection[i+1][index], 0);
 				}
-		        if (currentSide == RIGHT || currentSide == BOTH){
+		        if (currentSide == RIGHT || currentSide == BOTH) {
 					neoPixel.setPixelColor(neoPixelSection[i][index], 0);
 			    }
 		    }
 		    break;
 		case WIDEN:
-		    for (byte index = 0; index < 4; index++){
-		 	    if(currentSide == LEFT || currentSide == BOTH){
+		    for (byte index = 0; index < 4; index++) {
+		 	    if(currentSide == LEFT || currentSide == BOTH) {
 					neoPixel.setPixelColor(neoPixelSection[i+1][index], color);
 				}
-		        if (currentSide == RIGHT || currentSide == BOTH){
+		        if (currentSide == RIGHT || currentSide == BOTH) {
 					neoPixel.setPixelColor(neoPixelSection[i][index], color);
 			    }
 		    }
@@ -155,13 +191,13 @@ void MycroftEyes::runAnim() {
 }
 
 void MycroftEyes::updateCounters() {
-	switch(currentAnim){
+	switch(currentAnim) {
 	case LOOK:
 		i+= update;
 		if(i >= steps) {
 			currentState = LOOKING;
 			currentAnim = NONE;
-			if(isQueued){
+			if(isQueued) {
 				isQueued = false;
 				startAnim(queuedAnim, queuedSide);
 			}
@@ -169,20 +205,20 @@ void MycroftEyes::updateCounters() {
 		break;
 	case NARROW:
 		i+= update;
-		if (i > steps){
+		if (i > steps) {
 			currentState = NARROWED;
 			currentAnim = NONE;
-			if(isQueued){
+			if(isQueued) {
 				isQueued = false;
 				startAnim(queuedAnim, queuedSide);
 			}
 		}
 		break;
 	case UNLOOK:
-		if (i <= steps){
+		if (i <= steps) {
 			currentState = OPEN;
 			currentAnim = NONE;
-			if(isQueued){
+			if(isQueued) {
 				isQueued = false;
 				startAnim(queuedAnim, queuedSide);
 				return;
@@ -191,10 +227,10 @@ void MycroftEyes::updateCounters() {
 		i--;
 		break;
 	case WIDEN:
-		if (i <= steps){
+		if (i <= steps) {
 			currentState = OPEN;
 			currentAnim = NONE;
-			if(isQueued){
+			if(isQueued) {
 				isQueued = false;
 				startAnim(queuedAnim, queuedSide);
 				return;
@@ -215,7 +251,7 @@ void MycroftEyes::updateCounters() {
 		if (j <= 0) {
 			currentState = OPEN;
 			currentAnim = NONE;
-			if(isQueued){
+			if(isQueued) {
 				isQueued = false;
 				startAnim(queuedAnim, queuedSide);
 			}
@@ -225,7 +261,7 @@ void MycroftEyes::updateCounters() {
 }
 
 void MycroftEyes::setSide(const char side) {
-	switch(side){
+	switch(side) {
 	case 'l':
 		currentSide = LEFT;
 		break;
@@ -248,10 +284,10 @@ void MycroftEyes::setSide(const char side) {
 }
 
 void MycroftEyes::setVars() {
-	if(currentAnim == LOOK || currentAnim == BLINK || currentAnim == UNLOOK){
+	if(currentAnim == LOOK || currentAnim == BLINK || currentAnim == UNLOOK) {
 		update = 1;
 	}
-	else if (currentAnim == NARROW || currentAnim == WIDEN){
+	else if (currentAnim == NARROW || currentAnim == WIDEN) {
 		update = 2;
 	}
 	if(currentAnim == LOOK && currentSide == CROSS) {
@@ -278,7 +314,7 @@ void MycroftEyes::setVars() {
 		}
 	}
 	leftJump = MAX + leftJump;
-	switch(currentAnim){
+	switch(currentAnim) {
 	case BLINK:
 		opJump = MAX / 2;
 		c = 0;
@@ -306,7 +342,7 @@ void MycroftEyes::setVars() {
 
 void MycroftEyes::resetCounters() {
     nextTime = 0;
-	switch(currentAnim){
+	switch(currentAnim) {
 	case LOOK:
 		i = 0;
 		break;

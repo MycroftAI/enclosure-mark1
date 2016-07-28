@@ -26,6 +26,9 @@ void EyesProcessor::process(String cmd) {
 	} else if (contains(cmd, "level=")) {
 		cmd.replace("level=", "");
 		eyes.updateBrightness((uint8_t) cmd.toInt());
+	} else if (contains(cmd, "volume=")) {
+		cmd.replace("volume=", "");
+		eyes.setEyePixels('b', (uint8_t)cmd.toInt());
 	} else if (contains(cmd, "on")) {
 		eyes.on();
 	} else if (contains(cmd, "off")) {
