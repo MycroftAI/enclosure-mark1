@@ -39,7 +39,7 @@ public:
 private:
 	uint32_t color, c;
 
-	uint16_t r1, r2, ro1, ro2;
+	int r1, r2, ro1, ro2;
 
 	unsigned long nextTime;
 
@@ -53,9 +53,13 @@ private:
 
 	Animation currentAnim, queuedAnim;
 
-	boolean isQueued;
+	boolean isQueued, back;
 
-	byte MAX, pos, opJump, steps, leftJump, i, j, update;
+	const byte MAX;
+
+	char pos;
+
+	byte endPos, startPos, leftJump;
 
 	unsigned long delayTime;
 
@@ -67,15 +71,31 @@ private:
 
 	void runAnim();
 
-	void startTransition(Animation transition, Animation anim, Side side);
+	void renderNarrow(bool widen);
+
+	void renderLook(bool unlook);
+
+	void setEyeNarrow(byte pos, byte offset);
+
+	void insertTransition(Animation transition, Animation anim, Side side);
 
 	void updateCounters();
 
-	void setVars();
+	void updateLook(bool unlook);
+
+	void updateBlink();
+
+	void updateNarrow();
+
+	void updateWiden();
+
+	void resetVars();
+
+	void setLookVars(Side side, bool unlook);
 
 	void resetCounters();
 
-	void eyesNarrow(uint32_t c, int wait);
+	void checkQueued();
 
 	uint16_t mod(long a, long b);
 };
