@@ -21,45 +21,32 @@ void EyesProcessor::updateEyesColor(long code) {
 
 void EyesProcessor::process(String cmd) {
 	if (contains(cmd, "color=")) {
-		Serial.println("1");
 		cmd.replace("color=", "");
 		updateEyesColor(cmd.toInt());
 	} else if (contains(cmd, "level=")) {
-		Serial.println("2");
 		cmd.replace("level=", "");
 		eyes.updateBrightness((uint8_t) cmd.toInt());
 	} else if (contains(cmd, "on")) {
-		Serial.println("3");
 		eyes.on();
 	} else if (contains(cmd, "off")) {
-		Serial.println("4");
 		eyes.off();
 	} else if (checkEyeAnim(cmd, "blink", MycroftEyes::BLINK)) {
-		Serial.println("5");
 		return;
 	} else if (checkEyeAnim(cmd, "narrow", MycroftEyes::NARROW)) {
-		Serial.println("6");
 		return;
 	} else if (checkEyeAnim(cmd, "look", MycroftEyes::LOOK)) {
-		Serial.println("7");
 		return;
 	} else if (checkEyeAnim(cmd, "widen", MycroftEyes::WIDEN)) {
-		Serial.println("8");
 		return;
 	} else if (checkEyeAnim(cmd, "unlook", MycroftEyes::UNLOOK)) {
-		Serial.println("9");
 		return;
 	}
 }
 
 bool EyesProcessor::checkEyeAnim(String cmd, String term, MycroftEyes::Animation anim){
-	Serial.println(cmd);
-	Serial.println(term);
 	if (contains(cmd, term)) {
-		Serial.println("contains");
 		term += '=';
 		cmd.replace(term, "");
-		Serial.println(cmd);
 		MycroftEyes::Side side = toSide(cmd.charAt(0));
 		eyes.startAnim(anim, side);
 		return true;
