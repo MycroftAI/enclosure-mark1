@@ -45,6 +45,18 @@ void MycroftEyes::set(uint32_t color) {
 	set(BOTH, color);
 }
 
+void MycroftEyes::fill(uint8_t pixel) {
+	if(pixel == (neoPixel.numPixels() - 1)) {
+		this->on();
+	}
+	else {
+		for (uint16_t i = 0; i <= pixel; i++) {
+			neoPixel.setPixelColor(i, color);
+			neoPixel.show();
+		}
+	}
+}
+
 void MycroftEyes::on() {
 	this->set(color);
 	currentState = OPEN;

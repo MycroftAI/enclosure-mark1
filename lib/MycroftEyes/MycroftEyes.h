@@ -36,6 +36,8 @@ public:
 
 	void set(uint32_t color);
 
+	void fill(uint8_t pixel);
+
 private:
 	uint32_t color, c;
 
