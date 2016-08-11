@@ -33,6 +33,8 @@ void EyesProcessor::process(String cmd) {
 		eyes.on();
 	} else if (contains(cmd, "off")) {
 		eyes.off();
+	} else if (contains(cmd, "reset")) {
+		eyes.reset();
 	} else if (checkEyeAnim(cmd, "blink", MycroftEyes::BLINK)) {
 		return;
 	} else if (checkEyeAnim(cmd, "narrow", MycroftEyes::NARROW)) {
@@ -43,10 +45,12 @@ void EyesProcessor::process(String cmd) {
 		return;
 	} else if (checkEyeAnim(cmd, "unlook", MycroftEyes::UNLOOK)) {
 		return;
+	} else if (checkEyeAnim(cmd, "spin", MycroftEyes::SPIN)) {
+		return;
 	}
 }
 
-bool EyesProcessor::checkEyeAnim(String cmd, String term, MycroftEyes::Animation anim){
+bool EyesProcessor::checkEyeAnim(String cmd, String term, MycroftEyes::Animation anim) {
 	if (contains(cmd, term)) {
 		term += '=';
 		cmd.replace(term, "");
@@ -57,7 +61,7 @@ bool EyesProcessor::checkEyeAnim(String cmd, String term, MycroftEyes::Animation
 	return false;
 }
 
-MycroftEyes::Side EyesProcessor::toSide(const char SIDE_CHAR){
+MycroftEyes::Side EyesProcessor::toSide(const char SIDE_CHAR) {
 	switch(SIDE_CHAR) {
 	case 'l':
 		return MycroftEyes::LEFT;

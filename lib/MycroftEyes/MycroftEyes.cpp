@@ -19,7 +19,7 @@ void MycroftEyes::setup() {
 	color = neoPixel.Color(255, 255, 255);
 	neoPixel.setBrightness(30);
 	currentAnim = NONE;
-	this->on();
+	startAnim(SPIN, BOTH);
 }
 
 void MycroftEyes::set(Side side, uint32_t color) {
@@ -47,7 +47,7 @@ void MycroftEyes::set(uint32_t color) {
 
 void MycroftEyes::fill(uint8_t pixel) {
 	if(pixel == (neoPixel.numPixels() - 1)) {
-		this->on();
+		this->reset();
 	}
 	else {
 		for (uint16_t i = 0; i <= pixel; i++) {
@@ -59,11 +59,20 @@ void MycroftEyes::fill(uint8_t pixel) {
 
 void MycroftEyes::on() {
 	this->set(color);
-	currentState = OPEN;
+}
+
+void MycroftEyes::reset(){
+	if(currentAnim == SPIN){
+		startAnim(REFILL, currentSide);
+	}
+	else{
+		this->on();
+		currentState = OPEN;
+		currentAnim = NONE;
+	}
 }
 
 void MycroftEyes::off() {
-	Serial.println("off");
 	currentState = CLOSED;
 	this->set(0);
 }
@@ -98,6 +107,8 @@ void MycroftEyes::startAnim(Animation anim, Side side) {
 		return;
 	}
 	animSetup(anim, side);
+	if(currentAnim == REFILL){
+	}
 	runAnim();
 }
 
@@ -107,8 +118,10 @@ void MycroftEyes::animSetup(Animation anim, Side side) {
 		lookSide = side;
 	}
 	currentSide = side;
-	if (currentAnim != WIDEN && currentAnim != UNLOOK) {
+	if (currentAnim != WIDEN && currentAnim != UNLOOK && currentAnim != REFILL) {
 		this->on();
+	}
+	if (currentAnim == REFILL) {
 	}
 	currentState = ANIMATING;
 	resetVars();
@@ -131,6 +144,12 @@ void MycroftEyes::runAnim() {
 			break;
 		case WIDEN:
 			renderNarrow(true);
+			break;
+		case SPIN:
+	    	renderSpin();
+			break;
+		case REFILL:
+			renderRefill();
 			break;
 		}
 		neoPixel.show();
@@ -156,6 +175,12 @@ void MycroftEyes::updateCounters() {
 		case BLINK:
 			updateBlink();
 			break;
+		case SPIN:
+			updateSpin();
+			break;
+		case REFILL:
+			updateRefill();
+			break;
 	}
 }
 
@@ -169,7 +194,6 @@ void MycroftEyes::checkQueued() {
 void MycroftEyes::updateLook(bool unlook) {
 	pos = unlook ? pos -1 : pos + 1;
 	int dir = unlook ? -1 : 1;
-	Serial.println(dir);
 	if (pos == endPos) {
 		currentState = unlook ? OPEN : LOOKING;
 		currentAnim = NONE;
@@ -182,10 +206,6 @@ void MycroftEyes::updateLook(bool unlook) {
 
 void MycroftEyes::renderLook(bool unlook) {
 	c = unlook ? color : 0;
-	Serial.println(r1);
-	Serial.println(r2);
-	Serial.println(mod(r1+leftJump, MAX) + MAX);
-	Serial.println(mod(r2+leftJump, MAX) + MAX);
 	neoPixel.setPixelColor(r1, c);
 	neoPixel.setPixelColor(r2, c);
 	neoPixel.setPixelColor(mod(r1+leftJump, MAX) + MAX, c);
@@ -194,7 +214,6 @@ void MycroftEyes::renderLook(bool unlook) {
 
 void MycroftEyes::updateNarrow() {
 	pos++;
-	Serial.println(pos);
 	if(pos >= 2) {
 		currentState = NARROWED;
 		currentAnim = NONE;
@@ -202,7 +221,6 @@ void MycroftEyes::updateNarrow() {
 		return;
 	}
 }
-
 
 void MycroftEyes::updateWiden() {
 	pos--;
@@ -228,6 +246,46 @@ void MycroftEyes::updateBlink() {
 			currentAnim = NONE;
 			checkQueued();
 		}
+	}
+}
+
+void MycroftEyes::updateSpin() {
+	lastPos = pos;
+	pos++;
+	if(pos >= MAX) {
+		pos = 0;
+	}
+}
+
+void MycroftEyes::renderSpin() {
+	if(currentSide == RIGHT || currentSide == BOTH) {
+		neoPixel.setPixelColor(pos, color);
+		neoPixel.setPixelColor(lastPos, 0);
+	}
+	if (currentSide == LEFT || currentSide == BOTH) {
+		neoPixel.setPixelColor(pos + leftJump, color);
+		neoPixel.setPixelColor(lastPos + leftJump, 0);
+	}
+}
+
+void MycroftEyes::updateRefill() {
+	pos++;
+	if(pos == initialPos){
+		currentState = OPEN;
+		currentAnim = NONE;
+		return;
+	}
+	if(pos >= MAX) {
+		pos = 0;
+	}
+}
+
+void MycroftEyes::renderRefill() {
+	if(currentSide == RIGHT || currentSide == BOTH) {
+		neoPixel.setPixelColor(pos, color);
+	}
+	if(currentSide == LEFT || currentSide == BOTH) {
+		neoPixel.setPixelColor(pos + leftJump, color);
 	}
 }
 
@@ -301,6 +359,14 @@ void MycroftEyes::resetVars() {
 		case WIDEN:
 			pos = 2;
 			delayTime = 140;
+			break;
+		case SPIN:
+			pos = 0;
+			delayTime = 60;
+			break;
+		case REFILL:
+			initialPos = pos;
+			delayTime = 60;
 			break;
 	}
 	leftJump = MAX + leftJump;

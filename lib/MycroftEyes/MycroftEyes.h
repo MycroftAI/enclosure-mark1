@@ -15,12 +15,14 @@ public:
 	MycroftEyes(uint16_t size, uint8_t pin, uint16_t type);
 
 	enum Animation {
-		BLINK, NARROW, LOOK, UNLOOK, WIDEN, NONE
+		BLINK, NARROW, LOOK, UNLOOK, WIDEN, SPIN, REFILL, NONE
 	};
 
 	void setup();
 
 	void on();
+
+	void reset();
 
 	void off();
 
@@ -59,9 +61,9 @@ private:
 
 	const byte MAX;
 
-	char pos;
+	//char pos, lastPos, initialPos;
 
-	byte endPos, startPos, leftJump;
+	byte pos, lastPos, initialPos, endPos, startPos, leftJump;
 
 	unsigned long delayTime;
 
@@ -77,6 +79,10 @@ private:
 
 	void renderLook(bool unlook);
 
+	void renderSpin();
+
+	void renderRefill();
+
 	void setEyeNarrow(byte pos, byte offset);
 
 	void insertTransition(Animation transition, Animation anim, Side side);
@@ -90,6 +96,10 @@ private:
 	void updateNarrow();
 
 	void updateWiden();
+
+	void updateSpin();
+
+	void updateRefill();
 
 	void resetVars();
 
