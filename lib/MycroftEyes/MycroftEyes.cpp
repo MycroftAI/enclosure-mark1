@@ -47,9 +47,12 @@ void MycroftEyes::set(uint32_t color) {
 
 void MycroftEyes::on() {
 	this->set(color);
+	currentState = OPEN;
 }
 
 void MycroftEyes::off() {
+	Serial.println("off");
+	currentState = CLOSED;
 	this->set(0);
 }
 
@@ -61,27 +64,24 @@ bool MycroftEyes::rightOn(Side side) {
 	return side == BOTH || side == RIGHT;
 }
 
-void MycroftEyes::insertTransition(Animation transition, Animation anim, Side side){
+void MycroftEyes::insertTransition(Animation transition, Animation anim, Side side) {
 	queuedAnim = anim;
 	queuedSide = side;
 	isQueued = true;
-	if(transition == WIDEN){
-		Serial.println("widen transition");
+	if(transition == WIDEN) {
 		startAnim(WIDEN, BOTH);
 	}
-	else if (transition == UNLOOK){
-		Serial.println("look transition");
+	else if (transition == UNLOOK) {
 		startAnim(UNLOOK, lookSide);
 	}
 }
 
 void MycroftEyes::startAnim(Animation anim, Side side) {
-	Serial.println("start");
-	if (currentState == NARROWED && anim != WIDEN){
+	if (currentState == NARROWED && anim != WIDEN) {
 		insertTransition(WIDEN,anim, side);
 		return;
 	}
-	if (currentState == LOOKING && anim != UNLOOK){
+	if (currentState == LOOKING && anim != UNLOOK) {
 		insertTransition(UNLOOK, anim, side);
 		return;
 	}
@@ -91,11 +91,11 @@ void MycroftEyes::startAnim(Animation anim, Side side) {
 
 void MycroftEyes::animSetup(Animation anim, Side side) {
 	currentAnim = anim;
-	if(currentAnim == LOOK){
+	if(currentAnim == LOOK) {
 		lookSide = side;
 	}
 	currentSide = side;
-	if (currentAnim != WIDEN && currentAnim != UNLOOK){
+	if (currentAnim != WIDEN && currentAnim != UNLOOK) {
 		this->on();
 	}
 	currentState = ANIMATING;
@@ -104,7 +104,7 @@ void MycroftEyes::animSetup(Animation anim, Side side) {
 
 void MycroftEyes::runAnim() {
 	if (millis() >= nextTime) {
-		switch(currentAnim){
+		switch(currentAnim) {
 		case LOOK:
 			renderLook(false);
 			break;
@@ -112,11 +112,9 @@ void MycroftEyes::runAnim() {
 			renderLook(true);
 			break;
 		case BLINK:
-			Serial.println("run blink");
 			renderNarrow(back);
 			break;
 		case NARROW:
-			Serial.println("run narrow");
 			renderNarrow(false);
 			break;
 		case WIDEN:
@@ -130,7 +128,7 @@ void MycroftEyes::runAnim() {
 }
 
 void MycroftEyes::updateCounters() {
-	switch(currentAnim){
+	switch(currentAnim) {
 		case LOOK:
 			updateLook(false);
 			break;
@@ -149,26 +147,19 @@ void MycroftEyes::updateCounters() {
 	}
 }
 
-void MycroftEyes::checkQueued(){
-	if(isQueued){
+void MycroftEyes::checkQueued() {
+	if(isQueued) {
 		isQueued = false;
 		startAnim(queuedAnim, queuedSide);
 	}
 }
 
-void MycroftEyes::updateLook(bool unlook){
+void MycroftEyes::updateLook(bool unlook) {
 	pos = unlook ? pos -1 : pos + 1;
 	int dir = unlook ? -1 : 1;
 	Serial.println(dir);
-	if (pos == endPos){
-		Serial.println("endPos");
+	if (pos == endPos) {
 		currentState = unlook ? OPEN : LOOKING;
-		if(currentState == OPEN){
-			Serial.println("it's open");
-		}
-		else{
-			Serial.println("it's looking");
-		}
 		currentAnim = NONE;
 		checkQueued();
 		return;
@@ -177,7 +168,7 @@ void MycroftEyes::updateLook(bool unlook){
 	r2 = (r2 - dir) >= 0 ? r2 - dir : MAX;
 }
 
-void MycroftEyes::renderLook(bool unlook){
+void MycroftEyes::renderLook(bool unlook) {
 	c = unlook ? color : 0;
 	Serial.println(r1);
 	Serial.println(r2);
@@ -238,16 +229,16 @@ void MycroftEyes::renderNarrow(bool widen) {
 	}
 }
 
-void MycroftEyes::setEyeNarrow(byte pos, byte offset){
+void MycroftEyes::setEyeNarrow(byte pos, byte offset) {
 	neoPixel.setPixelColor(0   + pos + offset, c);
 	neoPixel.setPixelColor(MAX - pos - 1 + offset, c);
 	neoPixel.setPixelColor(MAX/2 + pos + offset, c);
 	neoPixel.setPixelColor(MAX/2 - pos - 1 + offset, c);
 }
 
-void MycroftEyes::setLookVars(Side side, bool unlook){
+void MycroftEyes::setLookVars(Side side, bool unlook) {
 	pos = unlook ? 6 : 0;
-	switch(side){
+	switch(side) {
 		case UP:
 			startPos = unlook ? 11 : 5;
 			break;
@@ -271,7 +262,7 @@ void MycroftEyes::setLookVars(Side side, bool unlook){
 void MycroftEyes::resetVars() {
 	leftJump = 0;
 	nextTime = 0;
-	switch(currentAnim){
+	switch(currentAnim) {
 		case BLINK:
 			pos = 0;
 			back = false;
@@ -292,7 +283,6 @@ void MycroftEyes::resetVars() {
 			delayTime = 70;
 			break;
 		case NARROW:
-			Serial.println("narrow reset");
 			pos = 0;
 			delayTime = 140;
 			break;
