@@ -92,7 +92,12 @@ void processMenuEncoder() {
 
 void processButton() {
 	if (encoder.isClicked()) {
-		Serial.println("mycroft.stop");
+		if(menu.isEntered()) {
+			menu.checkButton();
+		}
+		else {
+			Serial.println("mycroft.stop");
+		}
 	}
 	if (encoder.getFramesHeld() > 5 * 1000) {
 		menu.enter();
@@ -111,6 +116,7 @@ void loop() {
 				break;
 	}
 	while (Serial.available() <= 0) {
+		processButton();
 		if(menu.checkTest()) {
 			hardwareTester.run(encoder, eyes, mouth, arduino);
 			menu.finishTest();
@@ -121,7 +127,6 @@ void loop() {
 		}
 		else{
 			processVolume();
-			processButton();
 			mouth.update();
 		}
 	}

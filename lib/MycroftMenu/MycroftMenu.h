@@ -13,6 +13,7 @@ public:
     bool checkTest();
     bool withinUpperBound();
     bool withinLowerBound();
+    void checkButton();
 
 private:
     MycroftDisplay display;
@@ -29,5 +30,4 @@ private:
     const uint8_t maxIndex = 5;
     void insertOptions();
     void drawOption(String option, bool arrow);
-    void checkButton();
 };

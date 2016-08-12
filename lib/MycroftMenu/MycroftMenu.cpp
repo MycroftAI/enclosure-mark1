@@ -48,7 +48,6 @@ void MycroftMenu::drawOption(String option, bool arrow) {
         display.drawText(">", 29, true);
     }
     display.render();
-    checkButton();
 }
 
 void MycroftMenu::run() {
@@ -75,8 +74,6 @@ void MycroftMenu::run() {
 }
 
 void MycroftMenu::checkButton() {
-    //Serial.println("button check");
-    if(encoder.isClicked()) {
         switch(menuOptions[optionIndex].option) {
             case OptionContainer::REBOOT:
                 Serial.println("unit.reboot");
@@ -102,7 +99,8 @@ void MycroftMenu::checkButton() {
                 entered = false;
                 break;
         }
-    }
+    display.clear();
+    display.render();
 }
 
 void MycroftMenu::encoderCheck() {
