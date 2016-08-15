@@ -107,8 +107,6 @@ void MycroftEyes::startAnim(Animation anim, Side side) {
 		return;
 	}
 	animSetup(anim, side);
-	if(currentAnim == REFILL){
-	}
 	runAnim();
 }
 
@@ -120,8 +118,6 @@ void MycroftEyes::animSetup(Animation anim, Side side) {
 	currentSide = side;
 	if (currentAnim != WIDEN && currentAnim != UNLOOK && currentAnim != REFILL) {
 		this->on();
-	}
-	if (currentAnim == REFILL) {
 	}
 	currentState = ANIMATING;
 	resetVars();
