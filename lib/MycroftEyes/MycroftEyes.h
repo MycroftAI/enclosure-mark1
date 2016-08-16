@@ -5,6 +5,7 @@
 
 class MycroftEyes {
 public:
+
 	enum Side {
 		BOTH, LEFT, RIGHT, UP, DOWN, CROSS
 	};
@@ -23,11 +24,11 @@ public:
 
 	void off();
 
-	void startAnim(Animation anim, const char side);
-
-	void setEyePixels(const char side, uint8_t pixels);
+	void startAnim(Animation anim, Side side);
 
 	void updateAnimation();
+
+	void setEyePixels(Side side, uint8_t pixels);
 
 	void updateColor(uint8_t r, uint8_t g, uint8_t b);
 
@@ -40,13 +41,13 @@ public:
 private:
 	uint32_t color, c;
 
-	uint16_t r1, r2, ro1, ro2;
-
 	uint8_t volumePix;
+
+	int r1, r2, ro1, ro2;
 
 	unsigned long nextTime;
 
-	Side currentSide;
+	Side currentSide, queuedSide, lookSide;
 
 	enum State {
 		OPEN, LOOKING, NARROWED, CLOSED, ANIMATING
@@ -56,11 +57,13 @@ private:
 
 	Animation currentAnim, queuedAnim;
 
-	char queuedSide, lookSide;
+	boolean isQueued, back;
 
-	boolean isQueued;
+	const byte MAX;
 
-	byte MAX, pos, opJump, steps, leftJump, i, j, update;
+	char pos;
+
+	byte endPos, startPos, leftJump;
 
 	unsigned long delayTime;
 
@@ -68,23 +71,37 @@ private:
 
 	static bool rightOn(Side side);
 
-	void setEyePixels(uint8_t pixels);
-
-	void animSetup(Animation anim, const char side);
+	void animSetup(Animation anim, Side side);
 
 	void runAnim();
 
-	void startTransition(Animation transition, Animation anim, const char side);
+	void renderNarrow(bool widen);
+
+	void renderLook(bool unlook);
+
+	void setEyeNarrow(byte pos, byte offset);
+
+	void setEyePixels(uint8_t pixels);
+
+	void insertTransition(Animation transition, Animation anim, Side side);
 
 	void updateCounters();
 
-	void setSide(const char side);
+	void updateLook(bool unlook);
 
-	void setVars();
+	void updateBlink();
+
+	void updateNarrow();
+
+	void updateWiden();
+
+	void resetVars();
+
+	void setLookVars(Side side, bool unlook);
 
 	void resetCounters();
 
-	void eyesNarrow(uint32_t c, int wait);
+	void checkQueued();
 
 	uint16_t mod(long a, long b);
 };
