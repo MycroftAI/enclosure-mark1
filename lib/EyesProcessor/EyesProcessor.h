@@ -7,10 +7,13 @@ class EyesProcessor : public BaseProcessor {
 public:
 	EyesProcessor(MycroftEyes &eyes);
 	void setup();
+	void updateAnimation();
 
 private:
 	void updateEyesColor(long code);
 	void process(String cmd);
+	MycroftEyes::Side toSide(const char SIDE_CHAR);
+	bool checkEyeAnim(String cmd, String term, MycroftEyes::Animation anim);
 
 	MycroftEyes &eyes;
 };
