@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Adafruit_NeoPixel.h"
+#include "EyeFrames.h"
 
 class MycroftEyes {
 public:
