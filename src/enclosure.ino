@@ -98,7 +98,21 @@ void loop() {
 	while (Serial.available() <= 0) {
 		processVolume();
 		processButton();
-		eyesProcessor.updateAnimation();
-		mouth.update();
+		if(menu.checkTest()) {
+			hardwareTester.run(encoder, eyes, mouth, arduino);
+			menu.finishTest();
+		}
+		if(menu.isEntered()) {
+			menu.run();
+			processMenuEncoder();
+		}
+		else{
+			processVolume();
+			eyes.updateAnimation();
+			mouth.update();
+			if(mouth.state != MycroftMouth::NONE){
+				eyes.reset();
+			}
+		}
 	}
 }

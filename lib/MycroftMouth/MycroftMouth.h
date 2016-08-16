@@ -8,6 +8,12 @@ class MycroftMouth : public MycroftComponent {
 public:
 	MycroftHT1632 ht1632;
 
+	enum State {
+		NONE, TALK, LISTEN, THINK, SMILE, TEXT
+	};
+
+	State state;
+
 	MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates);
 
 	MycroftMouth();
@@ -17,7 +23,7 @@ public:
 		readBuffer(index, imgs);
 		setPanel(pos, buffer);
 	}
-	
+
 	void setPanel(int8_t pos, const char (&IMG)[16]);
 
 	void render();
@@ -25,7 +31,7 @@ public:
 	void staticText(String text, int8_t pos, int8_t fontIndex);
 
 	void reset();
-	
+
 	void update();
 
 	void talk();
@@ -40,9 +46,6 @@ public:
 
 private:
 
-	enum State {
-		NONE, TALK, LISTEN, THINK, SMILE, TEXT
-	};
 
 	byte i, total, size;
 
@@ -56,9 +59,9 @@ private:
 
 	unsigned long nextTime;
 
-	boolean back;
+	bool back;
 
-	State state, lastState;
+	State lastState;
 
 	void updateText();
 
