@@ -67,5 +67,7 @@ MycroftEyes::Side EyesProcessor::toSide(const char SIDE_CHAR){
 		return MycroftEyes::DOWN;
 	case 'c':
 		return MycroftEyes::CROSS;
+	default:
+	    return MycroftEyes::BOTH;
 	}
 }
