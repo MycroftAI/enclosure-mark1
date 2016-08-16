@@ -6,12 +6,16 @@ class MycroftEyes {
 public:
 
 	enum Side {
-		BOTH, LEFT, RIGHT
-	};
+		BOTH, LEFT, RIGHT, UP, DOWN, CROSS
+    };
 
 	Adafruit_NeoPixel neoPixel;
 
 	MycroftEyes(uint16_t size, uint8_t pin, uint16_t type);
+
+	enum Animation {
+		BLINK, NARROW, LOOK, UNLOOK, WIDEN, VOLUME, NONE
+	};
 
 	void setup();
 
@@ -20,6 +24,8 @@ public:
 	void off();
 
 	void startAnim(Animation anim, Side side);
+
+	void updateAnimation();
 
 	void setEyePixels(Side side, uint8_t pixels);
 
