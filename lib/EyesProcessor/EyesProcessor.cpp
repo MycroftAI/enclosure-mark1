@@ -8,6 +8,10 @@ void EyesProcessor::setup() {
 	eyes.setup();
 }
 
+void EyesProcessor::updateAnimation() {
+    eyes.updateAnimation();
+}
+
 void EyesProcessor::updateEyesColor(long code) {
 	long red = (code >> 16) & 0xFF;
 	long green = (code >> 8) & 0xFF;
@@ -22,18 +26,27 @@ void EyesProcessor::process(String cmd) {
 	} else if (contains(cmd, "level=")) {
 		cmd.replace("level=", "");
 		eyes.updateBrightness((uint8_t) cmd.toInt());
+	} else if (contains(cmd, "volume=")) {
+		cmd.replace("volume=", "");
+		eyes.setEyePixels('b', (uint8_t)cmd.toInt());
 	} else if (contains(cmd, "on")) {
 		eyes.on();
 	} else if (contains(cmd, "off")) {
 		eyes.off();
 	} else if (contains(cmd, "blink=")) {
 		cmd.replace("blink=", "");
-		eyes.blink(35, cmd.charAt(0));
+		eyes.startAnim(MycroftEyes::BLINK, cmd.charAt(0));
 	} else if (contains(cmd, "narrow")) {
 		cmd.replace("narrow=", "");
-		eyes.narrow(140, cmd.charAt(0));
+		eyes.startAnim(MycroftEyes::NARROW, cmd.charAt(0));
 	} else if (contains(cmd, "look=")) {
 		cmd.replace("look=", "");
-		eyes.look(70, cmd.charAt(0));
+		eyes.startAnim(MycroftEyes::LOOK, cmd.charAt(0));
+	} else if (contains(cmd, "widen=")){
+		cmd.replace("widen=", "");
+		eyes.startAnim(MycroftEyes::WIDEN, cmd.charAt(0));
+	} else if (contains(cmd, "unlook=")){
+		cmd.replace("unlook=", "");
+		eyes.startAnim(MycroftEyes::UNLOOK, cmd.charAt(0));
 	}
 }

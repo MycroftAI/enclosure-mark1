@@ -98,6 +98,7 @@ void loop() {
 	while (Serial.available() <= 0) {
 		processVolume();
 		processButton();
+		eyesProcessor.updateAnimation();
 		mouth.update();
 	}
 }
