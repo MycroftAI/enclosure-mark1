@@ -8,14 +8,14 @@ public:
 
 	enum Side {
 		BOTH, LEFT, RIGHT, UP, DOWN, CROSS
-	};
+    };
 
 	Adafruit_NeoPixel neoPixel;
 
 	MycroftEyes(uint16_t size, uint8_t pin, uint16_t type);
 
 	enum Animation {
-		BLINK, NARROW, LOOK, UNLOOK, WIDEN, NONE
+		BLINK, NARROW, LOOK, UNLOOK, WIDEN, VOLUME, NONE
 	};
 
 	void setup();
@@ -28,6 +28,8 @@ public:
 
 	void updateAnimation();
 
+	void setEyePixels(Side side, uint8_t pixels);
+
 	void updateColor(uint8_t r, uint8_t g, uint8_t b);
 
 	void updateBrightness(uint8_t level);
@@ -37,7 +39,10 @@ public:
 	void set(uint32_t color);
 
 private:
+
 	uint32_t color, c;
+
+	uint8_t volumePix;
 
 	int r1, r2, ro1, ro2;
 
@@ -77,6 +82,8 @@ private:
 
 	void setEyeNarrow(byte pos, byte offset);
 
+	void setEyePixels(uint8_t pixels);
+
 	void insertTransition(Animation transition, Animation anim, Side side);
 
 	void updateCounters();
@@ -92,8 +99,6 @@ private:
 	void resetVars();
 
 	void setLookVars(Side side, bool unlook);
-
-	void resetCounters();
 
 	void checkQueued();
 

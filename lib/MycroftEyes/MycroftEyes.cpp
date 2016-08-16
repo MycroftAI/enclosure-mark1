@@ -9,6 +9,12 @@ void MycroftEyes::updateAnimation() {
 		if (currentState == OPEN) {
 			this->on();
 		}
+		break;
+	case VOLUME:
+	    if(millis() > nextTime) {
+		    currentAnim = NONE;
+		}
+		break;
 	default:
 		runAnim();
 	}
@@ -20,6 +26,36 @@ void MycroftEyes::setup() {
 	neoPixel.setBrightness(30);
 	currentAnim = NONE;
 	this->on();
+}
+
+void MycroftEyes::setEyePixels(Side side, uint8_t pixels) {
+	currentSide = side;
+	setEyePixels(pixels);
+}
+
+void MycroftEyes::setEyePixels(uint8_t pixels) {
+	volumePix = pixels;
+	currentAnim = VOLUME;
+	for (uint16_t j = 0; j < MAX; j++) {
+		if(j <= volumePix) {
+			if (currentSide == LEFT || currentSide == BOTH) {
+				neoPixel.setPixelColor(j, color);
+			}
+			if (currentSide == RIGHT || currentSide == BOTH) {
+				neoPixel.setPixelColor(j+MAX, color);
+			}
+		}
+		else {
+			if (currentSide == LEFT || currentSide == BOTH) {
+				neoPixel.setPixelColor(j, 0);
+			}
+			if(currentSide == RIGHT || currentSide == BOTH) {
+				neoPixel.setPixelColor(j+MAX, 0);
+			}
+		}
+	}
+	neoPixel.show();
+	nextTime = millis() + 3000;
 }
 
 void MycroftEyes::set(Side side, uint32_t color) {
@@ -51,7 +87,6 @@ void MycroftEyes::on() {
 }
 
 void MycroftEyes::off() {
-	Serial.println("off");
 	currentState = CLOSED;
 	this->set(0);
 }
@@ -157,7 +192,6 @@ void MycroftEyes::checkQueued() {
 void MycroftEyes::updateLook(bool unlook) {
 	pos = unlook ? pos -1 : pos + 1;
 	int dir = unlook ? -1 : 1;
-	Serial.println(dir);
 	if (pos == endPos) {
 		currentState = unlook ? OPEN : LOOKING;
 		currentAnim = NONE;
@@ -170,10 +204,6 @@ void MycroftEyes::updateLook(bool unlook) {
 
 void MycroftEyes::renderLook(bool unlook) {
 	c = unlook ? color : 0;
-	Serial.println(r1);
-	Serial.println(r2);
-	Serial.println(mod(r1+leftJump, MAX) + MAX);
-	Serial.println(mod(r2+leftJump, MAX) + MAX);
 	neoPixel.setPixelColor(r1, c);
 	neoPixel.setPixelColor(r2, c);
 	neoPixel.setPixelColor(mod(r1+leftJump, MAX) + MAX, c);
@@ -182,7 +212,6 @@ void MycroftEyes::renderLook(bool unlook) {
 
 void MycroftEyes::updateNarrow() {
 	pos++;
-	Serial.println(pos);
 	if(pos >= 2) {
 		currentState = NARROWED;
 		currentAnim = NONE;
@@ -259,37 +288,38 @@ void MycroftEyes::setLookVars(Side side, bool unlook) {
 	r1 = startPos;
 	r2 = startPos + 1 > 11 ? 0 : startPos + 1;
 }
+
 void MycroftEyes::resetVars() {
 	leftJump = 0;
 	nextTime = 0;
 	switch(currentAnim) {
-		case BLINK:
-			pos = 0;
-			back = false;
-			delayTime = 35;
-			break;
-		case LOOK:
-			setLookVars(currentSide, false);
-			if(currentSide == CROSS) {
-				leftJump = 6;
-			}
-			delayTime = 70;
-			break;
-		case UNLOOK:
-			setLookVars(currentSide, true);
-			if(currentSide == CROSS) {
-				leftJump = 6;
-			}
-			delayTime = 70;
-			break;
-		case NARROW:
-			pos = 0;
-			delayTime = 140;
-			break;
-		case WIDEN:
-			pos = 2;
-			delayTime = 140;
-			break;
+	case BLINK:
+		pos = 0;
+		back = false;
+		delayTime = 35;
+		break;
+	case LOOK:
+		setLookVars(currentSide, false);
+		if(currentSide == CROSS) {
+			leftJump = 6;
+		}
+		delayTime = 70;
+		break;
+	case UNLOOK:
+		setLookVars(currentSide, true);
+		if(currentSide == CROSS) {
+			leftJump = 6;
+		}
+		delayTime = 70;
+		break;
+	case NARROW:
+		pos = 0;
+		delayTime = 140;
+		break;
+	case WIDEN:
+		pos = 2;
+		delayTime = 140;
+		break;
 	}
 	leftJump = MAX + leftJump;
 }
