@@ -156,9 +156,6 @@ void MycroftEyes::runAnim() {
 			renderNarrow(true);
 			break;
 		}
-		neoPixel.show();
-		updateCounters();
-		nextTime = millis() + delayTime;
 	}
 }
 
@@ -245,6 +242,14 @@ void MycroftEyes::updateBlink() {
 			currentAnim = NONE;
 			checkQueued();
 		}
+		if (i == steps - 1) {
+			c = color;
+		}
+		if (c != color) {
+			i++;
+		} else {
+			i = j - 2;
+		}
 	}
 }
 
@@ -288,15 +293,16 @@ void MycroftEyes::setLookVars(Side side, bool unlook) {
 	r1 = startPos;
 	r2 = startPos + 1 > 11 ? 0 : startPos + 1;
 }
+
 void MycroftEyes::resetVars() {
 	leftJump = 0;
 	nextTime = 0;
 	switch(currentAnim) {
-		case BLINK:
-			pos = 0;
-			back = false;
-			delayTime = 35;
-			break;
+	case BLINK:
+		pos = 0;
+		back = false;
+		delayTime = 35;
+		break;
 		case LOOK:
 			setLookVars(currentSide, false);
 			if(currentSide == CROSS) {

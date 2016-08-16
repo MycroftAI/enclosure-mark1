@@ -6,16 +6,12 @@ class MycroftEyes {
 public:
 
 	enum Side {
-		BOTH, LEFT, RIGHT, UP, DOWN, CROSS
+		BOTH, LEFT, RIGHT
 	};
 
 	Adafruit_NeoPixel neoPixel;
 
 	MycroftEyes(uint16_t size, uint8_t pin, uint16_t type);
-
-	enum Animation {
-		BLINK, NARROW, LOOK, UNLOOK, WIDEN, VOLUME, NONE
-	};
 
 	void setup();
 
@@ -24,8 +20,6 @@ public:
 	void off();
 
 	void startAnim(Animation anim, Side side);
-
-	void updateAnimation();
 
 	void setEyePixels(Side side, uint8_t pixels);
 
@@ -38,6 +32,7 @@ public:
 	void set(uint32_t color);
 
 private:
+
 	uint32_t color, c;
 
 	uint8_t volumePix;
@@ -97,8 +92,6 @@ private:
 	void resetVars();
 
 	void setLookVars(Side side, bool unlook);
-
-	void resetCounters();
 
 	void checkQueued();
 
