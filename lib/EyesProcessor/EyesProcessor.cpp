@@ -8,10 +8,6 @@ void EyesProcessor::setup() {
 	eyes.setup();
 }
 
-void EyesProcessor::updateAnimation() {
-	eyes.updateAnimation();
-}
-
 void EyesProcessor::updateEyesColor(long code) {
 	long red = (code >> 16) & 0xFF;
 	long green = (code >> 8) & 0xFF;
@@ -29,6 +25,9 @@ void EyesProcessor::process(String cmd) {
 	} else if (contains(cmd, "fill=")) {
 		cmd.replace("fill=", "");
 		eyes.fill((uint8_t) cmd.toInt());
+	} else if (contains(cmd, "volume=")) {
+		cmd.replace("volume=", "");
+		eyes.setEyePixels(MycroftEyes::BOTH, (uint8_t)cmd.toInt());
 	} else if (contains(cmd, "on")) {
 		eyes.on();
 	} else if (contains(cmd, "off")) {
@@ -75,5 +74,7 @@ MycroftEyes::Side EyesProcessor::toSide(const char SIDE_CHAR) {
 		return MycroftEyes::DOWN;
 	case 'c':
 		return MycroftEyes::CROSS;
+	default:
+	    return MycroftEyes::BOTH;
 	}
 }

@@ -5,6 +5,7 @@
 #include "MycroftMouth.h"
 #include "MycroftEyes.h"
 #include "MycroftEncoder.h"
+#include "MycroftMenu.h"
 #include "HardwareTester.h"
 
 #include "MouthProcessor.h"
@@ -32,6 +33,7 @@ MycroftArduino arduino(SPEAKER_PIN);
 MycroftEncoder encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
 MycroftEyes eyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
 MycroftMouth mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, MOUTH_PLATES);
+MycroftMenu menu(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, ENC1_PIN, ENC2_PIN, BUTTON_PIN);
 HardwareTester hardwareTester;
 
 MouthProcessor mouthProcessor(mouth);
@@ -75,12 +77,30 @@ void processVolume() {
 	}
 }
 
+void processMenuEncoder() {
+	MycroftEncoder::Direction d = encoder.getDirection();
+	if (d == MycroftEncoder::Direction::RIGHT) {
+		if (menu.withinUpperBound()) {
+            menu.updateOptionIndex(true);
+        }
+	} else if (d == MycroftEncoder::Direction::LEFT) {
+		if (menu.withinLowerBound()) {
+            menu.updateOptionIndex(false);
+        }
+	}
+}
+
 void processButton() {
 	if (encoder.isClicked()) {
-		Serial.println("mycroft.stop");
+		if(menu.isEntered()) {
+			menu.checkButton();
+		}
+		else {
+			Serial.println("mycroft.stop");
+		}
 	}
 	if (encoder.getFramesHeld() > 5 * 1000) {
-		hardwareTester.run(encoder, eyes, mouth, arduino);
+		menu.enter();
 	}
 }
 
@@ -96,7 +116,6 @@ void loop() {
 				break;
 	}
 	while (Serial.available() <= 0) {
-		processVolume();
 		processButton();
 		if(menu.checkTest()) {
 			hardwareTester.run(encoder, eyes, mouth, arduino);
@@ -110,9 +129,12 @@ void loop() {
 			processVolume();
 			eyes.updateAnimation();
 			mouth.update();
+<<<<<<< HEAD
 			if(mouth.state != MycroftMouth::NONE){
 				eyes.reset();
 			}
+=======
+>>>>>>> origin/master
 		}
 	}
 }

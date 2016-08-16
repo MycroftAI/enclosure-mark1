@@ -9,6 +9,12 @@ void MycroftEyes::updateAnimation() {
 		if (currentState == OPEN) {
 			this->on();
 		}
+		break;
+	case VOLUME:
+	    if(millis() > nextTime) {
+		    currentAnim = NONE;
+		}
+		break;
 	default:
 		runAnim();
 	}
@@ -20,6 +26,36 @@ void MycroftEyes::setup() {
 	neoPixel.setBrightness(30);
 	currentAnim = NONE;
 	startAnim(SPIN, BOTH);
+}
+
+void MycroftEyes::setEyePixels(Side side, uint8_t pixels) {
+	currentSide = side;
+	setEyePixels(pixels);
+}
+
+void MycroftEyes::setEyePixels(uint8_t pixels) {
+	volumePix = pixels;
+	currentAnim = VOLUME;
+	for (uint16_t j = 0; j < MAX; j++) {
+		if(j <= volumePix) {
+			if (currentSide == LEFT || currentSide == BOTH) {
+				neoPixel.setPixelColor(j, color);
+			}
+			if (currentSide == RIGHT || currentSide == BOTH) {
+				neoPixel.setPixelColor(j+MAX, color);
+			}
+		}
+		else {
+			if (currentSide == LEFT || currentSide == BOTH) {
+				neoPixel.setPixelColor(j, 0);
+			}
+			if(currentSide == RIGHT || currentSide == BOTH) {
+				neoPixel.setPixelColor(j+MAX, 0);
+			}
+		}
+	}
+	neoPixel.show();
+	nextTime = millis() + 3000;
 }
 
 void MycroftEyes::set(Side side, uint32_t color) {
@@ -147,6 +183,8 @@ void MycroftEyes::runAnim() {
 		case REFILL:
 			renderRefill();
 			break;
+		default:
+		    break;
 		}
 		neoPixel.show();
 		updateCounters();
@@ -156,27 +194,29 @@ void MycroftEyes::runAnim() {
 
 void MycroftEyes::updateCounters() {
 	switch(currentAnim) {
-		case LOOK:
-			updateLook(false);
-			break;
-		case UNLOOK:
-			updateLook(true);
-			break;
-		case NARROW:
-			updateNarrow();
-			break;
-		case WIDEN:
-			updateWiden();
-			break;
-		case BLINK:
-			updateBlink();
-			break;
-		case SPIN:
-			updateSpin();
-			break;
-		case REFILL:
-			updateRefill();
-			break;
+	case LOOK:
+		updateLook(false);
+		break;
+	case UNLOOK:
+		updateLook(true);
+		break;
+	case NARROW:
+		updateNarrow();
+		break;
+	case WIDEN:
+		updateWiden();
+		break;
+	case BLINK:
+		updateBlink();
+		break;
+	case SPIN:
+		updateSpin();
+		break;
+	case REFILL:
+		updateRefill();
+		break;
+	default:
+		break;
 	}
 }
 
@@ -320,50 +360,55 @@ void MycroftEyes::setLookVars(Side side, bool unlook) {
 		case CROSS:
 			startPos = unlook ? 8 : 2;
 			break;
+		default:
+		    break;
 	}
 	endPos = unlook ? 0 : 6;
 	r1 = startPos;
 	r2 = startPos + 1 > 11 ? 0 : startPos + 1;
 }
+
 void MycroftEyes::resetVars() {
 	leftJump = 0;
 	nextTime = 0;
 	switch(currentAnim) {
-		case BLINK:
-			pos = 0;
-			back = false;
-			delayTime = 35;
-			break;
-		case LOOK:
-			setLookVars(currentSide, false);
-			if(currentSide == CROSS) {
-				leftJump = 6;
-			}
-			delayTime = 70;
-			break;
-		case UNLOOK:
-			setLookVars(currentSide, true);
-			if(currentSide == CROSS) {
-				leftJump = 6;
-			}
-			delayTime = 70;
-			break;
-		case NARROW:
-			pos = 0;
-			delayTime = 140;
-			break;
-		case WIDEN:
-			pos = 2;
-			delayTime = 140;
-			break;
-		case SPIN:
-			pos = 0;
-			delayTime = 60;
-			break;
-		case REFILL:
-			initialPos = pos;
-			delayTime = 60;
-			break;
+	case BLINK:
+		pos = 0;
+		back = false;
+		delayTime = 35;
+		break;
+	case LOOK:
+		setLookVars(currentSide, false);
+		if(currentSide == CROSS) {
+			leftJump = 6;
+		}
+		delayTime = 70;
+		break;
+	case UNLOOK:
+		setLookVars(currentSide, true);
+		if(currentSide == CROSS) {
+			leftJump = 6;
+		}
+		delayTime = 70;
+		break;
+	case NARROW:
+		pos = 0;
+		delayTime = 140;
+		break;
+	case WIDEN:
+		pos = 2;
+		delayTime = 140;
+		break;
+	case SPIN:
+		pos = 0;
+		delayTime = 60;
+		break;
+	case REFILL:
+		initialPos = pos;
+		delayTime = 60;
+		break;
+	default:
+	    break;
 	}
 	leftJump = MAX + leftJump;
 }
