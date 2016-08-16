@@ -44,7 +44,7 @@ void MycroftMenu::updateOptionIndex(bool up) {
 void MycroftMenu::drawOption(String option, bool arrow) {
     display.clear();
     display.drawText(option, 0, true);
-    if(arrow){
+    if(arrow) {
         display.drawText(">", 29, true);
     }
     display.render();

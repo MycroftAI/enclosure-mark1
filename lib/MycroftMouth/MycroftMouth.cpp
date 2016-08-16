@@ -134,17 +134,17 @@ void MycroftMouth::drawFrame(byte i, State anim) {
 	ht1632.render();
 }
 
-void MycroftMouth::readBufferState(byte idx, State anim){
-	if (anim == THINK){
+void MycroftMouth::readBufferState(byte idx, State anim) {
+	if (anim == THINK) {
 		this->readBuffer(idx, THINK_ANIMATION);
 	}
-	else if (anim == LISTEN){
+	else if (anim == LISTEN) {
 		this->readBuffer(idx, LISTEN_ANIMATION);
 	}
-	else if (anim == TALK){
+	else if (anim == TALK) {
 		this->readBuffer(idx, TALK_ANIMATION);
 	}
-	else if (anim == SMILE){
+	else if (anim == SMILE) {
 		this->readBuffer(idx, SMILE_IMAGE);
 	}
 }
@@ -168,7 +168,6 @@ void MycroftMouth::copyText(const char *value) {
 		text[i] = ' ';
 	}
 	strcpy(text, value);
-	Serial.println(text);
 }
 
 void MycroftMouth::updateText() {

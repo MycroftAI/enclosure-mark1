@@ -9,6 +9,5 @@ public:
 
 private:
 	void process(String cmd);
-
 	MycroftMouth &mouth;
 };
