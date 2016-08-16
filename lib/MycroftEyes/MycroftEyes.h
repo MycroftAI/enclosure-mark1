@@ -41,7 +41,7 @@ private:
 	Animation queuedAnim;
 	boolean isQueued, back;
 	const byte MAX;
-	byte pos, lastPos, initialPos, endPos, startPos, leftJump;
+	char pos, narrowPos, lastPos, initialPos, endPos, startPos, leftJump;
 	unsigned long delayTime;
 	static bool leftOn(Side side);
 	static bool rightOn(Side side);
@@ -51,7 +51,7 @@ private:
 	void renderLook(bool unlook);
 	void renderSpin();
 	void renderRefill();
-	void setEyeNarrow(byte pos, byte offset);
+	void setEyeNarrow(char position, byte offset);
 	void setEyePixels(uint8_t pixels);
 	void insertTransition(Animation transition, Animation anim, Side side);
 	void updateCounters();

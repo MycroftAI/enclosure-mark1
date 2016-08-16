@@ -155,6 +155,8 @@ void MycroftEyes::animSetup(Animation anim, Side side) {
 	if (currentAnim != WIDEN && currentAnim != UNLOOK && currentAnim != REFILL) {
 		this->on();
 	}
+	if (currentAnim == NARROW){
+	}
 	currentState = ANIMATING;
 	resetVars();
 }
@@ -249,8 +251,8 @@ void MycroftEyes::renderLook(bool unlook) {
 }
 
 void MycroftEyes::updateNarrow() {
-	pos++;
-	if(pos >= 2) {
+	narrowPos++;
+	if(narrowPos >= 2) {
 		currentState = NARROWED;
 		currentAnim = NONE;
 		checkQueued();
@@ -259,8 +261,8 @@ void MycroftEyes::updateNarrow() {
 }
 
 void MycroftEyes::updateWiden() {
-	pos--;
-	if(pos < 0) {
+	narrowPos--;
+	if(narrowPos < 0) {
 		currentState = OPEN;
 		currentAnim = NONE;
 		checkQueued();
@@ -270,14 +272,16 @@ void MycroftEyes::updateWiden() {
 
 void MycroftEyes::updateBlink() {
 	if(!back) {
-		pos++;
-		if(pos > 2) {
+		narrowPos++;
+		Serial.println((int)pos);
+		if(narrowPos > 2) {
 			back = true;
 		}
 	}
 	else {
-		pos--;
-		if(pos <=0) {
+		narrowPos--;
+		Serial.println((int)pos);
+		if(narrowPos <=0) {
 			currentState = OPEN;
 			currentAnim = NONE;
 			checkQueued();
@@ -328,18 +332,18 @@ void MycroftEyes::renderRefill() {
 void MycroftEyes::renderNarrow(bool widen) {
 	c = widen ? color : 0;
 	if (currentSide == RIGHT || currentSide == BOTH) {
-		setEyeNarrow(pos, 0);
+		setEyeNarrow(narrowPos, 0);
 	}
 	if (currentSide == LEFT || currentSide == BOTH) {
-		setEyeNarrow(pos, MAX);
+		setEyeNarrow(narrowPos, MAX);
 	}
 }
 
-void MycroftEyes::setEyeNarrow(byte pos, byte offset) {
-	neoPixel.setPixelColor(0   + pos + offset, c);
-	neoPixel.setPixelColor(MAX - pos - 1 + offset, c);
-	neoPixel.setPixelColor(MAX/2 + pos + offset, c);
-	neoPixel.setPixelColor(MAX/2 - pos - 1 + offset, c);
+void MycroftEyes::setEyeNarrow(char position, byte offset) {
+	neoPixel.setPixelColor(0   + position + offset, c);
+	neoPixel.setPixelColor(MAX - position - 1 + offset, c);
+	neoPixel.setPixelColor(MAX/2 + position + offset, c);
+	neoPixel.setPixelColor(MAX/2 - position - 1 + offset, c);
 }
 
 void MycroftEyes::setLookVars(Side side, bool unlook) {
@@ -373,7 +377,7 @@ void MycroftEyes::resetVars() {
 	nextTime = 0;
 	switch(currentAnim) {
 	case BLINK:
-		pos = 0;
+		narrowPos = 0;
 		back = false;
 		delayTime = 35;
 		break;
@@ -392,11 +396,11 @@ void MycroftEyes::resetVars() {
 		delayTime = 70;
 		break;
 	case NARROW:
-		pos = 0;
+		narrowPos = 0;
 		delayTime = 140;
 		break;
 	case WIDEN:
-		pos = 2;
+		narrowPos = 2;
 		delayTime = 140;
 		break;
 	case SPIN:
