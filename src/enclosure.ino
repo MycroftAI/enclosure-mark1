@@ -129,12 +129,9 @@ void loop() {
 			processVolume();
 			eyes.updateAnimation();
 			mouth.update();
-<<<<<<< HEAD
-			if(mouth.state != MycroftMouth::NONE){
+			if(mouth.state != MycroftMouth::NONE && eyes.currentAnim == MycroftEyes::SPIN) {
 				eyes.reset();
 			}
-=======
->>>>>>> origin/master
 		}
 	}
 }

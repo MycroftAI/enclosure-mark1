@@ -23,7 +23,7 @@ void HardwareTester::drawWhiteScreen(MycroftMouth &mouth) {
 	mouth.render();
 }
 
-void HardwareTester::setEyeSide(MycroftEyes &eyes, MycroftEyes::Side side){
+void HardwareTester::setEyeSide(MycroftEyes &eyes, MycroftEyes::Side side) {
 	this->side = side;
 	eyes.set(side, color);
 }

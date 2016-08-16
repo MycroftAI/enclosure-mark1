@@ -97,8 +97,8 @@ void MycroftEyes::on() {
 	this->set(color);
 }
 
-void MycroftEyes::reset(){
-	if(currentAnim == SPIN){
+void MycroftEyes::reset() {
+	if(currentAnim == SPIN) {
 		startAnim(REFILL, currentSide);
 	}
 	else{
@@ -306,7 +306,7 @@ void MycroftEyes::renderSpin() {
 
 void MycroftEyes::updateRefill() {
 	pos++;
-	if(pos == initialPos){
+	if(pos == initialPos) {
 		currentState = OPEN;
 		currentAnim = NONE;
 		return;
