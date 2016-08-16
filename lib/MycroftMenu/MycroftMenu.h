@@ -19,7 +19,7 @@ private:
     MycroftDisplay display;
     MycroftEncoder encoder;
     bool entered, shouldTest;
-    typedef struct OptionContainer {
+    struct OptionContainer {
         enum Option{
             WIFI, RESET, REBOOT, SHUTDOWN, TEST, EXIT
         };

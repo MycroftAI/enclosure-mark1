@@ -127,6 +127,7 @@ void loop() {
 		}
 		else{
 			processVolume();
+			eyes.updateAnimation();
 			mouth.update();
 		}
 	}
