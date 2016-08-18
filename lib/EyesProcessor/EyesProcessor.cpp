@@ -28,7 +28,10 @@ void EyesProcessor::process(String cmd) {
 	} else if (contains(cmd, "volume=")) {
 		cmd.replace("volume=", "");
 		eyes.setEyePixels(MycroftEyes::BOTH, (uint8_t)cmd.toInt());
-	} else if (contains(cmd, "on")) {
+	} else if (contains(cmd, "spin=")) {
+		cmd.replace("spin=", "");
+		eyes.timedSpin(cmd.toInt());
+    } else if (contains(cmd, "on")) {
 		eyes.on();
 	} else if (contains(cmd, "off")) {
 		eyes.off();

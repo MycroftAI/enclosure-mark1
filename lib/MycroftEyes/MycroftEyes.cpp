@@ -15,6 +15,14 @@ void MycroftEyes::updateAnimation() {
 		    currentAnim = NONE;
 		}
 		break;
+	case TIMEDSPIN:
+        if(millis() > endTime) {
+			this->off();
+		}
+		else {
+			runAnim();
+		}
+		break;
 	default:
 		runAnim();
 	}
@@ -31,6 +39,11 @@ void MycroftEyes::setup() {
 void MycroftEyes::setEyePixels(Side side, uint8_t pixels) {
 	currentSide = side;
 	setEyePixels(pixels);
+}
+
+void MycroftEyes::timedSpin(int length) {
+    endTime = millis() + length;
+	startAnim(TIMEDSPIN, BOTH);
 }
 
 void MycroftEyes::setEyePixels(uint8_t pixels) {
@@ -98,7 +111,7 @@ void MycroftEyes::on() {
 }
 
 void MycroftEyes::reset() {
-	if(currentAnim == SPIN) {
+	if(currentAnim == SPIN || currentAnim == TIMEDSPIN) {
 		startAnim(REFILL, currentSide);
 	}
 	else{
@@ -155,8 +168,6 @@ void MycroftEyes::animSetup(Animation anim, Side side) {
 	if (currentAnim != WIDEN && currentAnim != UNLOOK && currentAnim != REFILL) {
 		this->on();
 	}
-	if (currentAnim == NARROW){
-	}
 	currentState = ANIMATING;
 	resetVars();
 }
@@ -181,6 +192,9 @@ void MycroftEyes::runAnim() {
 			break;
 		case SPIN:
 	    	renderSpin();
+			break;
+		case TIMEDSPIN:
+		    renderSpin();
 			break;
 		case REFILL:
 			renderRefill();
@@ -213,6 +227,9 @@ void MycroftEyes::updateCounters() {
 		break;
 	case SPIN:
 		updateSpin();
+		break;
+	case TIMEDSPIN:
+	    updateSpin();
 		break;
 	case REFILL:
 		updateRefill();
@@ -404,6 +421,10 @@ void MycroftEyes::resetVars() {
 		delayTime = 140;
 		break;
 	case SPIN:
+		pos = 0;
+		delayTime = 60;
+		break;
+	case TIMEDSPIN:
 		pos = 0;
 		delayTime = 60;
 		break;
