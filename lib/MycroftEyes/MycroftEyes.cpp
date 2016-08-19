@@ -1,7 +1,7 @@
 #include "MycroftEyes.h"
 
 MycroftEyes::MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type) :
-neoPixel(length, pin, type), MAX(neoPixel.numPixels()/2) { }
+neoPixel(length, pin, type), MAX(neoPixel.numPixels()/2), brightness(30), MAX_BRIGHTNESS(30), MIN_BRIGHTNESS(0) { }
 
 void MycroftEyes::updateAnimation() {
 	switch (currentAnim) {
@@ -443,8 +443,17 @@ void MycroftEyes::updateColor(uint8_t r, uint8_t g, uint8_t b) {
 	this->on();
 }
 
+void MycroftEyes::incrementBrightness(bool up) {
+	if(up && (brightness + 1 < MAX_BRIGHTNESS)) {
+		updateBrightness(brightness + 1);
+	} else if(!up && brightness - 1 > MIN_BRIGHTNESS) {
+		updateBrightness(brightness - 1);
+	}
+}
+
 void MycroftEyes::updateBrightness(uint8_t level) {
-	neoPixel.setBrightness(level);
+	brightness = level;
+	neoPixel.setBrightness(brightness);
 	this->on();
 }
 

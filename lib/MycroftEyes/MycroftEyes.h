@@ -23,13 +23,14 @@ public:
 	void timedSpin(int length);
 	void setEyePixels(Side side, uint8_t pixels);
 	void updateColor(uint8_t r, uint8_t g, uint8_t b);
+	void incrementBrightness(bool up);
 	void updateBrightness(uint8_t level);
 	void set(Side side, uint32_t color);
 	void set(uint32_t color);
 	void fill(uint8_t pixel);
 
 private:
-
+	uint8_t brightness;
 	uint32_t color, c;
 	uint8_t volumePix;
 	int r1, r2, ro1, ro2;
@@ -42,6 +43,7 @@ private:
 	Animation queuedAnim;
 	boolean isQueued, back;
 	const byte MAX;
+	const uint8_t MAX_BRIGHTNESS, MIN_BRIGHTNESS;
 	char pos, narrowPos, lastPos, initialPos, endPos, startPos, leftJump;
 	unsigned long delayTime;
 	static bool leftOn(Side side);

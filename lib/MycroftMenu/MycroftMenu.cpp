@@ -3,6 +3,7 @@
 MycroftMenu::MycroftMenu(int pinCS1, int pinWR, int pinDATA, int pinENC1, int pinENC2, int pinBUTTON) :
 display(pinCS1, pinWR, pinDATA), encoder(pinENC1,pinENC2,pinBUTTON) {
     optionIndex = 2;
+    currentState = MAIN;
     entered = false;
     shouldTest = false;
     insertOptions();
@@ -35,10 +36,13 @@ bool MycroftMenu::withinLowerBound() {
 void MycroftMenu::updateOptionIndex(bool up) {
     if(up) {
         optionIndex++;
-    }
-    else {
+    } else {
         optionIndex--;
     }
+}
+
+MycroftMenu::menuState MycroftMenu::getCurrentMenu() {
+    return currentState;
 }
 
 void MycroftMenu::drawOption(String option, bool arrow) {
@@ -51,29 +55,38 @@ void MycroftMenu::drawOption(String option, bool arrow) {
 }
 
 void MycroftMenu::run() {
-    switch(menuOptions[optionIndex].option) {
-        case OptionContainer::REBOOT:
-            drawOption(" REBOOT", true);
-            break;
-        case OptionContainer::WIFI:
-            drawOption("<WI-FI ", true);
-            break;
-        case OptionContainer::SHUTDOWN:
-            drawOption("<  OFF  ", true);
-            break;
-        case OptionContainer::TEST:
-            drawOption("<  TEST  >", false);
-            break;
-        case OptionContainer::RESET:
-            drawOption("< RESET >", false);
-            break;
-        case OptionContainer::EXIT:
-            drawOption("<  EXIT  ", false);
-            break;
+    if(currentState == MAIN) {
+        switch(menuOptions[optionIndex].option) {
+            case OptionContainer::REBOOT:
+                drawOption(" REBOOT", true);
+                break;
+            case OptionContainer::WIFI:
+                drawOption("<WI-FI ", true);
+                break;
+            case OptionContainer::SHUTDOWN:
+                drawOption("<  OFF  ", true);
+                break;
+            case OptionContainer::TEST:
+                drawOption("<  TEST  >", false);
+                break;
+            case OptionContainer::RESET:
+                drawOption("< RESET >", false);
+                break;
+            case OptionContainer::EXIT:
+                drawOption("<  EXIT  ", false);
+                break;
+            case OptionContainer::BRIGHTNESS:
+                drawOption("< BRIGHT >", false);
+                break;
+        }
+    }
+    else if (currentState == BRIGHTNESS) {
+        drawOption("<DN UP>", false);
     }
 }
 
 void MycroftMenu::checkButton() {
+    if (currentState == MAIN){
         switch(menuOptions[optionIndex].option) {
             case OptionContainer::REBOOT:
                 Serial.println("unit.reboot");
@@ -95,25 +108,20 @@ void MycroftMenu::checkButton() {
                 Serial.println("unit.factory-reset");
                 entered = false;
                 break;
+            case OptionContainer::BRIGHTNESS:
+                currentState = BRIGHTNESS;
+                break;
             case OptionContainer::EXIT:
                 entered = false;
                 break;
         }
+        optionIndex = 2;
+    } else if (currentState == BRIGHTNESS) {
+        entered = false;
+        currentState = MAIN;
+    }
     display.clear();
     display.render();
-}
-
-void MycroftMenu::encoderCheck() {
-	MycroftEncoder::Direction d = encoder.getDirection();
-	if (d == MycroftEncoder::Direction::RIGHT) {
-		if(optionIndex < maxIndex) {
-            optionIndex++;
-        }
-	} else if (d == MycroftEncoder::Direction::LEFT) {
-		if(optionIndex > 0) {
-            optionIndex--;
-        }
-	}
 }
 
 void MycroftMenu::insertOptions() {
@@ -122,5 +130,6 @@ void MycroftMenu::insertOptions() {
     menuOptions[2].option = OptionContainer::SHUTDOWN;
     menuOptions[3].option = OptionContainer::TEST;
     menuOptions[4].option = OptionContainer::RESET;
-    menuOptions[5].option = OptionContainer::EXIT;
+    menuOptions[5].option = OptionContainer::BRIGHTNESS;
+    menuOptions[6].option = OptionContainer::EXIT;
 }

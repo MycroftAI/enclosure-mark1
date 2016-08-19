@@ -90,6 +90,15 @@ void processMenuEncoder() {
 	}
 }
 
+void processBrightnessEncoder() {
+	MycroftEncoder::Direction d = encoder.getDirection();
+	if (d == MycroftEncoder::Direction::RIGHT) {
+		eyes.incrementBrightness(true);
+	} else if (d == MycroftEncoder::Direction::LEFT) {
+		eyes.incrementBrightness(false);
+	}
+}
+
 void processButton() {
 	if (encoder.isClicked()) {
 		if(menu.isEntered()) {
@@ -99,7 +108,7 @@ void processButton() {
 			Serial.println("mycroft.stop");
 		}
 	}
-	if (encoder.getFramesHeld() > 5 * 1000) {
+	if (encoder.getFramesHeld() > 3 * 1000) {
 		menu.enter();
 	}
 }
@@ -123,7 +132,11 @@ void loop() {
 		}
 		if(menu.isEntered()) {
 			menu.run();
-			processMenuEncoder();
+			if (menu.getCurrentMenu() == MycroftMenu::MAIN){
+				processMenuEncoder();
+			} else if (menu.getCurrentMenu() == MycroftMenu::BRIGHTNESS){
+				processBrightnessEncoder();
+			}
 		}
 		else{
 			processVolume();
