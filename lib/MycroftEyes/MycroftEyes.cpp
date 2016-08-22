@@ -114,12 +114,9 @@ void MycroftEyes::updateColor(uint8_t r, uint8_t g, uint8_t b) {
 bool MycroftEyes::incrementBrightness(bool up) {
 	if(up && (brightness + 1 < MAX_BRIGHTNESS)) {
 		updateBrightness(brightness + 1);
-		Serial.println(F("hi"));
 	} else if(!up && brightness - 1 > MIN_BRIGHTNESS) {
 		updateBrightness(brightness - 1);
-		Serial.println(F("bye"));
-	} else if (brightness + 1 >= MAX_BRIGHTNESS || brightness - 1 < MIN_BRIGHTNESS) {
-		Serial.println(F("false"));
+	} else if (brightness + 1 >= MAX_BRIGHTNESS || brightness - 1 <= MIN_BRIGHTNESS) {
 		return false;
 	}
 	return true;
