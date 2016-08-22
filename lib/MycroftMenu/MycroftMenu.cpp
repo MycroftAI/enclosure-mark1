@@ -6,6 +6,7 @@ display(pinCS1, pinWR, pinDATA), encoder(pinENC1,pinENC2,pinBUTTON) {
     currentState = MAIN;
     entered = false;
     shouldTest = false;
+    breathe = false;
     insertOptions();
 }
 
@@ -19,6 +20,14 @@ bool MycroftMenu::isEntered() {
 
 bool MycroftMenu::checkTest() {
     return shouldTest;
+}
+
+bool MycroftMenu::checkBreathe() {
+    return breathe;
+}
+
+void MycroftMenu::breatheStarted() {
+    breathe = false;
 }
 
 void MycroftMenu::finishTest() {
@@ -73,10 +82,13 @@ void MycroftMenu::run() {
                 drawOption("< RESET >", false);
                 break;
             case OptionContainer::EXIT:
-                drawOption("<  EXIT  ", false);
+                drawOption("<  EXIT  >", false);
                 break;
             case OptionContainer::BRIGHTNESS:
                 drawOption("< BRIGHT >", false);
+                break;
+            case OptionContainer::BREATHE:
+                drawOption("<BREATHE", false);
                 break;
         }
     }
@@ -89,15 +101,15 @@ void MycroftMenu::checkButton() {
     if (currentState == MAIN){
         switch(menuOptions[optionIndex].option) {
             case OptionContainer::REBOOT:
-                Serial.println("unit.reboot");
+                Serial.println(F("unit.reboot"));
                 entered = false;
                 break;
             case OptionContainer::WIFI:
-                Serial.println("unit.setwifi");
+                Serial.println(F("unit.setwifi"));
                 entered = false;
                 break;
             case OptionContainer::SHUTDOWN:
-                Serial.println("unit.shutdown");
+                Serial.println(F("unit.shutdown"));
                 entered = false;
                 break;
             case OptionContainer::TEST:
@@ -105,11 +117,15 @@ void MycroftMenu::checkButton() {
                 entered = false;
                 break;
             case OptionContainer::RESET:
-                Serial.println("unit.factory-reset");
+                Serial.println(F("unit.factory-reset"));
                 entered = false;
                 break;
             case OptionContainer::BRIGHTNESS:
                 currentState = BRIGHTNESS;
+                break;
+            case OptionContainer::BREATHE:
+                breathe = true;
+                entered = false;
                 break;
             case OptionContainer::EXIT:
                 entered = false;
@@ -132,4 +148,5 @@ void MycroftMenu::insertOptions() {
     menuOptions[4].option = OptionContainer::RESET;
     menuOptions[5].option = OptionContainer::BRIGHTNESS;
     menuOptions[6].option = OptionContainer::EXIT;
+    menuOptions[7].option = OptionContainer::BREATHE;
 }
