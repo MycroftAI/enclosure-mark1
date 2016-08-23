@@ -4,7 +4,7 @@
 
 class MycroftMenu {
 public:
-    MycroftMenu(int pinCS1, int pinWR, int pinDATA, int pinENC1, int pinENC2, int pinBUTTON, int eyeLength, int pinEYES, neoPixelType type);
+    MycroftMenu(int pinCS1, int pinWR, int pinDATA, int pinENC1, int pinENC2, int pinBUTTON);
     enum menuState {
         MAIN, BRIGHTNESS
     };
@@ -12,11 +12,9 @@ public:
     void run();
     void enter();
     void finishTest();
-    void breatheStarted();
     void updateOptionIndex(bool up);
     bool isEntered();
     bool checkTest();
-    bool checkBreathe();
     bool withinUpperBound();
     bool withinLowerBound();
     void checkButton();
@@ -24,18 +22,17 @@ public:
 private:
     MycroftDisplay display;
     MycroftEncoder encoder;
-    MycroftEyes eyes;
     bool entered, shouldTest;
     struct OptionContainer {
         enum Option{
-            WIFI, RESET, REBOOT, SHUTDOWN, TEST, EXIT, BRIGHTNESS, BREATHE
+            WIFI, RESET, REBOOT, SHUTDOWN, TEST, EXIT, ILLUM
         };
         Option option;
     };
     menuState currentState;
-    OptionContainer menuOptions[8];
+    OptionContainer menuOptions[7];
     uint8_t optionIndex;
-    const uint8_t maxIndex = 7;
+    const uint8_t maxIndex = 6;
     void insertOptions();
     void drawOption(String option, bool arrow);
 };

@@ -5,13 +5,14 @@
 class MycroftEyes {
 public:
 
+	uint8_t bright;
 	enum Side {
 		BOTH, LEFT, RIGHT, UP, DOWN, CROSS
     };
 	Adafruit_NeoPixel neoPixel;
 	MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type);
 	enum Animation {
-		BREATHE, BLINK, NARROW, LOOK, UNLOOK, WIDEN, VOLUME, SPIN, TIMEDSPIN, REFILL, NONE
+		BLINK, NARROW, LOOK, UNLOOK, WIDEN, VOLUME, SPIN, TIMEDSPIN, REFILL, NONE
 	};
 	Animation currentAnim;
 	void setup();
@@ -31,7 +32,7 @@ public:
 	void fill(uint8_t pixel);
 
 private:
-	uint8_t brightness, r1, r2;
+	uint8_t r1, r2;
 	uint8_t delayTime;
 	uint32_t color, c;
 	unsigned long nextTime, endTime;
@@ -41,7 +42,7 @@ private:
 	};
 	State currentState;
 	Animation queuedAnim;
-	bool isQueued, back, breatheDirection;
+	bool isQueued, back;
 	const byte MAX, MAX_BRIGHTNESS, MIN_BRIGHTNESS;
 	char pos, narrowPos, lastPos, initialPos, endPos, startPos, leftJump;
 	static bool leftOn(Side side);
@@ -53,7 +54,6 @@ private:
 	void renderLook(bool unlook);
 	void renderSpin();
 	void renderRefill();
-	void renderBreathe();
 	void setEyeNarrow(char position, byte offset);
 	void setEyePixels(uint8_t pixels);
 	void insertTransition(Animation transition, Animation anim, Side side);

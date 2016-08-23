@@ -1,7 +1,9 @@
 #include "MycroftEyes.h"
 
 MycroftEyes::MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type) :
-neoPixel(length, pin, type), MAX(neoPixel.numPixels()/2), brightness(30), MAX_BRIGHTNESS(30), MIN_BRIGHTNESS(5) { }
+neoPixel(length, pin, type), MAX(neoPixel.numPixels()/2), MAX_BRIGHTNESS(30), MIN_BRIGHTNESS(0) {
+	//this->brightness = 30;
+}
 
 void MycroftEyes::updateAnimation() {
 	switch (currentAnim) {
@@ -29,11 +31,11 @@ void MycroftEyes::updateAnimation() {
 }
 
 void MycroftEyes::setup() {
+	bright = 30;
 	neoPixel.begin();
 	color = neoPixel.Color(255, 255, 255);
-	neoPixel.setBrightness(30);
+	neoPixel.setBrightness(bright);
 	currentAnim = NONE;
-	breatheDirection = false;
 	startAnim(SPIN, BOTH);
 }
 
@@ -112,20 +114,27 @@ void MycroftEyes::updateColor(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 bool MycroftEyes::incrementBrightness(bool up) {
-	if(up && (brightness + 1 < MAX_BRIGHTNESS)) {
-		updateBrightness(brightness + 1);
-	} else if(!up && brightness - 1 > MIN_BRIGHTNESS) {
-		updateBrightness(brightness - 1);
-	} else if (brightness + 1 >= MAX_BRIGHTNESS || brightness - 1 <= MIN_BRIGHTNESS) {
+	if(up && (bright + 1 < MAX_BRIGHTNESS)) {
+		updateBrightness(bright + 1);
+	} else if(!up && bright - 1 > MIN_BRIGHTNESS) {
+		updateBrightness(bright - 1);
+	} else if (bright + 1 >= MAX_BRIGHTNESS || bright - 1 <= MIN_BRIGHTNESS) {
 		return false;
 	}
 	return true;
 }
 
 void MycroftEyes::updateBrightness(uint8_t level) {
-	brightness = level;
-	neoPixel.setBrightness(brightness);
+	this->bright = level;
+	Serial.println(F("update"));
+	Serial.println(bright);
+	neoPixel.setBrightness(bright);
 	this->on();
+}
+
+uint8_t MycroftEyes::getBrightness() {
+	uint8_t brightn = bright;
+	return brightn;
 }
 
 uint16_t MycroftEyes::mod(long a, long b) {
@@ -230,18 +239,12 @@ void MycroftEyes::runAnim() {
 		case REFILL:
 			renderRefill();
 			break;
-		case BREATHE:
-			renderBreathe();
-			break;
 		default:
 		    break;
 		}
 		neoPixel.show();
 		updateCounters();
 		nextTime = millis() + delayTime;
-		if (currentAnim == BREATHE && delayTime == 200) {
-			setDelayTime(120);
-		}
 	}
 }
 
@@ -388,13 +391,6 @@ void MycroftEyes::setEyeNarrow(char position, byte offset) {
 	neoPixel.setPixelColor(MAX/2 - position - 1 + offset, c);
 }
 
-void MycroftEyes::renderBreathe() {
-	if(!incrementBrightness(breatheDirection)) {
-		breatheDirection = !breatheDirection;
-		setDelayTime(200);
-	}
-}
-
 void MycroftEyes::setLookVars(Side side, bool unlook) {
 	pos = unlook ? 6 : 0;
 	switch(side) {
@@ -467,9 +463,6 @@ void MycroftEyes::resetVars() {
 	case REFILL:
 		initialPos = pos;
 		setDelayTime(60);
-		break;
-	case BREATHE:
-		setDelayTime(120);
 		break;
 	default:
 	    break;

@@ -1,12 +1,11 @@
 #include "MycroftMenu.h"
 
-MycroftMenu::MycroftMenu(int pinCS1, int pinWR, int pinDATA, int pinENC1, int pinENC2, int pinBUTTON, int eyeLength, int pinEYES, neoPixelType type) :
-display(pinCS1, pinWR, pinDATA), encoder(pinENC1,pinENC2,pinBUTTON), eyes(eyeLength, pinEYES, type) {
+MycroftMenu::MycroftMenu(int pinCS1, int pinWR, int pinDATA, int pinENC1, int pinENC2, int pinBUTTON) :
+display(pinCS1, pinWR, pinDATA), encoder(pinENC1,pinENC2,pinBUTTON) {
     optionIndex = 2;
     currentState = MAIN;
     entered = false;
     shouldTest = false;
-    breathe = false;
     insertOptions();
 }
 
@@ -20,14 +19,6 @@ bool MycroftMenu::isEntered() {
 
 bool MycroftMenu::checkTest() {
     return shouldTest;
-}
-
-bool MycroftMenu::checkBreathe() {
-    return breathe;
-}
-
-void MycroftMenu::breatheStarted() {
-    breathe = false;
 }
 
 void MycroftMenu::finishTest() {
@@ -84,21 +75,13 @@ void MycroftMenu::run() {
             case OptionContainer::EXIT:
                 drawOption("<  EXIT  >", false);
                 break;
-            case OptionContainer::BRIGHTNESS:
+            case OptionContainer::ILLUM:
                 drawOption("< ILLUM >", false);
-                break;
-            case OptionContainer::BREATHE:
-                drawOption("<BREATHE", false);
                 break;
         }
     }
     else if (currentState == BRIGHTNESS) {
-        display.clear();
-        display.drawText("<", 0, true);
-        String brightness = String(eyes.getBrightness());
-        display.drawText(brightness, 13, true);
-        display.drawText(">", 29, true);
-        display.render();
+        drawOption("<DN   UP>", false);
     }
 }
 
@@ -125,12 +108,8 @@ void MycroftMenu::checkButton() {
                 Serial.println(F("unit.factory-reset"));
                 entered = false;
                 break;
-            case OptionContainer::BRIGHTNESS:
+            case OptionContainer::ILLUM:
                 currentState = BRIGHTNESS;
-                break;
-            case OptionContainer::BREATHE:
-                breathe = true;
-                entered = false;
                 break;
             case OptionContainer::EXIT:
                 entered = false;
@@ -151,7 +130,6 @@ void MycroftMenu::insertOptions() {
     menuOptions[2].option = OptionContainer::SHUTDOWN;
     menuOptions[3].option = OptionContainer::TEST;
     menuOptions[4].option = OptionContainer::RESET;
-    menuOptions[5].option = OptionContainer::BRIGHTNESS;
+    menuOptions[5].option = OptionContainer::ILLUM;
     menuOptions[6].option = OptionContainer::EXIT;
-    menuOptions[7].option = OptionContainer::BREATHE;
 }
