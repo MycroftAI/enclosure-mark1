@@ -79,7 +79,7 @@ void HardwareTester::testAnimation(MycroftMouth &mouth) {
 void HardwareTester::run(MycroftEncoder &encoder, MycroftEyes &eyes, MycroftMouth &mouth, MycroftArduino &arduino) {
 	setEyes(eyes, 255,255,255);
 	drawWhiteScreen(mouth);
-	Serial.println("system.test.begin");
+	Serial.println(F("system.test.begin"));
 	testKnob(encoder, eyes);
 
 	setEyeSide(eyes, MycroftEyes::Side::BOTH);
@@ -93,8 +93,8 @@ void HardwareTester::run(MycroftEncoder &encoder, MycroftEyes &eyes, MycroftMout
 	pause(encoder);
 
 	setEyes(eyes, 255,255,255);
-	Serial.println("mic.test");
+	Serial.println(F("mic.test"));
 	testAnimation(mouth);
 	testMute(arduino);
-	Serial.println("system.test.end");
+	Serial.println(F("system.test.end"));
 }
