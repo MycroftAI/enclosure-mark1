@@ -1,7 +1,7 @@
 #include "MycroftEyes.h"
 
 MycroftEyes::MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type) :
-neoPixel(length, pin, type), MAX(neoPixel.numPixels()/2), brightness(30), MAX_BRIGHTNESS(30), MIN_BRIGHTNESS(0) { }
+neoPixel(length, pin, type), MAX(neoPixel.numPixels()/2), brightness(30), MAX_BRIGHTNESS(30), MIN_BRIGHTNESS(5) { }
 
 void MycroftEyes::updateAnimation() {
 	switch (currentAnim) {
@@ -239,6 +239,9 @@ void MycroftEyes::runAnim() {
 		neoPixel.show();
 		updateCounters();
 		nextTime = millis() + delayTime;
+		if (currentAnim == BREATHE && delayTime == 200) {
+			setDelayTime(120);
+		}
 	}
 }
 
@@ -388,6 +391,7 @@ void MycroftEyes::setEyeNarrow(char position, byte offset) {
 void MycroftEyes::renderBreathe() {
 	if(!incrementBrightness(breatheDirection)) {
 		breatheDirection = !breatheDirection;
+		setDelayTime(200);
 	}
 }
 
@@ -465,7 +469,7 @@ void MycroftEyes::resetVars() {
 		setDelayTime(60);
 		break;
 	case BREATHE:
-		setDelayTime(100);
+		setDelayTime(120);
 		break;
 	default:
 	    break;
