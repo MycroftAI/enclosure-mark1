@@ -25,6 +25,7 @@ public:
 	void updateColor(uint8_t r, uint8_t g, uint8_t b);
 	void incrementBrightness(bool up);
 	void updateBrightness(uint8_t level);
+	uint8_t getBrightness();
 	void set(Side side, uint32_t color);
 	void set(uint32_t color);
 	void fill(uint8_t pixel);

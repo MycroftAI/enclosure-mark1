@@ -1,9 +1,10 @@
 #include "MycroftDisplay.h"
 #include "MycroftEncoder.h"
+#include "MycroftEyes.h"
 
 class MycroftMenu {
 public:
-    MycroftMenu(int pinCS1, int pinWR, int pinDATA, int pinENC1, int pinENC2, int pinBUTTON);
+    MycroftMenu(int pinCS1, int pinWR, int pinDATA, int pinENC1, int pinENC2, int pinBUTTON, int eyeLength, int pinEYES, neoPixelType type);
     enum menuState {
         MAIN, BRIGHTNESS
     };
@@ -21,6 +22,7 @@ public:
 private:
     MycroftDisplay display;
     MycroftEncoder encoder;
+    MycroftEyes eyes;
     bool entered, shouldTest;
     struct OptionContainer {
         enum Option{

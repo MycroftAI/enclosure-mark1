@@ -457,6 +457,10 @@ void MycroftEyes::updateBrightness(uint8_t level) {
 	this->on();
 }
 
+uint8_t MycroftEyes::getBrightness() {
+	return brightness;
+}
+
 uint16_t MycroftEyes::mod(long a, long b) {
 	return (uint16_t) ((a % b + b) % b);
 }

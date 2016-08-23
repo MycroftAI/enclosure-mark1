@@ -1,7 +1,7 @@
 #include "MycroftMenu.h"
 
-MycroftMenu::MycroftMenu(int pinCS1, int pinWR, int pinDATA, int pinENC1, int pinENC2, int pinBUTTON) :
-display(pinCS1, pinWR, pinDATA), encoder(pinENC1,pinENC2,pinBUTTON) {
+MycroftMenu::MycroftMenu(int pinCS1, int pinWR, int pinDATA, int pinENC1, int pinENC2, int pinBUTTON, int eyeLength, int pinEYES, neoPixelType type) :
+display(pinCS1, pinWR, pinDATA), encoder(pinENC1,pinENC2,pinBUTTON), eyes(eyeLength, pinEYES, type) {
     optionIndex = 2;
     currentState = MAIN;
     entered = false;
@@ -45,10 +45,10 @@ MycroftMenu::menuState MycroftMenu::getCurrentMenu() {
     return currentState;
 }
 
-void MycroftMenu::drawOption(String option, bool arrow) {
+void MycroftMenu::drawOption(String option, bool rightArrow) {
     display.clear();
     display.drawText(option, 0, true);
-    if(arrow) {
+    if(rightArrow) {
         display.drawText(">", 29, true);
     }
     display.render();
@@ -76,12 +76,17 @@ void MycroftMenu::run() {
                 drawOption("<  EXIT  ", false);
                 break;
             case OptionContainer::BRIGHTNESS:
-                drawOption("< BRIGHT >", false);
+                drawOption("< ILLUM >", false);
                 break;
         }
     }
     else if (currentState == BRIGHTNESS) {
-        drawOption("<DN UP>", false);
+        display.clear();
+        display.drawText("<", 0, true);
+        String brightness = String(eyes.getBrightness());
+        display.drawText(brightness, 13, true);
+        display.drawText(">", 29, true);
+        display.render();
     }
 }
 
