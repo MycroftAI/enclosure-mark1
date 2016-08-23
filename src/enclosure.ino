@@ -71,9 +71,9 @@ void setup() {
 void processVolume() {
 	MycroftEncoder::Direction d = encoder.getDirection();
 	if (d == MycroftEncoder::Direction::RIGHT) {
-		Serial.println("volume.up");
+		Serial.println(F("volume.up"));
 	} else if (d == MycroftEncoder::Direction::LEFT) {
-		Serial.println("volume.down");
+		Serial.println(F("volume.down"));
 	}
 }
 
@@ -105,7 +105,7 @@ void processButton() {
 			menu.checkButton();
 		}
 		else {
-			Serial.println("mycroft.stop");
+			Serial.println(F("mycroft.stop"));
 		}
 	}
 	if (encoder.getFramesHeld() > 3 * 1000) {
@@ -129,6 +129,10 @@ void loop() {
 		if(menu.checkTest()) {
 			hardwareTester.run(encoder, eyes, mouth, arduino);
 			menu.finishTest();
+		}
+		if(menu.checkBreathe()) {
+			eyes.startAnim(MycroftEyes::BREATHE, MycroftEyes::BOTH);
+			menu.breatheStarted();
 		}
 		if(menu.isEntered()) {
 			menu.run();
