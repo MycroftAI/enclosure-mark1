@@ -460,6 +460,10 @@ void MycroftEyes::resetVars() {
 		pos = 0;
 		setDelayTime(60);
 		break;
+	case TIMEDSPIN:
+		pos = 0;
+		delayTime = 60;
+		break;
 	case REFILL:
 		initialPos = pos;
 		setDelayTime(60);
