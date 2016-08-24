@@ -2,9 +2,8 @@
 
 #include <Arduino.h>
 #include "MycroftHT1632.h"
-#include "MycroftComponent.h"
 
-class MycroftMouth : public MycroftComponent {
+class MycroftMouth {
 public:
 	MycroftHT1632 ht1632;
 	enum State {

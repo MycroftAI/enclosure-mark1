@@ -1,7 +1,9 @@
 #include "MycroftEyes.h"
 
 MycroftEyes::MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type) :
-neoPixel(length, pin, type), MAX(neoPixel.numPixels()/2) { }
+neoPixel(length, pin, type), MAX(neoPixel.numPixels()/2), MAX_BRIGHTNESS(30), MIN_BRIGHTNESS(0) {
+	//this->brightness = 30;
+}
 
 void MycroftEyes::updateAnimation() {
 	switch (currentAnim) {
@@ -29,9 +31,10 @@ void MycroftEyes::updateAnimation() {
 }
 
 void MycroftEyes::setup() {
+	bright = 30;
 	neoPixel.begin();
 	color = neoPixel.Color(255, 255, 255);
-	neoPixel.setBrightness(30);
+	neoPixel.setBrightness(bright);
 	currentAnim = NONE;
 	startAnim(SPIN, BOTH);
 }
@@ -47,10 +50,9 @@ void MycroftEyes::timedSpin(int length) {
 }
 
 void MycroftEyes::setEyePixels(uint8_t pixels) {
-	volumePix = pixels;
 	currentAnim = VOLUME;
 	for (uint16_t j = 0; j < MAX; j++) {
-		if(j <= volumePix) {
+		if(j <= pixels) {
 			if (currentSide == LEFT || currentSide == BOTH) {
 				neoPixel.setPixelColor(j, color);
 			}
@@ -106,8 +108,37 @@ void MycroftEyes::fill(uint8_t pixel) {
 	}
 }
 
-void MycroftEyes::on() {
-	this->set(color);
+void MycroftEyes::updateColor(uint8_t r, uint8_t g, uint8_t b) {
+	color = neoPixel.Color(r, g, b);
+	this->on();
+}
+
+bool MycroftEyes::incrementBrightness(bool up) {
+	if(up && (bright + 1 < MAX_BRIGHTNESS)) {
+		updateBrightness(bright + 1);
+	} else if(!up && bright - 1 > MIN_BRIGHTNESS) {
+		updateBrightness(bright - 1);
+	} else if (bright + 1 >= MAX_BRIGHTNESS || bright - 1 <= MIN_BRIGHTNESS) {
+		return false;
+	}
+	return true;
+}
+
+void MycroftEyes::updateBrightness(uint8_t level) {
+	this->bright = level;
+	Serial.println(F("update"));
+	Serial.println(bright);
+	neoPixel.setBrightness(bright);
+	this->on();
+}
+
+uint8_t MycroftEyes::getBrightness() {
+	uint8_t brightn = bright;
+	return brightn;
+}
+
+uint16_t MycroftEyes::mod(long a, long b) {
+	return (uint16_t) ((a % b + b) % b);
 }
 
 void MycroftEyes::reset() {
@@ -121,8 +152,11 @@ void MycroftEyes::reset() {
 	}
 }
 
+void MycroftEyes::on() {
+	this->set(color);
+}
+
 void MycroftEyes::off() {
-	currentState = CLOSED;
 	this->set(0);
 }
 
@@ -157,6 +191,12 @@ void MycroftEyes::startAnim(Animation anim, Side side) {
 	}
 	animSetup(anim, side);
 	runAnim();
+}
+
+void MycroftEyes::endAnim(State endState) {
+	currentState = endState;
+	currentAnim = NONE;
+	checkQueued();
 }
 
 void MycroftEyes::animSetup(Animation anim, Side side) {
@@ -250,9 +290,7 @@ void MycroftEyes::updateLook(bool unlook) {
 	pos = unlook ? pos -1 : pos + 1;
 	int dir = unlook ? -1 : 1;
 	if (pos == endPos) {
-		currentState = unlook ? OPEN : LOOKING;
-		currentAnim = NONE;
-		checkQueued();
+		endAnim(unlook ? OPEN : LOOKING);
 		return;
 	}
 	r1 = (r1 + dir) <= MAX ? r1 + dir : 0;
@@ -270,9 +308,7 @@ void MycroftEyes::renderLook(bool unlook) {
 void MycroftEyes::updateNarrow() {
 	narrowPos++;
 	if(narrowPos >= 2) {
-		currentState = NARROWED;
-		currentAnim = NONE;
-		checkQueued();
+		endAnim(NARROWED);
 		return;
 	}
 }
@@ -280,9 +316,7 @@ void MycroftEyes::updateNarrow() {
 void MycroftEyes::updateWiden() {
 	narrowPos--;
 	if(narrowPos < 0) {
-		currentState = OPEN;
-		currentAnim = NONE;
-		checkQueued();
+		endAnim(OPEN);
 		return;
 	}
 }
@@ -290,18 +324,14 @@ void MycroftEyes::updateWiden() {
 void MycroftEyes::updateBlink() {
 	if(!back) {
 		narrowPos++;
-		Serial.println((int)pos);
 		if(narrowPos > 2) {
 			back = true;
 		}
 	}
 	else {
 		narrowPos--;
-		Serial.println((int)pos);
 		if(narrowPos <=0) {
-			currentState = OPEN;
-			currentAnim = NONE;
-			checkQueued();
+			endAnim(OPEN);
 		}
 	}
 }
@@ -328,9 +358,7 @@ void MycroftEyes::renderSpin() {
 void MycroftEyes::updateRefill() {
 	pos++;
 	if(pos == initialPos) {
-		currentState = OPEN;
-		currentAnim = NONE;
-		return;
+		endAnim(OPEN);
 	}
 	if(pos >= MAX) {
 		pos = 0;
@@ -389,6 +417,10 @@ void MycroftEyes::setLookVars(Side side, bool unlook) {
 	r2 = startPos + 1 > 11 ? 0 : startPos + 1;
 }
 
+void MycroftEyes::setDelayTime(uint8_t delay) {
+	delayTime = delay;
+}
+
 void MycroftEyes::resetVars() {
 	leftJump = 0;
 	nextTime = 0;
@@ -396,33 +428,37 @@ void MycroftEyes::resetVars() {
 	case BLINK:
 		narrowPos = 0;
 		back = false;
-		delayTime = 35;
+		setDelayTime(35);
 		break;
 	case LOOK:
 		setLookVars(currentSide, false);
 		if(currentSide == CROSS) {
 			leftJump = 6;
 		}
-		delayTime = 70;
+		setDelayTime(70);
 		break;
 	case UNLOOK:
 		setLookVars(currentSide, true);
 		if(currentSide == CROSS) {
 			leftJump = 6;
 		}
-		delayTime = 70;
+		setDelayTime(70);
 		break;
 	case NARROW:
 		narrowPos = 0;
-		delayTime = 140;
+		setDelayTime(140);
 		break;
 	case WIDEN:
 		narrowPos = 2;
-		delayTime = 140;
+		setDelayTime(140);
 		break;
 	case SPIN:
 		pos = 0;
-		delayTime = 60;
+		setDelayTime(60);
+		break;
+	case TIMEDSPIN:
+		pos = 0;
+		setDelayTime(60);
 		break;
 	case TIMEDSPIN:
 		pos = 0;
@@ -430,24 +466,10 @@ void MycroftEyes::resetVars() {
 		break;
 	case REFILL:
 		initialPos = pos;
-		delayTime = 60;
+		setDelayTime(60);
 		break;
 	default:
 	    break;
 	}
 	leftJump = MAX + leftJump;
-}
-
-void MycroftEyes::updateColor(uint8_t r, uint8_t g, uint8_t b) {
-	color = neoPixel.Color(r, g, b);
-	this->on();
-}
-
-void MycroftEyes::updateBrightness(uint8_t level) {
-	neoPixel.setBrightness(level);
-	this->on();
-}
-
-uint16_t MycroftEyes::mod(long a, long b) {
-	return (uint16_t) ((a % b + b) % b);
 }
