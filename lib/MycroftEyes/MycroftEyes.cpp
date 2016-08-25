@@ -129,6 +129,12 @@ void MycroftEyes::updateBrightness(uint8_t level) {
 	Serial.println(F("update"));
 	Serial.println(bright);
 	neoPixel.setBrightness(bright);
+
+//x	HT1632.setBrightness(3, 0xFF);
+//x	if (level > 0 && level < 17)
+//x		HT1632.setBrightness(level);	// MUST be 1-16
+//x		HT1632.setBrightness(level, 0b1111);	// MUST be 1-16
+
 	this->on();
 }
 
@@ -459,10 +465,6 @@ void MycroftEyes::resetVars() {
 	case TIMEDSPIN:
 		pos = 0;
 		setDelayTime(60);
-		break;
-	case TIMEDSPIN:
-		pos = 0;
-		delayTime = 60;
 		break;
 	case REFILL:
 		initialPos = pos;

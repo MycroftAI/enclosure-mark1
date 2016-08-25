@@ -34,5 +34,5 @@ private:
     uint8_t optionIndex;
     const uint8_t maxIndex = 6;
     void insertOptions();
-    void drawOption(String option, bool arrow);
+    void drawOption(bool leftArrow, String option, bool rightArrow);
 };

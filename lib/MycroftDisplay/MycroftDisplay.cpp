@@ -25,7 +25,15 @@ void MycroftDisplay::drawIconPgm(byte pos, byte index, const char (*ICONS)[16]) 
 	drawPanelPgm(pos, index, ICONS);
 }
 
-void MycroftDisplay::drawText(String text, int8_t pos, bool small) {
+void MycroftDisplay::drawTextCentered(const String& text, bool small) {
+	int xPixTotal = PANEL_SX*NUM_PANELS;	// 4 8x8 matrix displays
+	int xWidth = ht1632.getTextWidth(text.c_str(), FONT_5X4_WIDTH, FONT_5X4_HEIGHT);
+	int xStart = (xPixTotal - xWidth)/2;	// fonts are 4 pix wide
+
+	drawText(text, xStart, small);
+}
+
+void MycroftDisplay::drawText(const String& text, int8_t pos, bool small) {
 	if (small) {
 		ht1632.drawTextPgm(text.c_str(), pos, 2, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
 	} else {

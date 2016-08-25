@@ -1,14 +1,16 @@
 #pragma once
 
 #include "Adafruit_NeoPixel.h"
+#include "HT1632.h"
 
 class MycroftEyes {
 public:
+	static MycroftEyes& instance() { return *m_instance; }
 
 	uint8_t bright;
 	enum Side {
 		BOTH, LEFT, RIGHT, UP, DOWN, CROSS
-    };
+	};
 	Adafruit_NeoPixel neoPixel;
 	MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type);
 	enum Animation {
@@ -32,6 +34,8 @@ public:
 	void fill(uint8_t pixel);
 
 private:
+	static MycroftEyes* m_instance;
+
 	uint8_t r1, r2;
 	uint8_t delayTime;
 	uint32_t color, c;

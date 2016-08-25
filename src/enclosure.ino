@@ -31,7 +31,10 @@
 // Must be initialized first
 MycroftArduino arduino(SPEAKER_PIN);
 MycroftEncoder encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
+
 MycroftEyes eyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
+MycroftEyes* MycroftEyes::m_instance = &eyes;
+
 MycroftMouth mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, MOUTH_PLATES);
 MycroftMenu menu(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, ENC1_PIN, ENC2_PIN, BUTTON_PIN);
 HardwareTester hardwareTester;
@@ -81,12 +84,12 @@ void processMenuEncoder() {
 	MycroftEncoder::Direction d = encoder.getDirection();
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		if (menu.withinUpperBound()) {
-            menu.updateOptionIndex(true);
-        }
+			menu.updateOptionIndex(true);
+		}
 	} else if (d == MycroftEncoder::Direction::LEFT) {
 		if (menu.withinLowerBound()) {
-            menu.updateOptionIndex(false);
-        }
+			menu.updateOptionIndex(false);
+		}
 	}
 }
 
@@ -94,8 +97,10 @@ void processBrightnessEncoder() {
 	MycroftEncoder::Direction d = encoder.getDirection();
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		eyes.incrementBrightness(true);
+		menu.run();
 	} else if (d == MycroftEncoder::Direction::LEFT) {
 		eyes.incrementBrightness(false);
+		menu.run();
 	}
 }
 
@@ -108,7 +113,7 @@ void processButton() {
 			Serial.println(F("mycroft.stop"));
 		}
 	}
-	if (encoder.getFramesHeld() > 3 * 1000) {
+	if (encoder.getFramesHeld() >= 3 * 1000) {
 		menu.enter();
 	}
 }

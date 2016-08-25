@@ -14,7 +14,8 @@ public:
 	void drawFrame(const char (&IMG)[4][16]);
 	void drawFramePgm(byte index, const char (*IMG)[16]);
 	void drawIconPgm(byte pos, byte index, const char (*ICONS)[16]);
-	void drawText(String text, int8_t pos, bool small);
+	void drawTextCentered(const String& text, bool small);
+	void drawText(const String& text, int8_t pos, bool small);
 	void slideText();
 	void clear();
 	void render();
