@@ -41,6 +41,13 @@ void MycroftDisplay::drawText(const String& text, int8_t pos, bool small) {
 	}
 }
 
+void MycroftDisplay::setBrightness(int iLevel) {
+	// level must be between 1-15
+	if (iLevel < 1 || iLevel > 15)
+		return;
+	ht1632.setBrightness(iLevel);
+}
+
 void MycroftDisplay::slideText() {
 	ht1632.transition(TRANSITION_BUFFER_SWAP);
 }

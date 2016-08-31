@@ -18,6 +18,7 @@ public:
     bool withinUpperBound();
     bool withinLowerBound();
     void checkButton();
+    void syncBrightness();
 
 private:
     MycroftDisplay display;
@@ -34,5 +35,5 @@ private:
     uint8_t optionIndex;
     const uint8_t maxIndex = 6;
     void insertOptions();
-    void drawOption(bool leftArrow, String option, bool rightArrow);
+    void drawOption(bool leftArrow, const String& option, bool rightArrow);
 };
