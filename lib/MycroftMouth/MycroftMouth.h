@@ -7,7 +7,7 @@ class MycroftMouth {
 public:
 	MycroftHT1632 ht1632;
 	enum State {
-		NONE, TALK, LISTEN, THINK, SMILE, TEXT
+		NONE, TALK, LISTEN, THINK, SMILE, TEXT, VISEME
 	};
 	State state;
 	MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates);
@@ -19,27 +19,26 @@ public:
 	}
 	void setPanel(int8_t pos, const char (&IMG)[16]);
 	void render();
-	void staticText(String text, int8_t pos, int8_t fontIndex);
+	void staticText(const String& text, int8_t pos, int8_t fontIndex);
 	void reset();
 	void update();
 	void talk();
+	void fakeTalk();	// for TTS with no Viseme support
 	void think();
 	void listen();
 	void smile();
+	void viseme(const String& str);
+	void showIcon(const String& strIcon);
 	void write(const char *value);
 
 private:
-
-	byte i, total, size;
-	char text[64];
-	char width, height;
+	byte i, total;
+	String textBuf;
 	char buffer[16];
 	int textWd, textIdx, plates;
 	unsigned long nextTime;
-	bool back;
 	State lastState;
 	void updateText();
-	void copyText(const char *value);
 	void resetCounters(State state);
 	void drawFrame(byte i, State anim);
 	template <size_t x>
@@ -48,6 +47,6 @@ private:
 		for (byte j = 0; j < size; j++) {
 			buffer[j] = (char) pgm_read_byte(&(anim[idx][j]));
 		}
-   }
-   void readBufferState(byte idx, State anim);
+	}
+	void readBufferState(byte idx, State anim);
 };

@@ -3,6 +3,11 @@
 #include "font_5x4.h"
 #include "font_8x4.h"
 
+// The "mouth" consists of 4 8x8 pixel plates
+// #define NUM_PLATES	4
+#define PLATE_WIDTH	8
+#define PLATE_HEIGHT	8
+
 MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates) {
 	ht1632 = MycroftHT1632();
 	ht1632.begin(pinCS1, pinWR, pinDATA);
@@ -14,14 +19,14 @@ MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates) {
 MycroftMouth::MycroftMouth() { }
 
 void MycroftMouth::setPanel(int8_t pos, const char (&IMG)[16]) {
-	ht1632.drawImage(IMG, width, height, pos, 0);
+	ht1632.drawImage(IMG, PLATE_WIDTH, PLATE_HEIGHT, pos, 0);
 }
 
 void MycroftMouth::render() {
 	ht1632.render();
 }
 
-void MycroftMouth::staticText(String text, int8_t pos, int8_t fontIndex) {
+void MycroftMouth::staticText(const String& text, int8_t pos, int8_t fontIndex) {
 	if (fontIndex == 0) {
 		ht1632.drawTextPgm(text.c_str(), pos, 0, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
 	} else if (fontIndex == 1) {
@@ -31,8 +36,6 @@ void MycroftMouth::staticText(String text, int8_t pos, int8_t fontIndex) {
 
 void MycroftMouth::reset() {
 	state = NONE;
-	width = 8;
-	height = 8;
 	textWd = 0;
 	textIdx = 0;
 	ht1632.clear();
@@ -65,14 +68,19 @@ void MycroftMouth::update() {
 }
 
 void MycroftMouth::talk() {
+	state = TALK;
+	drawFrame(0, state);
+}
+
+#define SIZE_ANIM_FAKETALK	4
+void MycroftMouth::fakeTalk() {
 	if (state != TALK) {
 		resetCounters(TALK);
-		size = 4;
-		total = (size * 2) - 2;
+		total = (SIZE_ANIM_FAKETALK * 2) - 2;
 	}
 	if (millis() > nextTime) {
 		drawFrame(i, state);
-		if (i < size - 1) {
+		if (i < SIZE_ANIM_FAKETALK - 1) {
 			i++;
 		} else {
 			i--;
@@ -82,18 +90,18 @@ void MycroftMouth::talk() {
 	}
 	if (total == 0) {
 		resetCounters(TALK);
-		total = (size * 2) - 2;
+		total = (SIZE_ANIM_FAKETALK * 2) - 2;
 	}
 }
 
+#define SIZE_ANIM_LISTEN	6
 void MycroftMouth::listen() {
-	size = 6;
 	if (state != LISTEN) {
 		resetCounters(LISTEN);
 	}
 	if (millis() > nextTime) {
 		drawFrame(i, state);
-		if (i < (size - 1)) {
+		if (i < (SIZE_ANIM_LISTEN - 1)) {
 			i++;
 		} else {
 			i = 0;
@@ -102,24 +110,26 @@ void MycroftMouth::listen() {
 	}
 }
 
+#define SIZE_ANIM_THINK		7
 void MycroftMouth::think() {
 	if (state != THINK) {
 		resetCounters(THINK);
-		size = 11;
-		total = (size * 2) - 1;
+		total = (SIZE_ANIM_THINK * 2);
 	}
 	if (millis() > nextTime) {
-		drawFrame(i, state);
+		// This animation plays in the following order:
+		// 0,1,2,3,4,5,6,6,5,4,3,2,1,0...
+		if (i >= SIZE_ANIM_THINK)
+			drawFrame(i-((i-SIZE_ANIM_THINK+1)*2-1), state);
+		else
+			drawFrame(i, state);
 		i++;
-		if (i == size) {
-			i = 0;
-		}
 		nextTime = millis() + 120;
 		total--;
 	}
 	if (total == 0) {
 		resetCounters(THINK);
-		total = (size*2) -1;
+		total = (SIZE_ANIM_THINK*2);
 	}
 }
 
@@ -129,7 +139,7 @@ void MycroftMouth::drawFrame(byte i, State anim) {
 		byte idx = (i * this->plates) + j;
 		byte x = j * 8;
 		readBufferState(idx, anim);
-		ht1632.drawImage(buffer, width, height, x, 0);
+		ht1632.drawImage(buffer, PLATE_WIDTH, PLATE_HEIGHT, x, 0);
 	}
 	ht1632.render();
 }
@@ -147,6 +157,9 @@ void MycroftMouth::readBufferState(byte idx, State anim) {
 	else if (anim == SMILE) {
 		this->readBuffer(idx, SMILE_IMAGE);
 	}
+	else if (anim == VISEME) {
+		this->readBuffer(idx, MOUTH_VISEMES);
+	}
 }
 
 void MycroftMouth::smile() {
@@ -154,27 +167,95 @@ void MycroftMouth::smile() {
 	drawFrame(0, SMILE);
 }
 
+void MycroftMouth::showIcon(const String& icon) {
+	byte 	xOfs = 0;
+	byte	yOfs = 0;
+	byte	c = 0;
+	if (icon[c] == 'x' && icon[c+1] == '=')
+	{
+		// parse the xOfs
+		c += 2;
+		while (icon[c] != ',' && c < icon.length())
+		{
+			c++;
+			xOfs = xOfs*10 + icon[c]-'A';	// assumes '0'-'9'
+		}
+		c++;
+	}
+	if (icon[c] == 'y' && icon[c+1] == '=')
+	{
+                // parse the yOfs
+                c += 2; 
+                while (icon[c] != ',' && c < icon.length())
+                {
+                        c++;
+                        yOfs = yOfs*10 + icon[c]-'A';	// assumes '0'-'9'
+                }
+                c++;
+        }
+
+
+	// icon is an encoded string.  The encoding includes 
+	// two leading characters to indicate width and height
+	// of the icon which follows.  Subsequent characters
+	// are encodings of the 4-bit blocks.  The data is in
+	// column order from the top-down.
+	// Chars = ABCDEFGHIJKLMNOP, represent 0b0000 to 0b1111
+	// The low bit is the first pixel, running top to bottom
+	if (c+2 > (int)icon.length())
+		return;
+
+	byte	w = icon[0]-'A';	// this encoding works well up to 65
+	byte 	h = icon[1]-'A';
+	if (icon.length()-2 < (int)w*2)
+		return;
+
+	char	buf[2];
+	ht1632.clear();
+	for (; w && c < icon.length(); c++)
+	{
+		if (icon[c] < 'A')
+			continue;
+
+		if (c % 2)
+		{
+			buf[1] = icon[c]-'A';
+			ht1632.drawImage(buf, 1, h, xOfs++, yOfs);
+			w--;
+		}
+		else
+			buf[0] = icon[c]-'A';
+	}
+
+	ht1632.render();
+}
+
+
+void MycroftMouth::viseme(const String& vis) {
+	state = VISEME;
+	int iVis = int(vis[0])-int('0');
+	if (iVis < 0)
+		iVis = 0;
+	if (iVis > 6)
+		iVis = 6;
+	drawFrame(iVis, VISEME);
+	state = NONE;
+}
+
 void MycroftMouth::write(const char *value) {
 	state = TEXT;
-	copyText(value);
-	textWd = HT1632.getTextWidth(text, FONT_5X4_WIDTH, FONT_5X4_HEIGHT);
+	textBuf = value;
+	textWd = HT1632.getTextWidth(textBuf.c_str(), FONT_5X4_WIDTH, FONT_5X4_HEIGHT);
 	textIdx = 0;
 	resetCounters(TEXT);
 	this->updateText();
-}
-
-void MycroftMouth::copyText(const char *value) {
-	for (byte i = 0; i < sizeof (text); i++) {
-		text[i] = ' ';
-	}
-	strcpy(text, value);
 }
 
 void MycroftMouth::updateText() {
 	if (millis() > nextTime) {
 		ht1632.transition(TRANSITION_BUFFER_SWAP);
 		ht1632.clear();
-		ht1632.drawTextPgm(text, OUT_SIZE - textIdx, 2, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
+		ht1632.drawTextPgm(textBuf.c_str(), OUT_SIZE - textIdx, 2, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
 		ht1632.render();
 		textIdx = (textIdx + 1) % (textWd + OUT_SIZE);
 		nextTime = millis() + 150;
@@ -186,3 +267,4 @@ void MycroftMouth::resetCounters(State anim) {
 	i = 0;
 	nextTime = 0;
 }
+
