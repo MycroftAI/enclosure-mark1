@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Adafruit_NeoPixel.h"
-#include "HT1632.h"
+
+#define MAX_EYE_BRIGHTNESS	30
+#define MIN_EYE_BRIGHTNESS	1
 
 class MycroftEyes {
 public:
@@ -28,7 +30,8 @@ public:
 	void updateColor(uint8_t r, uint8_t g, uint8_t b);
 	bool incrementBrightness(bool up);
 	void updateBrightness(uint8_t level);
-	uint8_t getBrightness();
+	uint8_t getBrightness() const
+		{ return bright; }
 	void set(Side side, uint32_t color);
 	void set(uint32_t color);
 	void fill(uint8_t pixel);
@@ -47,7 +50,7 @@ private:
 	State currentState;
 	Animation queuedAnim;
 	bool isQueued, back;
-	const byte MAX, MAX_BRIGHTNESS, MIN_BRIGHTNESS;
+	const byte MAX;
 	char pos, narrowPos, lastPos, initialPos, endPos, startPos, leftJump;
 	static bool leftOn(Side side);
 	static bool rightOn(Side side);

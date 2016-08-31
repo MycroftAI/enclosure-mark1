@@ -45,7 +45,7 @@ MycroftMenu::menuState MycroftMenu::getCurrentMenu() {
     return currentState;
 }
 
-void MycroftMenu::drawOption(bool leftArrow, String option, bool rightArrow) {
+void MycroftMenu::drawOption(bool leftArrow, const String& option, bool rightArrow) {
     display.clear();
     display.drawTextCentered(option, true);
     if(leftArrow)
@@ -88,7 +88,6 @@ void MycroftMenu::run() {
 		strBright = "AUTO";
 
 	drawOption(false, strBright, false);
-//        drawOption(true, "DN/UP", true);
     }
 }
 
@@ -142,4 +141,14 @@ void MycroftMenu::insertOptions() {
     menuOptions[4].option = OptionContainer::TEST;
     menuOptions[5].option = OptionContainer::RESET;
     menuOptions[6].option = OptionContainer::EXIT;
+}
+
+void MycroftMenu::syncBrightness() {
+    // Make the menu display a similar brightness as the 
+    // eyes
+    float fBright = float(MycroftEyes::instance().getBrightness())
+			/ float(MAX_EYE_BRIGHTNESS);
+
+    int iBrightDisplay = int(fBright*15)+1;
+    display.setBrightness(iBrightDisplay);
 }

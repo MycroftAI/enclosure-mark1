@@ -97,9 +97,11 @@ void processBrightnessEncoder() {
 	MycroftEncoder::Direction d = encoder.getDirection();
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		eyes.incrementBrightness(true);
+		menu.syncBrightness();
 		menu.run();
 	} else if (d == MycroftEncoder::Direction::LEFT) {
 		eyes.incrementBrightness(false);
+		menu.syncBrightness();
 		menu.run();
 	}
 }

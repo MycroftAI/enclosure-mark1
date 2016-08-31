@@ -1,8 +1,9 @@
 #include "MycroftEyes.h"
 
 MycroftEyes::MycroftEyes(uint16_t length, uint8_t pin, neoPixelType type) :
-neoPixel(length, pin, type), MAX(neoPixel.numPixels()/2), MAX_BRIGHTNESS(30), MIN_BRIGHTNESS(0) {
-	//this->brightness = 30;
+	neoPixel(length, pin, type),
+	MAX(neoPixel.numPixels()/2)
+{
 }
 
 void MycroftEyes::updateAnimation() {
@@ -45,7 +46,7 @@ void MycroftEyes::setEyePixels(Side side, uint8_t pixels) {
 }
 
 void MycroftEyes::timedSpin(int length) {
-    endTime = millis() + length;
+	endTime = millis() + length;
 	startAnim(TIMEDSPIN, BOTH);
 }
 
@@ -114,11 +115,12 @@ void MycroftEyes::updateColor(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 bool MycroftEyes::incrementBrightness(bool up) {
-	if(up && (bright + 1 < MAX_BRIGHTNESS)) {
+	if (up && (bright < MAX_EYE_BRIGHTNESS)) {
 		updateBrightness(bright + 1);
-	} else if(!up && bright - 1 > MIN_BRIGHTNESS) {
+	} else if(!up && bright > MIN_EYE_BRIGHTNESS) {
 		updateBrightness(bright - 1);
-	} else if (bright + 1 >= MAX_BRIGHTNESS || bright - 1 <= MIN_BRIGHTNESS) {
+	} else {
+		// Can't go lower/higher
 		return false;
 	}
 	return true;
@@ -129,18 +131,7 @@ void MycroftEyes::updateBrightness(uint8_t level) {
 	Serial.println(F("update"));
 	Serial.println(bright);
 	neoPixel.setBrightness(bright);
-
-//x	HT1632.setBrightness(3, 0xFF);
-//x	if (level > 0 && level < 17)
-//x		HT1632.setBrightness(level);	// MUST be 1-16
-//x		HT1632.setBrightness(level, 0b1111);	// MUST be 1-16
-
 	this->on();
-}
-
-uint8_t MycroftEyes::getBrightness() {
-	uint8_t brightn = bright;
-	return brightn;
 }
 
 uint16_t MycroftEyes::mod(long a, long b) {

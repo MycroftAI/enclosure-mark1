@@ -16,6 +16,7 @@ public:
 	void drawIconPgm(byte pos, byte index, const char (*ICONS)[16]);
 	void drawTextCentered(const String& text, bool small);
 	void drawText(const String& text, int8_t pos, bool small);
+	void setBrightness(int iLevel);	// 1-15
 	void slideText();
 	void clear();
 	void render();
