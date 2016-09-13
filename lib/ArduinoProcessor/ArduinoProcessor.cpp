@@ -1,22 +1,25 @@
 #include "ArduinoProcessor.h"
 #include "MycroftArduino.h"
 
-ArduinoProcessor::ArduinoProcessor(MycroftArduino &arduino) :
-BaseProcessor("system"), arduino(arduino) { }
+ArduinoProcessor::ArduinoProcessor(MycroftArduino &arduino)
+  : BaseProcessor("system"), arduino(arduino)
+{
+}
 
 void ArduinoProcessor::setup() {
 	arduino.setup();
 }
 
-void ArduinoProcessor::process(String cmd) {
-	if (contains(cmd, "reset")) {
+void ArduinoProcessor::process(const String& cmd) {
+	if (cmd.startsWith("reset")) {
 		arduino.reset();
-	} else if (contains(cmd, "mute")) {
+	} else if (cmd.startsWith("mute")) {
 		arduino.mute();
-	} else if (contains(cmd, "unmute")) {
+	} else if (cmd.startsWith("unmute")) {
 		arduino.unmute();
-	} else if (contains(cmd, "blink=")) {
-		cmd.replace("blink=", "");
-		arduino.blink(cmd.toInt(), 500);
+	} else if (cmd.startsWith("blink=")) {
+		arduino.blink(cmd.substring(6).toInt(), 500);
+	} else if (cmd.startsWith("ping")) {
+		Serial.println(F(ENCLOSURE_VERSION_STRING));
 	}
 }

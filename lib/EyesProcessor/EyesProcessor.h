@@ -5,14 +5,12 @@
 
 class EyesProcessor : public BaseProcessor {
 public:
-	EyesProcessor(MycroftEyes &eyes);
+	EyesProcessor();
 	void setup();
 
 private:
 	void updateEyesColor(long code);
-	void process(String cmd);
+	void process(const String& cmd);
 	MycroftEyes::Side toSide(const char SIDE_CHAR);
-	bool checkEyeAnim(String cmd, String term, MycroftEyes::Animation anim);
-
-	MycroftEyes &eyes;
+	bool checkEyeAnim(const String& cmd, const String& term, MycroftEyes::Animation anim);
 };

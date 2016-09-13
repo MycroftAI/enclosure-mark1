@@ -28,31 +28,39 @@
 #define MOUTH_DATA 9
 #define MOUTH_PLATES 4
 
+#define MENU_HOLD_TIME			2000	// in milliseconds
+
+
 // Must be initialized first
-MycroftArduino arduino(SPEAKER_PIN);
-MycroftEncoder encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
+MycroftArduino	arduino(SPEAKER_PIN);
+MycroftArduino*	MycroftArduino::m_instance = &arduino;
 
-MycroftEyes eyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
-MycroftEyes* MycroftEyes::m_instance = &eyes;
+MycroftEncoder	encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
+MycroftEncoder*	MycroftEncoder::m_instance = &encoder;
 
-MycroftMouth mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, MOUTH_PLATES);
-MycroftMenu menu(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, ENC1_PIN, ENC2_PIN, BUTTON_PIN);
-HardwareTester hardwareTester;
+MycroftEyes	eyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
+MycroftEyes*	MycroftEyes::m_instance = &eyes;
 
-MouthProcessor mouthProcessor(mouth);
-EyesProcessor eyesProcessor(eyes);
-ArduinoProcessor arduinoProcessor(arduino);
-WeatherProcessor weatherProcessor(mouth, eyes);
-HardwareTestProcessor hardwareTestProcessor(hardwareTester, encoder, eyes, mouth, arduino);
-BaseProcessor *processors[] = {
-	&mouthProcessor,
-	&eyesProcessor,
-	&arduinoProcessor,
-	&weatherProcessor,
-	&hardwareTestProcessor
-};
+MycroftMouth	mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, MOUTH_PLATES);
+MycroftMouth*	MycroftMouth::m_instance = &mouth;
 
-void timerIsr() {
+MycroftMenu	menu(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, ENC1_PIN, ENC2_PIN, BUTTON_PIN);
+HardwareTester	hardwareTester;
+
+MouthProcessor		mouthProcessor;
+EyesProcessor		eyesProcessor;
+ArduinoProcessor	arduinoProcessor(arduino);
+WeatherProcessor	weatherProcessor;
+HardwareTestProcessor	hardwareTestProcessor(hardwareTester);
+BaseProcessor*		processors[] = {
+				&mouthProcessor,
+				&eyesProcessor,
+				&arduinoProcessor,
+				&weatherProcessor,
+				&hardwareTestProcessor
+			};
+
+static void timerIsr() {
 	encoder.isr();
 }
 
@@ -60,7 +68,7 @@ void initSerial() {
 	Serial.begin(9600);
 	while (!Serial);
 	Serial.flush();
-	Serial.println(F("Mycroft Hardware v0.1.9 - Connected"));
+	Serial.println(F("Mycroft Hardware v" ENCLOSURE_VERSION_STRING " - Connected"));
 }
 
 void setup() {
@@ -71,7 +79,7 @@ void setup() {
 	Timer1.attachInterrupt(timerIsr);
 }
 
-void processVolume() {
+static void processVolume() {
 	MycroftEncoder::Direction d = encoder.getDirection();
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		Serial.println(F("volume.up"));
@@ -80,7 +88,7 @@ void processVolume() {
 	}
 }
 
-void processMenuEncoder() {
+static void processMenuEncoder() {
 	MycroftEncoder::Direction d = encoder.getDirection();
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		if (menu.withinUpperBound()) {
@@ -93,7 +101,7 @@ void processMenuEncoder() {
 	}
 }
 
-void processBrightnessEncoder() {
+static void processBrightnessEncoder() {
 	MycroftEncoder::Direction d = encoder.getDirection();
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		eyes.incrementBrightness(true);
@@ -106,7 +114,7 @@ void processBrightnessEncoder() {
 	}
 }
 
-void processButton() {
+static void processButton() {
 	if (encoder.isClicked()) {
 		if(menu.isEntered()) {
 			menu.checkButton();
@@ -115,7 +123,7 @@ void processButton() {
 			Serial.println(F("mycroft.stop"));
 		}
 	}
-	if (encoder.getFramesHeld() >= 3 * 1000) {
+	if (encoder.getFramesHeld() >= MENU_HOLD_TIME) {
 		menu.enter();
 	}
 }
@@ -145,11 +153,11 @@ void loop() {
 				processBrightnessEncoder();
 			}
 		}
-		else{
+		else {
 			processVolume();
 			eyes.updateAnimation();
 			mouth.update();
-			if(mouth.state != MycroftMouth::NONE && eyes.currentAnim == MycroftEyes::SPIN) {
+			if (mouth.state != MycroftMouth::NONE && eyes.currentAnim == MycroftEyes::SPIN) {
 				eyes.reset();
 			}
 		}

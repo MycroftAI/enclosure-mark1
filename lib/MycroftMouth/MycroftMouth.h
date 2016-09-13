@@ -5,9 +5,11 @@
 
 class MycroftMouth {
 public:
+	static MycroftMouth& instance() { return *m_instance; }
+
 	MycroftHT1632 ht1632;
 	enum State {
-		NONE, TALK, LISTEN, THINK, SMILE, TEXT, VISEME
+		NONE, TALK, LISTEN, THINK, TEXT, VISEME
 	};
 	State state;
 	MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates);
@@ -26,12 +28,13 @@ public:
 	void fakeTalk();	// for TTS with no Viseme support
 	void think();
 	void listen();
-	void smile();
 	void viseme(const String& str);
 	void showIcon(const String& strIcon);
 	void write(const char *value);
 
 private:
+        static MycroftMouth* m_instance;
+
 	byte i, total;
 	String textBuf;
 	char buffer[16];

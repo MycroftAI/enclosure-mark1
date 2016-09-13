@@ -2,9 +2,13 @@
 #include "MycroftEncoder.h"
 #include "ClickEncoder.h"
 
-MycroftEncoder::MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton) : 
-last(0), value(0), clickEncoder(new ClickEncoder(pinEncoderOne, pinEncoderTwo, pinButton, 2)),
-PIN_BUTTON(pinButton), framesHeld(0), clicked(false) { }
+MycroftEncoder::MycroftEncoder(uint8_t pinEncoderOne, uint8_t pinEncoderTwo, uint8_t pinButton)
+  : clickEncoder(new ClickEncoder(pinEncoderOne, pinEncoderTwo, pinButton, 2)),
+    PIN_BUTTON(pinButton),
+    last(0), value(0),
+    framesHeld(0), clicked(false)
+{
+}
 
 MycroftEncoder::Direction MycroftEncoder::getDirection() {
 	direction = Direction::NONE;

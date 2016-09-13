@@ -5,12 +5,11 @@
 class BaseProcessor {
 public:
 	// Returns true if successfully processed command
-	bool tryProcess(String cmd);
+	bool tryProcess(const String& cmd);
 
 protected:
 	BaseProcessor(const char *cmdName);
-	bool contains(String value, String term);
-	virtual void process(String cmd) = 0;
+	virtual void process(const String& cmd) = 0;
 
 private:
 	String cmdStr;

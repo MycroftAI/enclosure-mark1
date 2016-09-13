@@ -3,14 +3,17 @@
 #include "MycroftMouth.h"
 #include "MycroftEyes.h"
 
-WeatherProcessor::WeatherProcessor(MycroftMouth &mouth, MycroftEyes &eyes) :
-BaseProcessor("weather"), weather(mouth, eyes) { }
+WeatherProcessor::WeatherProcessor()
+  : BaseProcessor("weather")
+{
+}
 
-void WeatherProcessor::process(String cmd) {
-	if (contains(cmd, "display=")) {
-		cmd.replace("display=", "");
-		int8_t cond = cmd.charAt(0) - '0';
-		cmd.remove(0, 1);
-		weather.display(cond, cmd);
+void WeatherProcessor::process(const String& cmd) {
+	if (cmd.startsWith("display=")) {
+		String str(cmd);
+		str.replace("display=", "");
+		int8_t cond = str.charAt(0) - '0';
+		str.remove(0, 1);
+		weather.display(cond, str);
 	}
 }

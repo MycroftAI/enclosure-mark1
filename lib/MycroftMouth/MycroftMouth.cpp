@@ -53,9 +53,6 @@ void MycroftMouth::update() {
 		case THINK:
 			this->think();
 			break;
-		case SMILE:
-			this->smile();
-			break;
 		case TEXT:
 			this->updateText();
 			break;
@@ -154,17 +151,9 @@ void MycroftMouth::readBufferState(byte idx, State anim) {
 	else if (anim == TALK) {
 		this->readBuffer(idx, TALK_ANIMATION);
 	}
-	else if (anim == SMILE) {
-		this->readBuffer(idx, SMILE_IMAGE);
-	}
 	else if (anim == VISEME) {
 		this->readBuffer(idx, MOUTH_VISEMES);
 	}
-}
-
-void MycroftMouth::smile() {
-	state = SMILE;
-	drawFrame(0, SMILE);
 }
 
 void MycroftMouth::showIcon(const String& icon) {

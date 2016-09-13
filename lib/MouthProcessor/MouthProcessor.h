@@ -5,9 +5,8 @@
 
 class MouthProcessor : public BaseProcessor {
 public:
-	MouthProcessor(MycroftMouth &mouth);
+	MouthProcessor();
 
 private:
-	void process(String cmd);
-	MycroftMouth &mouth;
+	void process(const String& cmd);
 };
