@@ -30,6 +30,9 @@
 
 #define MENU_HOLD_TIME			2000	// in milliseconds
 
+// Uncomment any of these defines when debugging
+// #define DEBUG_BUTTON_STATE
+
 
 // Must be initialized first
 MycroftArduino	arduino(SPEAKER_PIN);
@@ -114,17 +117,88 @@ static void processBrightnessEncoder() {
 	}
 }
 
-static void processButton() {
-	if (encoder.isClicked()) {
-		if(menu.isEntered()) {
-			menu.checkButton();
+static bool		bWasClicked = false;
+static bool		bHasTriggered = false;
+static bool		bButtonPressed = false;
+static unsigned long	timeReleased = 0;
+
+static void handleButton() {
+
+	// Button is a little finicky.  Require a state be held for over
+        // 20ms before it sticks.
+	//
+	if (encoder.getFramesHeld() > 5) 
+	{
+#ifdef DEBUG_BUTTON_STATE
+		Serial.println(F("button: held > 5"));
+#endif
+		if (!bButtonPressed)
+		{
+			bButtonPressed = true;
+			bHasTriggered = false;
 		}
-		else {
-			Serial.println(F("mycroft.stop"));
+		timeReleased = 0;	// reset for next usage
+	}
+	else if (!encoder.isClicked() && bButtonPressed)
+	{
+#ifdef DEBUG_BUTTON_STATE
+		Serial.println(F("button: not clicked"));
+#endif
+		if (timeReleased == 0)
+		{
+#ifdef DEBUG_BUTTON_STATE
+			Serial.println(F("button: start debounce timer"));
+#endif
+			timeReleased = millis();
+		}
+		else if (millis()-timeReleased > 5)
+		{
+#ifdef DEBUG_BUTTON_STATE
+			Serial.println(F("button: released"));
+#endif
+			bButtonPressed = false;
+			timeReleased = 0;	// reset for next usage
 		}
 	}
-	if (encoder.getFramesHeld() >= MENU_HOLD_TIME) {
-		menu.enter();
+
+	if (bButtonPressed) {
+#ifdef DEBUG_BUTTON_STATE
+		Serial.println(F("Button: pressed"));
+#endif
+		if (encoder.getFramesHeld() > 0 && encoder.getFramesHeld() < 10) {
+#ifdef DEBUG_BUTTON_STATE
+			Serial.println(F("Button: triggered"));
+#endif
+			bHasTriggered = false;
+		}
+		else if (encoder.getFramesHeld() >= 10 && !bHasTriggered) {
+#ifdef DEBUG_BUTTON_STATE
+			Serial.println(F("Button: triggered"));
+#endif
+			bHasTriggered = true;
+			if (menu.isEntered()) {
+#ifdef DEBUG_BUTTON_STATE
+				Serial.println(F("Button: menu click"));
+#endif
+				bWasClicked = false;	// cancel generating message on button up
+				menu.checkButton();
+			}
+			else
+				bWasClicked = true;
+		}
+		if (encoder.getFramesHeld() >= MENU_HOLD_TIME) {
+			bWasClicked = false;	// cancel generating message on button up
+			menu.enter();
+		}
+	}
+	else if (bWasClicked)
+	{
+#ifdef DEBUG_BUTTON_STATE
+		Serial.println(F("Button: wasClicked"));
+#endif
+		bWasClicked = false;
+		bHasTriggered = false;		// reset for next time
+		Serial.println(F("mycroft.stop"));
 	}
 }
 
@@ -140,7 +214,7 @@ void loop() {
 				break;
 	}
 	while (Serial.available() <= 0) {
-		processButton();
+		handleButton();
 		if(menu.checkTest()) {
 			hardwareTester.run(encoder, eyes, mouth, arduino);
 			menu.finishTest();
