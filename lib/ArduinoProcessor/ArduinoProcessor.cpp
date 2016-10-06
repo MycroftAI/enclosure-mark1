@@ -20,6 +20,7 @@ void ArduinoProcessor::process(const String& cmd) {
 	} else if (cmd.startsWith("blink=")) {
 		arduino.blink(cmd.substring(6).toInt(), 500);
 	} else if (cmd.startsWith("ping")) {
+		Serial.println(F("Version: "));
 		Serial.println(F(ENCLOSURE_VERSION_STRING));
 	}
 }

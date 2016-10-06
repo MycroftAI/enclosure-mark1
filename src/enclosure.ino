@@ -203,6 +203,14 @@ static void handleButton() {
 }
 
 void loop() {
+
+	// Read the command string off the serial line.
+	// Our convention is: class.command=param
+	// Ex:
+	//	mouth.reset
+	//	mouth.text=abc
+	//	eyes.blink=l
+	//
 	if (Serial.available() > 0) {
 		String cmd = Serial.readStringUntil('\n');
 		Serial.flush();
@@ -213,6 +221,11 @@ void loop() {
 			if (i->tryProcess(cmd))
 				break;
 	}
+
+	// Until more serial data becomes available, just
+	// loop and do and processing for animation or 
+	// the encoder
+	//
 	while (Serial.available() <= 0) {
 		handleButton();
 		if(menu.checkTest()) {
@@ -231,7 +244,7 @@ void loop() {
 			processVolume();
 			eyes.updateAnimation();
 			mouth.update();
-			if (mouth.state != MycroftMouth::NONE && eyes.currentAnim == MycroftEyes::SPIN) {
+			if (mouth.getState() != MycroftMouth::NONE && eyes.currentAnim == MycroftEyes::SPIN) {
 				eyes.reset();
 			}
 		}

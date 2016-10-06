@@ -16,8 +16,6 @@ MycroftMouth::MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates) {
 	lastState = state = NONE;
 }
 
-MycroftMouth::MycroftMouth() { }
-
 void MycroftMouth::setPanel(int8_t pos, const char (&IMG)[16]) {
 	ht1632.drawImage(IMG, PLATE_WIDTH, PLATE_HEIGHT, pos, 0);
 }
@@ -45,16 +43,20 @@ void MycroftMouth::reset() {
 void MycroftMouth::update() {
 	switch (state) {
 		case TALK:
-			this->talk();
+			this->talk();	// animates
 			break;
 		case LISTEN:
-			this->listen();
+			this->listen();	// animates
 			break;
 		case THINK:
-			this->think();
+			this->think();	// animates
 			break;
 		case TEXT:
-			this->updateText();
+			this->updateText();	// scrolls
+			break;
+		case VISEME:
+		case ICON:
+			// no animation, but we don't want to reset state
 			break;
 		default:
 			if (lastState != NONE) {
@@ -216,11 +218,18 @@ void MycroftMouth::showIcon(const String& icon) {
 			buf[0] = icon[c]-'A';
 	}
 
+	state = ICON;
 	ht1632.render();
 }
 
 
 void MycroftMouth::viseme(const String& vis) {
+	if (state == TEXT || state == ICON)
+	{
+		// Don't show visemes over text or images on the display
+		return;
+	}
+
 	state = VISEME;
 	int iVis = int(vis[0])-int('0');
 	if (iVis < 0)
@@ -228,11 +237,9 @@ void MycroftMouth::viseme(const String& vis) {
 	if (iVis > 6)
 		iVis = 6;
 	drawFrame(iVis, VISEME);
-	state = NONE;
 }
 
 void MycroftMouth::write(const char *value) {
-	state = TEXT;
 	textBuf = value;
 	textWd = HT1632.getTextWidth(textBuf.c_str(), FONT_5X4_WIDTH, FONT_5X4_HEIGHT);
 	textIdx = 0;

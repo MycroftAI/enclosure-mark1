@@ -7,13 +7,11 @@ class MycroftMouth {
 public:
 	static MycroftMouth& instance() { return *m_instance; }
 
-	MycroftHT1632 ht1632;
 	enum State {
-		NONE, TALK, LISTEN, THINK, TEXT, VISEME
+		NONE, TALK, LISTEN, THINK, TEXT, VISEME, ICON
 	};
-	State state;
+
 	MycroftMouth(int pinCS1, int pinWR, int pinDATA, int plates);
-	MycroftMouth();
 	template <size_t y>
 	void drawImage(int8_t pos, int8_t index, const char(&imgs)[y][16]) {
 		readBuffer(index, imgs);
@@ -31,16 +29,20 @@ public:
 	void viseme(const String& str);
 	void showIcon(const String& strIcon);
 	void write(const char *value);
+	State getState() const { return state; }
+
+	MycroftHT1632 ht1632;
 
 private:
-        static MycroftMouth* m_instance;
+        static MycroftMouth* 	m_instance;
+	State			state;
+	byte 			i, total;
+	String 			textBuf;
+	char 			buffer[16];
+	int 			textWd, textIdx, plates;
+	unsigned long 		nextTime;
+	State 			lastState;
 
-	byte i, total;
-	String textBuf;
-	char buffer[16];
-	int textWd, textIdx, plates;
-	unsigned long nextTime;
-	State lastState;
 	void updateText();
 	void resetCounters(State state);
 	void drawFrame(byte i, State anim);
