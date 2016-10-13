@@ -11,7 +11,7 @@ public:
     void setup();
 
 private:
-    void process(String cmd);
+    void process(const String& cmd);
 
     MycroftArduino &arduino;
 };

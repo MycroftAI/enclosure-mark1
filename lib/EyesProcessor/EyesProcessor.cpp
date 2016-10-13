@@ -1,41 +1,44 @@
 #include "EyesProcessor.h"
 #include "MycroftEyes.h"
 
-EyesProcessor::EyesProcessor(MycroftEyes &eyes) :
-BaseProcessor("eyes"), eyes(eyes) { }
+EyesProcessor::EyesProcessor()
+   : BaseProcessor("eyes")
+{
+}
 
 void EyesProcessor::setup() {
-	eyes.setup();
+	MycroftEyes::instance().setup();
 }
 
 void EyesProcessor::updateEyesColor(long code) {
 	long red = (code >> 16) & 0xFF;
 	long green = (code >> 8) & 0xFF;
 	long blue = code & 0xFF;
-	eyes.updateColor((uint8_t) red, (uint8_t) green, (uint8_t) blue);
+	MycroftEyes::instance().updateColor((uint8_t) red, (uint8_t) green, (uint8_t) blue);
 }
 
-void EyesProcessor::process(String cmd) {
-	if (contains(cmd, "color=")) {
-		cmd.replace("color=", "");
-		updateEyesColor(cmd.toInt());
-	} else if (contains(cmd, "level=")) {
-		cmd.replace("level=", "");
-		eyes.updateBrightness((uint8_t) cmd.toInt());
-	} else if (contains(cmd, "fill=")) {
-		cmd.replace("fill=", "");
-		eyes.fill((uint8_t) cmd.toInt());
-	} else if (contains(cmd, "volume=")) {
-		cmd.replace("volume=", "");
-		eyes.setEyePixels(MycroftEyes::BOTH, (uint8_t)cmd.toInt());
-	} else if (contains(cmd, "spin=")) {
-		cmd.replace("spin=", "");
-		eyes.timedSpin(cmd.toInt());
-    } else if (contains(cmd, "on")) {
+void EyesProcessor::process(const String& cmd) {
+	MycroftEyes&	eyes = MycroftEyes::instance();
+
+	if (cmd.startsWith("color=")) {
+		// substring(6) to skip "color="
+		updateEyesColor(cmd.substring(6).toInt());
+	} else if (cmd.startsWith("level=")) {
+		// substring(6) to skip "level="
+		eyes.updateBrightness((uint8_t) cmd.substring(6).toInt());
+	} else if (cmd.startsWith("fill=")) {
+		// substring(6) to skip "fill="
+		eyes.fill((uint8_t) cmd.substring(5).toInt());
+	} else if (cmd.startsWith("volume=")) {
+		// substring(6) to skip "volume="
+		eyes.setEyePixels(MycroftEyes::BOTH, (uint8_t)cmd.substring(7).toInt());
+	} else if (cmd.startsWith("spin=")) {
+		eyes.timedSpin(cmd.substring(5).toInt());
+	} else if (cmd.startsWith("on")) {
 		eyes.on();
-	} else if (contains(cmd, "off")) {
+	} else if (cmd.startsWith("off")) {
 		eyes.off();
-	} else if (contains(cmd, "reset")) {
+	} else if (cmd.startsWith("reset")) {
 		eyes.reset();
 	} else if (checkEyeAnim(cmd, "blink", MycroftEyes::BLINK)) {
 		return;
@@ -52,12 +55,12 @@ void EyesProcessor::process(String cmd) {
 	}
 }
 
-bool EyesProcessor::checkEyeAnim(String cmd, String term, MycroftEyes::Animation anim) {
-	if (contains(cmd, term)) {
-		term += '=';
-		cmd.replace(term, "");
-		MycroftEyes::Side side = toSide(cmd.charAt(0));
-		eyes.startAnim(anim, side);
+bool EyesProcessor::checkEyeAnim(const String& cmd, const String& term, MycroftEyes::Animation anim) {
+	if (cmd.startsWith(term)) {
+		String str(cmd);
+		str.replace(term+"=", "");
+		MycroftEyes::Side side = toSide(str.charAt(0));
+		MycroftEyes::instance().startAnim(anim, side);
 		return true;
 	}
 	return false;

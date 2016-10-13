@@ -1,17 +1,13 @@
 #include "BaseProcessor.h"
 
-bool BaseProcessor::contains(String value, String term) {
-	return value.indexOf(term) > -1;
-}
-
 BaseProcessor::BaseProcessor(const char *cmdName) : cmdStr(cmdName) {
 	cmdStr += '.';
 }
 
-bool BaseProcessor::tryProcess(String cmd) {
-	if (contains(cmd, cmdStr.c_str())) {
-		cmd.replace(cmdStr.c_str(), "");
-		process(cmd);
+bool BaseProcessor::tryProcess(const String& cmd) {
+	if (cmd.startsWith(cmdStr)) {
+		// change "abc.def" to just "def"
+		process(cmd.substring(cmdStr.length()));
 		return true;
 	}
 	return false;

@@ -2,8 +2,9 @@
 #include "MycroftMouth.h"
 #include "MouthImages.h"
 
-MycroftWeather::MycroftWeather(MycroftMouth &mouth, MycroftEyes &eyes) :
-mouth(mouth), eyes(eyes) { }
+MycroftWeather::MycroftWeather()
+{
+}
 
 void MycroftWeather::calculateImagePosition(String temperature) {
 	char first = temperature.charAt(0);
@@ -36,12 +37,14 @@ void MycroftWeather::calculateTemperaturePosition(String temperature) {
 }
 
 void MycroftWeather::display(int8_t condition, String temperature) {
+	MycroftMouth&	mouth = MycroftMouth::instance();
+
 	calculateImagePosition(temperature);
 	calculateTemperaturePosition(temperature);
 	mouth.reset();
 // TODO: This will be replaced in a future commit to use mouth.icon=
 //x	mouth.drawImage(imgPos, condition, WEATHER_CONDS);
-	temperature += "\\";
+	temperature += "\\";	// mapped as the degree symbol
 	mouth.staticText(temperature, tempPos, 1);
 	mouth.ht1632.render();
 }

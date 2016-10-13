@@ -28,31 +28,42 @@
 #define MOUTH_DATA 9
 #define MOUTH_PLATES 4
 
+#define MENU_HOLD_TIME			2000	// in milliseconds
+
+// Uncomment any of these defines when debugging
+// #define DEBUG_BUTTON_STATE
+
+
 // Must be initialized first
-MycroftArduino arduino(SPEAKER_PIN);
-MycroftEncoder encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
+MycroftArduino	arduino(SPEAKER_PIN);
+MycroftArduino*	MycroftArduino::m_instance = &arduino;
 
-MycroftEyes eyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
-MycroftEyes* MycroftEyes::m_instance = &eyes;
+MycroftEncoder	encoder(ENC1_PIN, ENC2_PIN, BUTTON_PIN);
+MycroftEncoder*	MycroftEncoder::m_instance = &encoder;
 
-MycroftMouth mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, MOUTH_PLATES);
-MycroftMenu menu(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, ENC1_PIN, ENC2_PIN, BUTTON_PIN);
-HardwareTester hardwareTester;
+MycroftEyes	eyes(EYES_SIZE, EYES_PIN, EYES_TYPE);
+MycroftEyes*	MycroftEyes::m_instance = &eyes;
 
-MouthProcessor mouthProcessor(mouth);
-EyesProcessor eyesProcessor(eyes);
-ArduinoProcessor arduinoProcessor(arduino);
-WeatherProcessor weatherProcessor(mouth, eyes);
-HardwareTestProcessor hardwareTestProcessor(hardwareTester, encoder, eyes, mouth, arduino);
-BaseProcessor *processors[] = {
-	&mouthProcessor,
-	&eyesProcessor,
-	&arduinoProcessor,
-	&weatherProcessor,
-	&hardwareTestProcessor
-};
+MycroftMouth	mouth(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, MOUTH_PLATES);
+MycroftMouth*	MycroftMouth::m_instance = &mouth;
 
-void timerIsr() {
+MycroftMenu	menu(MOUTH_CS1, MOUTH_WR, MOUTH_DATA, ENC1_PIN, ENC2_PIN, BUTTON_PIN);
+HardwareTester	hardwareTester;
+
+MouthProcessor		mouthProcessor;
+EyesProcessor		eyesProcessor;
+ArduinoProcessor	arduinoProcessor(arduino);
+WeatherProcessor	weatherProcessor;
+HardwareTestProcessor	hardwareTestProcessor(hardwareTester);
+BaseProcessor*		processors[] = {
+				&mouthProcessor,
+				&eyesProcessor,
+				&arduinoProcessor,
+				&weatherProcessor,
+				&hardwareTestProcessor
+			};
+
+static void timerIsr() {
 	encoder.isr();
 }
 
@@ -60,7 +71,7 @@ void initSerial() {
 	Serial.begin(9600);
 	while (!Serial);
 	Serial.flush();
-	Serial.println(F("Mycroft Hardware v0.1.9 - Connected"));
+	Serial.println(F("Mycroft Hardware v" ENCLOSURE_VERSION_STRING " - Connected"));
 }
 
 void setup() {
@@ -71,7 +82,7 @@ void setup() {
 	Timer1.attachInterrupt(timerIsr);
 }
 
-void processVolume() {
+static void processVolume() {
 	MycroftEncoder::Direction d = encoder.getDirection();
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		Serial.println(F("volume.up"));
@@ -80,7 +91,7 @@ void processVolume() {
 	}
 }
 
-void processMenuEncoder() {
+static void processMenuEncoder() {
 	MycroftEncoder::Direction d = encoder.getDirection();
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		if (menu.withinUpperBound()) {
@@ -93,7 +104,7 @@ void processMenuEncoder() {
 	}
 }
 
-void processBrightnessEncoder() {
+static void processBrightnessEncoder() {
 	MycroftEncoder::Direction d = encoder.getDirection();
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		eyes.incrementBrightness(true);
@@ -106,21 +117,100 @@ void processBrightnessEncoder() {
 	}
 }
 
-void processButton() {
-	if (encoder.isClicked()) {
-		if(menu.isEntered()) {
-			menu.checkButton();
+static bool		bWasClicked = false;
+static bool		bHasTriggered = false;
+static bool		bButtonPressed = false;
+static unsigned long	timeReleased = 0;
+
+static void handleButton() {
+
+	// Button is a little finicky.  Require a state be held for over
+        // 20ms before it sticks.
+	//
+	if (encoder.getFramesHeld() > 5) 
+	{
+#ifdef DEBUG_BUTTON_STATE
+		Serial.println(F("button: held > 5"));
+#endif
+		if (!bButtonPressed)
+		{
+			bButtonPressed = true;
+			bHasTriggered = false;
 		}
-		else {
-			Serial.println(F("mycroft.stop"));
+		timeReleased = 0;	// reset for next usage
+	}
+	else if (!encoder.isClicked() && bButtonPressed)
+	{
+#ifdef DEBUG_BUTTON_STATE
+		Serial.println(F("button: not clicked"));
+#endif
+		if (timeReleased == 0)
+		{
+#ifdef DEBUG_BUTTON_STATE
+			Serial.println(F("button: start debounce timer"));
+#endif
+			timeReleased = millis();
+		}
+		else if (millis()-timeReleased > 5)
+		{
+#ifdef DEBUG_BUTTON_STATE
+			Serial.println(F("button: released"));
+#endif
+			bButtonPressed = false;
+			timeReleased = 0;	// reset for next usage
 		}
 	}
-	if (encoder.getFramesHeld() >= 3 * 1000) {
-		menu.enter();
+
+	if (bButtonPressed) {
+#ifdef DEBUG_BUTTON_STATE
+		Serial.println(F("Button: pressed"));
+#endif
+		if (encoder.getFramesHeld() > 0 && encoder.getFramesHeld() < 10) {
+#ifdef DEBUG_BUTTON_STATE
+			Serial.println(F("Button: triggered"));
+#endif
+			bHasTriggered = false;
+		}
+		else if (encoder.getFramesHeld() >= 10 && !bHasTriggered) {
+#ifdef DEBUG_BUTTON_STATE
+			Serial.println(F("Button: triggered"));
+#endif
+			bHasTriggered = true;
+			if (menu.isEntered()) {
+#ifdef DEBUG_BUTTON_STATE
+				Serial.println(F("Button: menu click"));
+#endif
+				bWasClicked = false;	// cancel generating message on button up
+				menu.checkButton();
+			}
+			else
+				bWasClicked = true;
+		}
+		if (encoder.getFramesHeld() >= MENU_HOLD_TIME) {
+			bWasClicked = false;	// cancel generating message on button up
+			menu.enter();
+		}
+	}
+	else if (bWasClicked)
+	{
+#ifdef DEBUG_BUTTON_STATE
+		Serial.println(F("Button: wasClicked"));
+#endif
+		bWasClicked = false;
+		bHasTriggered = false;		// reset for next time
+		Serial.println(F("mycroft.stop"));
 	}
 }
 
 void loop() {
+
+	// Read the command string off the serial line.
+	// Our convention is: class.command=param
+	// Ex:
+	//	mouth.reset
+	//	mouth.text=abc
+	//	eyes.blink=l
+	//
 	if (Serial.available() > 0) {
 		String cmd = Serial.readStringUntil('\n');
 		Serial.flush();
@@ -131,8 +221,13 @@ void loop() {
 			if (i->tryProcess(cmd))
 				break;
 	}
+
+	// Until more serial data becomes available, just
+	// loop and do and processing for animation or 
+	// the encoder
+	//
 	while (Serial.available() <= 0) {
-		processButton();
+		handleButton();
 		if(menu.checkTest()) {
 			hardwareTester.run(encoder, eyes, mouth, arduino);
 			menu.finishTest();
@@ -145,11 +240,11 @@ void loop() {
 				processBrightnessEncoder();
 			}
 		}
-		else{
+		else {
 			processVolume();
 			eyes.updateAnimation();
 			mouth.update();
-			if(mouth.state != MycroftMouth::NONE && eyes.currentAnim == MycroftEyes::SPIN) {
+			if (mouth.getState() != MycroftMouth::NONE && eyes.currentAnim == MycroftEyes::SPIN) {
 				eyes.reset();
 			}
 		}

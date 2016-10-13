@@ -10,15 +10,10 @@ class MycroftArduino;
 
 class HardwareTestProcessor : public BaseProcessor {
 public:
-	HardwareTestProcessor(HardwareTester &tester, MycroftEncoder &encoder,
-			MycroftEyes &eyes, MycroftMouth &mouth, MycroftArduino &arduino);
-	
-	void process(String cmd);
+	HardwareTestProcessor(HardwareTester &tester);
+
+	void process(const String& cmd);
 
 private:
 	HardwareTester &tester;
-	MycroftEncoder &encoder;
-	MycroftEyes &eyes;
-	MycroftMouth &mouth;
-	MycroftArduino &arduino;
 };

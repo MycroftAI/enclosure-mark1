@@ -4,6 +4,7 @@ class ClickEncoder;
 
 class MycroftEncoder {
 public:
+	static MycroftEncoder& instance() { return *m_instance; }
 
 	enum class Direction {
 		LEFT, RIGHT, NONE
@@ -16,6 +17,8 @@ public:
 	void isr();
 
 private:
+        static MycroftEncoder* m_instance;
+
 	const byte PIN_BUTTON;
 	int16_t last, value;
 	int framesHeld;
