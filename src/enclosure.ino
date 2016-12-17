@@ -71,7 +71,7 @@ void initSerial() {
 	Serial.begin(9600);
 	while (!Serial);
 	Serial.flush();
-	Serial.println(F("Mycroft Hardware v" ENCLOSURE_VERSION_STRING " - Connected"));
+	Serial.println(F("Mycroft Enclosure v" ENCLOSURE_VERSION_STRING " - Connected"));
 }
 
 void setup() {
@@ -127,7 +127,7 @@ static void handleButton() {
 	// Button is a little finicky.  Require a state be held for over
         // 20ms before it sticks.
 	//
-	if (encoder.getFramesHeld() > 5) 
+	if (encoder.getFramesHeld() > 5)
 	{
 #ifdef DEBUG_BUTTON_STATE
 		Serial.println(F("button: held > 5"));
@@ -223,7 +223,7 @@ void loop() {
 	}
 
 	// Until more serial data becomes available, just
-	// loop and do and processing for animation or 
+	// loop and do and processing for animation or
 	// the encoder
 	//
 	while (Serial.available() <= 0) {
