@@ -20,6 +20,6 @@ void ArduinoProcessor::process(const String& cmd) {
 	} else if (cmd.startsWith("blink=")) {
 		arduino.blink(cmd.substring(6).toInt(), 500);
 	} else if (cmd.startsWith("version")) {
-		Serial.println(F("Mycroft Enclosure v" ENCLOSURE_VERSION_STRING));
+		Serial.println(F("Mycroft Mark 1 v" ENCLOSURE_VERSION_STRING));
 	}
 }
