@@ -71,7 +71,7 @@ void initSerial() {
 	Serial.begin(9600);
 	while (!Serial);
 	Serial.flush();
-	Serial.println(F("Mycroft Enclosure v" ENCLOSURE_VERSION_STRING " - Connected"));
+	Serial.println(F("Mycroft Mark 1 v" ENCLOSURE_VERSION_STRING " - Connected"));
 }
 
 void setup() {
