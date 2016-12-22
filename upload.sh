@@ -34,7 +34,7 @@ if [[ $FORCE -ne 1 ]]; then
     # Run Python script to determine if upgrade is needed
     python ${SCRIPT_DIR}/verifyArduino.py
     
-    if [ $? -ne 1 ]
+    if [ $? -ne 1 ]; then
        if [[ $STOPSERVICE  -eq 1 ]]; then
           sudo service mycroft-enclosure-client start
        fi
@@ -48,8 +48,7 @@ fi
 
 # Upload new code to the Arduino
 sudo avrdude -p atmega328p -C ${SCRIPT_DIR}/avrdude-gpio.conf -c linuxgpio -v -U flash:w:${SCRIPT_DIR}/build/enclosure.ino.hex
-if [ $? -eq 0 ]
-then
+if [ $? -eq 0 ]; then
     # Read and save the version info from the Arduino if write succeeded
     echo "Upload succeeded, saving version info"
     sudo python ${SCRIPT_DIR}/verifyArduino.py --savever
