@@ -64,12 +64,12 @@ try:
     tty.flushInput()
     tty.flushOutput()
 
-    # Write "system.ping"
-    print "Pinging..."
+    # Write "system.version"
+    print "Requesting version..."
     tty.write("system.version")
     time.sleep(0.1)
 
-    # Now check to see if we got a response from the ping command
+    # Now check to see if we got a response from the version command
     # command we just sent.  Remember, there might not be a Mark 1
     # Arduino on the other side of the serial port.
     resp = tty.readline().rstrip()
