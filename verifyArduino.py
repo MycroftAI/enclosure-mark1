@@ -1,6 +1,5 @@
-# This application runs attempts to determine if a
-# Mycroft Mark 1 device needs to upload new code to
-# the connected Arduino.  Return codes:
+# This script determines if a Mycroft Mark 1 device needs to 
+# upload new code to the connected Arduino.  Return codes:
 #   1  needs to update
 #   0  already loaded with the latest version
 # < 0  error code, don't attempt to update
@@ -15,8 +14,12 @@ import time
 import os.path
 from mycroft.configuration import ConfigurationManager
 
-pathVersion = "/opt/enclosure/build/version.txt"
-pathSketch = "/opt/enclosure/build/enclosure.ino.hex"
+def get_script_path():
+    return os.path.dirname(os.path.realpath(sys.argv[0]))
+
+DIR = get_script_path()
+pathVersion = DIR + "/build/version.txt"
+pathSketch = DIR + "/build/enclosure.ino.hex"
 
 if not os.path.isfile(pathSketch):
     sys.exit(-1)  # no Arduino Sketch to upload!
@@ -58,11 +61,10 @@ if os.path.isfile(pathVersion):
 #
 try:
     # Thoroughly flush the serial port.
-    #xxx # Since this happens right after boot, sometimes there is junk
-    #xxx # on the serial port line from electrical noise on a Pi, so sleep.
-    #xxx # time.sleep(1)
     tty.flushInput()
     tty.flushOutput()
+    time.sleep(0.5)
+
 
     # Write "system.version"
     print "Requesting version..."
@@ -79,8 +81,8 @@ try:
         resp = tty.readline().rstrip()
         print "Reply= '" + resp + "'"
         if "Mycroft Mark 1 v" in resp:
-            ver = tty.readline().rstrip()
-            print "Reply= '" + ver + "'"
+            ver = resp
+            print "Ver= '" + ver + "'"
 
             # Save the version for subsequent testing
             if len(sys.argv) > 1 and sys.argv[1] == "--savever":
