@@ -12,12 +12,21 @@ import json
 import sys
 import serial
 import time
+import os
 import os.path
 import mycroft.configuration
 
 
 def get_script_path():
     return os.path.dirname(os.path.realpath(sys.argv[0]))
+
+
+def make_sure_path_exists(path):
+    try:
+        os.makedirs(path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
 
 
 # Attempt to open the serial port connected to the Arduino
@@ -97,6 +106,7 @@ if platform is None:
 
     # Save the detected platform for this machine so we never have to
     # autodetect again.
+    make_sure_path_exists(os.path.dirname(mycroft.configuration.SYSTEM_CONFIG))
     with open(mycroft.configuration.SYSTEM_CONFIG, 'a+') as f:
         f.seek(0)
         try:
