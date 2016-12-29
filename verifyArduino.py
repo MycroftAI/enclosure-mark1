@@ -17,6 +17,11 @@ import os.path
 import mycroft.configuration
 
 
+def log(str):
+    with open("/tmp/verifyOutput.txt", "a") as text_file:
+        text_file.write(time.strftime("%Y-%m-%d %H:%M") + " - " + str + "\n")
+
+
 def get_script_path():
     return os.path.dirname(os.path.realpath(sys.argv[0]))
 
@@ -79,6 +84,9 @@ def detect_platform():
         return "unknown"
 
 
+log("==============================")
+log("Starting verifyArduino.py")
+
 # Files used by this script are kept relative to its own directory.
 DIR = get_script_path()
 pathVersion = DIR + "/build/version.txt"
@@ -90,6 +98,7 @@ tty = None  # the serial port interface
 # First, verify that we are running on a Mark 1 device
 
 if not os.path.isfile(pathSketch):
+    log("No sketch found")
     sys.exit(-1)  # no Arduino Sketch to upload!
 
 # Read the platform.  We should only be attempting to verify/update
@@ -121,8 +130,10 @@ if platform is None:
         f.truncate()
         json.dump(conf, f)
 
+log("platform is '"+str(platform)+"'")
+
 if not platform == "mycroft_mark_1":
-    print "Not a Mark 1 (" + str(platform) + ")"
+    log("Not a Mark 1 (" + str(platform) + ")")
     sys.exit(-2)  # no Arduino to talk to!
 
 ##########################################################################
@@ -137,59 +148,74 @@ if os.path.isfile(pathVersion):
         with open(pathVersion, 'r') as myfile:
             latestVersion = myfile.read()
 
+log("latestVersion is '"+str(latestVersion)+"'")
+
 # Attempt to talk to the Arduino over the serial port get loaded Sketch
 # version and react accordingly.
 #
+# We repeat this up to 3 times to deal with issues like the electrical
+# line-noise that happens during a power-up sequence.  For the first
+# several seconds the serial port often contains extra "bad characters"
+# as a result of this environmental noise.
+#
+result = -3  # unknown state
 try:
     if tty is None:
         tty = open_serial_port()
 
-    # Thoroughly flush the serial port.
-    tty.flushInput()
-    tty.flushOutput()
-    time.sleep(0.5)
+    for i in range(0, 3):
+        log("Attempt #"+str(i))
 
-    # Write "system.version"
-    print "Requesting version..."
-    tty.write("system.version")
-    time.sleep(0.1)
+        # Thoroughly flush the serial port.
+        time.sleep(0.5)
+        tty.flushInput()
+        tty.flushOutput()
 
-    # Now check to see if we got a response from the version command
-    # command we just sent.  Remember, there might not be a Mark 1
-    # Arduino on the other side of the serial port.
-    resp = tty.readline().rstrip()
-    print "Reply= '" + resp + "'"
-    if "Command: system.version" in resp:
-        # Got Arduino ping response, attempting to extract version
+        # Write "system.version"
+        print "Requesting version..."
+        tty.write("system.version")
+        time.sleep(0.1)
+
+        # Now check to see if we got a response from the version command
+        # command we just sent.  Remember, there might not be a Mark 1
+        # Arduino on the other side of the serial port.
         resp = tty.readline().rstrip()
+        log("Resp1='"+str(resp)+"'")
         print "Reply= '" + resp + "'"
-        if "Mycroft Mark 1 v" in resp:
-            ver = resp
-            print "Ver= '" + ver + "'"
+        if "Command: system.version" in resp:
+            # Got Arduino ping response, attempting to extract version
+            resp = tty.readline().rstrip()
+            log("Ver='"+str(resp)+"'")
+            print "Reply= '" + resp + "'"
+            if "Mycroft Mark 1 v" in resp:
+                ver = resp
+                print "Ver= '" + ver + "'"
 
-            # Save the version for subsequent testing
-            if len(sys.argv) > 1 and sys.argv[1] == "--savever":
-                with open(pathVersion, "w") as text_file:
-                    text_file.write(ver)
-                print "Version reported from Arduino saved"
-                sys.exit(0)
+                # Save the version for subsequent testing
+                if len(sys.argv) > 1 and sys.argv[1] == "--savever":
+                    with open(pathVersion, "w") as text_file:
+                        text_file.write(ver)
+                    log("Version reported from Arduino saved")
+                    result = 0
 
-            if latestVersion == ver:
-                print "Arduino up to date!"
-                sys.exit(0)
+                if latestVersion == ver:
+                    log("Arduino up to date!")
+                    result = 0
+                else:
+                    log("Arduino needs to be updated")
+                    result = 1
             else:
-                print "Arduino needs to be updated"
-                sys.exit(1)
+                log("system.version not responded to, Arduino needs update")
+                result = 1
         else:
-            print "system.version not responded to, Arduino needs update"
-            sys.exit(1)
+            log("Arduino not responding, assuming it needs to be updated")
+            result = 1
 
-    else:
-        print "Arduino not responding, assuming it needs to be updated"
-        sys.exit(1)
+        if result == 0:
+            break
 
 finally:
     tty.close()
 
 
-sys.exit(-3)  # unknown state, don't try to update
+sys.exit(result)
