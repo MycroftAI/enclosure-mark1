@@ -114,7 +114,7 @@ void MycroftMenu::checkButton() {
                 entered = false;
                 break;
             case OptionContainer::SSH:
-                Serial.println(F("unit.ssh-enable"));
+                Serial.println(F("unit.enable-ssh"));
                 entered = false;
                 break;
             case OptionContainer::RESET:
