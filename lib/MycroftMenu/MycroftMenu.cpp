@@ -37,8 +37,10 @@ bool MycroftMenu::withinLowerBound() {
 void MycroftMenu::updateOptionIndex(bool up) {
     if(up) {
         optionIndex++;
+        resetVal = true;
     } else {
         optionIndex--;
+        resetVal = false;
     }
 }
 
@@ -94,13 +96,11 @@ void MycroftMenu::run() {
 	drawOption(false, strBright, false);
     }
     else if (currentState == RESETMODE){
-        if(optionIndex < resetIndex){
-            resetVal = false;
-            drawOption(false, "NO", true);
+        if(resetVal){
+            drawOption(true, "YES", false);
         }
         else{
-            resetVal = true;
-            drawOption(true, "YES", false);
+            drawOption(false, "NO", true);
         }
     }
 }
@@ -134,7 +134,7 @@ void MycroftMenu::checkButton() {
                 break;
             case OptionContainer::ILLUM:
                 currentState = BRIGHTNESS;
-		break;
+		        break;
             case OptionContainer::EXIT:
                 entered = false;
                 break;

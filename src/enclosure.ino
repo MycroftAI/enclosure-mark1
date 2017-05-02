@@ -239,6 +239,9 @@ void loop() {
 			} else if (menu.getCurrentMenu() == MycroftMenu::BRIGHTNESS){
 				processBrightnessEncoder();
 			}
+			else if (menu.getCurrentMenu() == MycroftMenu::RESETMODE){
+				processMenuEncoder();
+			}
 		}
 		else {
 			processVolume();
