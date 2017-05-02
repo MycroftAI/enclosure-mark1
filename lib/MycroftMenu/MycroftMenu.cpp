@@ -6,6 +6,7 @@ display(pinCS1, pinWR, pinDATA), encoder(pinENC1,pinENC2,pinBUTTON) {
     currentState = MAIN;
     entered = false;
     shouldTest = false;
+    resetVal = false;
     insertOptions();
 }
 
@@ -92,6 +93,16 @@ void MycroftMenu::run() {
 
 	drawOption(false, strBright, false);
     }
+    else if (currentState == RESETMODE){
+        if(optionIndex < resetIndex){
+            resetVal = false;
+            drawOption(false, "NO", true);
+        }
+        else{
+            resetVal = true;
+            drawOption(true, "YES", false);
+        }
+    }
 }
 
 void MycroftMenu::checkButton() {
@@ -118,8 +129,8 @@ void MycroftMenu::checkButton() {
                 entered = false;
                 break;
             case OptionContainer::RESET:
-                Serial.println(F("unit.factory-reset"));
-                entered = false;
+                resetVal = false;
+                currentState = RESETMODE;
                 break;
             case OptionContainer::ILLUM:
                 currentState = BRIGHTNESS;
@@ -134,6 +145,21 @@ void MycroftMenu::checkButton() {
 	optionIndex = 0;
 	run();
 	return;
+    }
+//          optionIndex = 3
+    else if (currentState == RESETMODE){
+        if(resetVal){
+            Serial.println(F("unit.factory-reset"));
+            entered = false;
+            return;
+        }
+        else {
+            resetVal = false;
+            currentState = MAIN;
+            optionIndex = 6;
+            run();
+            return;
+        }
     }
     display.clear();
     display.render();
