@@ -6,7 +6,7 @@ class MycroftMenu {
 public:
     MycroftMenu(int pinCS1, int pinWR, int pinDATA, int pinENC1, int pinENC2, int pinBUTTON);
     enum menuState {
-        MAIN, BRIGHTNESS
+        MAIN, BRIGHTNESS, RESETMODE
     };
     menuState getCurrentMenu();
     void run();
@@ -23,7 +23,7 @@ public:
 private:
     MycroftDisplay display;
     MycroftEncoder encoder;
-    bool entered, shouldTest;
+    bool entered, shouldTest, resetVal;
     struct OptionContainer {
         enum Option{
             WIFI, RESET, REBOOT, SHUTDOWN, TEST, EXIT, ILLUM, SSH
@@ -34,6 +34,7 @@ private:
     OptionContainer menuOptions[8];
     uint8_t optionIndex;
     const uint8_t maxIndex = 7;
+    const uint8_t resetIndex = maxIndex;
     void insertOptions();
     void drawOption(bool leftArrow, const String& option, bool rightArrow);
 };
