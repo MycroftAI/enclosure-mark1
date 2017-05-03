@@ -71,6 +71,9 @@ void MycroftMenu::run() {
             case OptionContainer::TEST:
                 drawOption(true, "TEST", true);
                 break;
+            case OptionContainer::SSH:
+                drawOption(true, "SSH", true);
+                break;
             case OptionContainer::RESET:
                 drawOption(true, "RESET", true);
                 break;
@@ -110,6 +113,10 @@ void MycroftMenu::checkButton() {
                 shouldTest = true;
                 entered = false;
                 break;
+            case OptionContainer::SSH:
+                Serial.println(F("unit.enable-ssh"));
+                entered = false;
+                break;
             case OptionContainer::RESET:
                 Serial.println(F("unit.factory-reset"));
                 entered = false;
@@ -139,8 +146,9 @@ void MycroftMenu::insertOptions() {
     menuOptions[2].option = OptionContainer::REBOOT;
     menuOptions[3].option = OptionContainer::SHUTDOWN;
     menuOptions[4].option = OptionContainer::TEST;
-    menuOptions[5].option = OptionContainer::RESET;
-    menuOptions[6].option = OptionContainer::EXIT;
+    menuOptions[5].option = OptionContainer::SSH;
+    menuOptions[6].option = OptionContainer::RESET;
+    menuOptions[7].option = OptionContainer::EXIT;
 }
 
 void MycroftMenu::syncBrightness() {
