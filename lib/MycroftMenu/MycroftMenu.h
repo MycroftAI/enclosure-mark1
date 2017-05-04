@@ -26,14 +26,14 @@ private:
     bool entered, shouldTest, resetVal;
     struct OptionContainer {
         enum Option{
-            WIFI, RESET, REBOOT, SHUTDOWN, TEST, EXIT, ILLUM, SSH
+            WIFI, RESET, REBOOT, SHUTDOWN, TEST, EXIT, ILLUM, SSH, DEMO
         };
         Option option;
     };
     menuState currentState;
-    OptionContainer menuOptions[8];
+    OptionContainer menuOptions[9];
     uint8_t optionIndex;
-    const uint8_t maxIndex = 7;
+    const uint8_t maxIndex = 8;
     const uint8_t resetIndex = maxIndex;
     void insertOptions();
     void drawOption(bool leftArrow, const String& option, bool rightArrow);

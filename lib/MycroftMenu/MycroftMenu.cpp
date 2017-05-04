@@ -83,6 +83,9 @@ void MycroftMenu::run() {
             case OptionContainer::ILLUM:
                 drawOption(false, "ILLUM", true);
                 break;
+            case OptionContainer::DEMO:
+                drawOption(true, "DEMO", true);
+                break;
             case OptionContainer::EXIT:
                 drawOption(true, "EXIT", false);
                 break;
@@ -135,6 +138,10 @@ void MycroftMenu::checkButton() {
             case OptionContainer::ILLUM:
                 currentState = BRIGHTNESS;
 		        break;
+            case OptionContainer::DEMO:
+                entered = false;
+                Serial.println(F("mycroft.mark1.demo"));
+                break;
             case OptionContainer::EXIT:
                 entered = false;
                 break;
@@ -174,7 +181,8 @@ void MycroftMenu::insertOptions() {
     menuOptions[4].option = OptionContainer::TEST;
     menuOptions[5].option = OptionContainer::SSH;
     menuOptions[6].option = OptionContainer::RESET;
-    menuOptions[7].option = OptionContainer::EXIT;
+    menuOptions[7].option = OptionContainer::DEMO;
+    menuOptions[8].option = OptionContainer::EXIT;
 }
 
 void MycroftMenu::syncBrightness() {
