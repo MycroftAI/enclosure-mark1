@@ -9,6 +9,13 @@ fi
 
 echo "Compiling..."
 ./compile.sh
+if [ $? -eq 0 ]; then
+    echo "Success"
+else
+    echo "Compilation error, stopping"
+    exit 1
+fi
+
 echo "Deploying to: " ${MYCROFT_HOSTNAME}
 sshpass -p 'mycroft' ssh ${MYCROFT_HOSTNAME} "sudo mkdir -p /opt/enclosure"
 sshpass -p 'mycroft' scp ${PWD}/build/enclosure.ino.hex ${MYCROFT_HOSTNAME}:/tmp/enclosure.ino.hex
