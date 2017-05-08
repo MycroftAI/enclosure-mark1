@@ -38,6 +38,23 @@ void EyesProcessor::process(const String& cmd) {
 		eyes.on();
 	} else if (cmd.startsWith("off")) {
 		eyes.off();
+	} else if (cmd.startsWith("set")) {
+                uint8_t     pixel = 0;
+                uint32_t    color = 0;
+                
+                // parse the pixel #
+                byte        c = 4; // skip "set="
+                while (c < cmd.length() && cmd[c] != ',')
+                {
+                    pixel = pixel*10 + uint8_t(cmd[c]-'0');
+                    c++;
+                }
+                // parse the color
+                while (++c < cmd.length() && cmd[c] != ',')
+                {
+                    color = color*10 + uint32_t(cmd[c]-'0');
+                }
+                eyes.setPixel(pixel, color);
 	} else if (cmd.startsWith("reset")) {
 		eyes.reset();
 	} else if (checkEyeAnim(cmd, "blink", MycroftEyes::BLINK)) {
@@ -50,9 +67,7 @@ void EyesProcessor::process(const String& cmd) {
 		return;
 	} else if (checkEyeAnim(cmd, "unlook", MycroftEyes::UNLOOK)) {
 		return;
-	} else if (checkEyeAnim(cmd, "spin", MycroftEyes::SPIN)) {
-		return;
-	}
+        }
 }
 
 bool EyesProcessor::checkEyeAnim(const String& cmd, const String& term, MycroftEyes::Animation anim) {

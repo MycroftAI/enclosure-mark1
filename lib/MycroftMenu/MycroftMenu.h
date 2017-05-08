@@ -6,35 +6,33 @@ class MycroftMenu {
 public:
     MycroftMenu(int pinCS1, int pinWR, int pinDATA, int pinENC1, int pinENC2, int pinBUTTON);
     enum menuState {
-        MAIN, BRIGHTNESS, RESETMODE
+        MAIN, BRIGHTNESS, RESET_UNIT, ALLOW_SSH
     };
     menuState getCurrentMenu();
-    void run();
+    void drawText();
     void enter();
+    void exitMenu();
     void finishTest();
     void updateOptionIndex(bool up);
     bool isEntered();
     bool checkTest();
-    bool withinUpperBound();
-    bool withinLowerBound();
-    void checkButton();
+    void pressButton();
     void syncBrightness();
 
 private:
     MycroftDisplay display;
     MycroftEncoder encoder;
-    bool entered, shouldTest, resetVal;
+    bool entered, shouldTest, choice;
+    
+    // This defines the order of menu items
     struct OptionContainer {
         enum Option{
-            WIFI, RESET, REBOOT, SHUTDOWN, TEST, EXIT, ILLUM, SSH, DEMO
+            ILLUM, WIFI, REBOOT, SHUTDOWN, TEST, SSH, RESET, DEMO, EXIT, _COUNT
         };
         Option option;
     };
     menuState currentState;
-    OptionContainer menuOptions[9];
+    OptionContainer menuOptions[OptionContainer::_COUNT];
     uint8_t optionIndex;
-    const uint8_t maxIndex = 8;
-    const uint8_t resetIndex = maxIndex;
-    void insertOptions();
     void drawOption(bool leftArrow, const String& option, bool rightArrow);
 };

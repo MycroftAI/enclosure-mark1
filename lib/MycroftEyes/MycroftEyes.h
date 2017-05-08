@@ -26,6 +26,7 @@ public:
 	void startAnim(Animation anim, Side side);
 	void updateAnimation();
 	void timedSpin(int length);
+	void setPixel(uint8_t pixel, uint32_t color);
 	void setEyePixels(Side side, uint8_t pixels);
 	void updateColor(uint8_t r, uint8_t g, uint8_t b);
 	bool incrementBrightness(bool up);
@@ -45,7 +46,7 @@ private:
 	unsigned long nextTime, endTime;
 	Side currentSide, queuedSide, lookSide;
 	enum State {
-		OPEN, LOOKING, NARROWED, ANIMATING
+		OPEN, LOOKING, NARROWED, ANIMATING, CUSTOM
 	};
 	State currentState;
 	Animation queuedAnim;

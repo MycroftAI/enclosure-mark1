@@ -10,10 +10,17 @@ WeatherProcessor::WeatherProcessor()
 
 void WeatherProcessor::process(const String& cmd) {
 	if (cmd.startsWith("display=")) {
-		String str(cmd);
-		str.replace("display=", "");
-		int8_t cond = str.charAt(0) - '0';
-		str.remove(0, 1);
-		weather.display(cond, str);
+                // Format:   display=temp,image
+                String  temp;
+                byte    c = 8;
+                while (cmd[c] != ',' && c < cmd.length()) {
+                        temp += cmd[c];
+                        c++;
+                }
+
+                String icon = cmd;
+                icon.remove(0,c+1);
+
+                weather.display(temp, icon);
 	}
 }
