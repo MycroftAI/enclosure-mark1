@@ -28,7 +28,11 @@
 #define MOUTH_DATA 9
 #define MOUTH_PLATES 4
 
-#define MENU_HOLD_TIME			2000	// in milliseconds
+#define SEC                             1000
+
+#define MENU_HOLD_TIME			(2*SEC)
+#define MENU_TIME_OUT		        (30*SEC)
+
 
 // Uncomment any of these defines when debugging
 // #define DEBUG_BUTTON_STATE
@@ -69,7 +73,8 @@ static void timerIsr() {
 
 void initSerial() {
 	Serial.begin(9600);
-	while (!Serial);
+	while (!Serial)
+            ;
 	Serial.flush();
 	Serial.println(F("Mycroft Mark 1 v" ENCLOSURE_VERSION_STRING " - Connected"));
 }
@@ -82,8 +87,7 @@ void setup() {
 	Timer1.attachInterrupt(timerIsr);
 }
 
-static void processVolume() {
-	MycroftEncoder::Direction d = encoder.getDirection();
+static void scrollVolume(MycroftEncoder::Direction d) {
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		Serial.println(F("volume.up"));
 	} else if (d == MycroftEncoder::Direction::LEFT) {
@@ -91,29 +95,24 @@ static void processVolume() {
 	}
 }
 
-static void processMenuEncoder() {
-	MycroftEncoder::Direction d = encoder.getDirection();
+static void scrollMenu(MycroftEncoder::Direction d) {
 	if (d == MycroftEncoder::Direction::RIGHT) {
-		if (menu.withinUpperBound()) {
-			menu.updateOptionIndex(true);
-		}
+		menu.updateOptionIndex(false);
 	} else if (d == MycroftEncoder::Direction::LEFT) {
-		if (menu.withinLowerBound()) {
-			menu.updateOptionIndex(false);
-		}
+		menu.updateOptionIndex(true);
 	}
+	menu.drawText();
 }
 
-static void processBrightnessEncoder() {
-	MycroftEncoder::Direction d = encoder.getDirection();
+static void scrollBrightness(MycroftEncoder::Direction d) {
 	if (d == MycroftEncoder::Direction::RIGHT) {
 		eyes.incrementBrightness(true);
 		menu.syncBrightness();
-		menu.run();
+		menu.drawText();
 	} else if (d == MycroftEncoder::Direction::LEFT) {
 		eyes.incrementBrightness(false);
 		menu.syncBrightness();
-		menu.run();
+		menu.drawText();
 	}
 }
 
@@ -121,6 +120,7 @@ static bool		bWasClicked = false;
 static bool		bHasTriggered = false;
 static bool		bButtonPressed = false;
 static unsigned long	timeReleased = 0;
+static unsigned long    timeLastInteract = 0;
 
 static void handleButton() {
 
@@ -181,13 +181,15 @@ static void handleButton() {
 				Serial.println(F("Button: menu click"));
 #endif
 				bWasClicked = false;	// cancel generating message on button up
-				menu.checkButton();
+				menu.pressButton();
 			}
 			else
 				bWasClicked = true;
 		}
 		if (encoder.getFramesHeld() >= MENU_HOLD_TIME) {
 			bWasClicked = false;	// cancel generating message on button up
+			timeLastInteract = millis();
+                        eyes.on();
 			menu.enter();
 		}
 	}
@@ -217,9 +219,14 @@ void loop() {
 		Serial.print(F("Command: "));
 		Serial.println(cmd);
 
-		for (BaseProcessor *i : processors)
+		for (BaseProcessor *i : processors) {
+                        if ((i == &mouthProcessor || i == &weatherProcessor)
+                            && menu.isEntered())
+                            continue;   // no mouth movements while MENU is showing
+                        
 			if (i->tryProcess(cmd))
 				break;
+                }
 	}
 
 	// Until more serial data becomes available, just
@@ -228,23 +235,33 @@ void loop() {
 	//
 	while (Serial.available() <= 0) {
 		handleButton();
-		if(menu.checkTest()) {
+		if (menu.checkTest()) {
 			hardwareTester.run(encoder, eyes, mouth, arduino);
 			menu.finishTest();
 		}
-		if(menu.isEntered()) {
-			menu.run();
-			if (menu.getCurrentMenu() == MycroftMenu::MAIN){
-				processMenuEncoder();
-			} else if (menu.getCurrentMenu() == MycroftMenu::BRIGHTNESS){
-				processBrightnessEncoder();
-			}
-			else if (menu.getCurrentMenu() == MycroftMenu::RESETMODE){
-				processMenuEncoder();
-			}
+		
+                MycroftEncoder::Direction dir = encoder.getDirection();
+		if (menu.isEntered()) {
+                        if (dir == MycroftEncoder::Direction::NONE) {
+                            // check for timeout
+                            if (millis()-timeLastInteract > MENU_TIME_OUT) {
+                                // Auto-exit the menu
+                                menu.exitMenu();
+                            }
+                        } else {
+                            timeLastInteract = millis();
+                            
+                            if (menu.getCurrentMenu() == MycroftMenu::MAIN
+                                || menu.getCurrentMenu() == MycroftMenu::RESET_UNIT
+                                || menu.getCurrentMenu() == MycroftMenu::ALLOW_SSH) {
+                                    scrollMenu(dir);
+                            } else if (menu.getCurrentMenu() == MycroftMenu::BRIGHTNESS){
+                                    scrollBrightness(dir);
+                            }
+                        }
 		}
 		else {
-			processVolume();
+			scrollVolume(dir);
 			eyes.updateAnimation();
 			mouth.update();
 			if (mouth.getState() != MycroftMouth::NONE && eyes.currentAnim == MycroftEyes::SPIN) {

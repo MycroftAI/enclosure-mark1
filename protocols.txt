@@ -6,7 +6,7 @@ eyes.color=int                  int = RGB (of hex 0x00RRGGBB,
                                 e.g. red = 0x00FF0000 = 16711680, so
                                 "eyes.color=16711680" gives solid red eyes)
 eyes.level=int                  int = brightness level, 0-
-eyes.fill=int                   int = # pixels, resets when completely full
+eyes.fill=int                   int = fill amount (0-23)
 eyes.volume=int                 int = volume, 0-11 (it goes to 11!)
 eyes.spin=int                   int = milliseconds to spin, 0 for forever
 eyes.on                         int = turn on all eye pixels
@@ -19,7 +19,7 @@ eyes.widen=[l/r/b]              make eyes go from "squint" to wide open
 eyes.look=[l/r/b/u/d/c]         u = up, d = down, c = crossed
                                 (e.g. "eyes.look=d")
 eyes.unlook=[l/r/b/u/d/c]       reverse the "look" animation, ends at wide open
-eyes.eyespin=[l/r/b]            single eye spin (why?)
+eyes.set=int,color            	int = pixel, color = RGB color
 
 mouth.reset                     clear the matrix display
 mouth.faketalk                  simple animation of mouth moving

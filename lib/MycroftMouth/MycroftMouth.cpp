@@ -168,8 +168,8 @@ void MycroftMouth::showIcon(const String& icon) {
 		c += 2;
 		while (icon[c] != ',' && c < icon.length())
 		{
+			xOfs = xOfs*10 + icon[c]-'0';	// assumes '0'-'9'
 			c++;
-			xOfs = xOfs*10 + icon[c]-'A';	// assumes '0'-'9'
 		}
 		c++;
 	}
@@ -179,12 +179,11 @@ void MycroftMouth::showIcon(const String& icon) {
                 c += 2; 
                 while (icon[c] != ',' && c < icon.length())
                 {
+                        yOfs = yOfs*10 + icon[c]-'0';	// assumes '0'-'9'
                         c++;
-                        yOfs = yOfs*10 + icon[c]-'A';	// assumes '0'-'9'
                 }
                 c++;
         }
-
 
 	// icon is an encoded string.  The encoding includes 
 	// two leading characters to indicate width and height
@@ -195,12 +194,24 @@ void MycroftMouth::showIcon(const String& icon) {
 	// The low bit is the first pixel, running top to bottom
 	if (c+2 > (int)icon.length())
 		return;
+        
+        // NOTE: For some reason no string longer than 48 characters is
+        // coming through.
+        
+//	String	strY(icon.length());
+//        String  str("W=");
+//        str += strY;
+//        write(str.c_str());
+//        return;
+        
+	byte	w = icon[c++]-'A';	// this encoding works well up to 65
+	byte 	h = icon[c++]-'A';
 
-	byte	w = icon[0]-'A';	// this encoding works well up to 65
-	byte 	h = icon[1]-'A';
-	if (icon.length()-2 < (int)w*2)
+	
+	if (icon.length()-c < (int)w*2)
 		return;
 
+        
 	char	buf[2];
 	ht1632.clear();
 	for (; w && c < icon.length(); c++)

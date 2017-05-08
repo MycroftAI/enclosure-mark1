@@ -6,21 +6,6 @@ MycroftWeather::MycroftWeather()
 {
 }
 
-void MycroftWeather::calculateImagePosition(String temperature) {
-	char first = temperature.charAt(0);
-	if (temperature.length() == 1) {
-		imgPos = 7;
-	} else if (temperature.length() == 2) {
-		if (first == '-') {
-			imgPos = 6;
-		} else {
-			imgPos = 5;
-		}
-	} else if (temperature.length() == 3) {
-		imgPos = 3;
-	}
-}
-
 void MycroftWeather::calculateTemperaturePosition(String temperature) {
 	char first = temperature.charAt(0);
 	if (temperature.length() == 1) {
@@ -36,15 +21,13 @@ void MycroftWeather::calculateTemperaturePosition(String temperature) {
 	}
 }
 
-void MycroftWeather::display(int8_t condition, String temperature) {
+void MycroftWeather::display(const String& temperature, const String& icon) {
 	MycroftMouth&	mouth = MycroftMouth::instance();
 
-	calculateImagePosition(temperature);
 	calculateTemperaturePosition(temperature);
 	mouth.reset();
-// TODO: This will be replaced in a future commit to use mouth.icon=
-//x	mouth.drawImage(imgPos, condition, WEATHER_CONDS);
-	temperature += "\\";	// mapped as the degree symbol
-	mouth.staticText(temperature, tempPos, 1);
+        mouth.showIcon(icon);
+        // "\\" is mapped as the degree symbol
+	mouth.staticText(temperature+"\\", tempPos, 1);
 	mouth.ht1632.render();
 }
