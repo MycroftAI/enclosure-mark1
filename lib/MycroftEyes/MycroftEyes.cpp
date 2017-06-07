@@ -118,14 +118,14 @@ void MycroftEyes::fill(uint8_t pixel) {
                 // prevent animation from overwritting
 		currentAnim = NONE;
 		currentState = CUSTOM;
-            
+
                 uint16_t i = 0;
 		for (; i <= pixel; i++) {
 			neoPixel.setPixelColor(i, color);
 			neoPixel.show();
 			delay(1);  // avoid Neopixel overload
 		}
-		
+
 		// Empty the remainder
 		for (; i < neoPixel.numPixels(); i++) {
 			neoPixel.setPixelColor(i, 0);
