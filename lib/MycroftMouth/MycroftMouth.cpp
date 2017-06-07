@@ -194,24 +194,24 @@ void MycroftMouth::showIcon(const String& icon) {
 	// The low bit is the first pixel, running top to bottom
 	if (c+2 > (int)icon.length())
 		return;
-        
+
         // NOTE: For some reason no string longer than 48 characters is
         // coming through.
-        
+
 //	String	strY(icon.length());
 //        String  str("W=");
 //        str += strY;
 //        write(str.c_str());
 //        return;
-        
+
 	byte	w = icon[c++]-'A';	// this encoding works well up to 65
 	byte 	h = icon[c++]-'A';
 
-	
+
 	if (icon.length()-c < (int)w*2)
 		return;
 
-        
+
 	char	buf[2];
 	ht1632.clear();
 	for (; w && c < icon.length(); c++)
@@ -264,7 +264,15 @@ void MycroftMouth::updateText() {
 		ht1632.clear();
 		ht1632.drawTextPgm(textBuf.c_str(), OUT_SIZE - textIdx, 2, FONT_5X4, FONT_5X4_WIDTH, FONT_5X4_HEIGHT, FONT_5X4_STEP_GLYPH);
 		ht1632.render();
-		textIdx = (textIdx + 1) % (textWd + OUT_SIZE);
+
+		if (textWd > OUT_SIZE) {
+			// scroll long text
+			textIdx = (textIdx + 1) % (textWd + OUT_SIZE);
+		}
+		else {
+			// center short text
+			textIdx = OUT_SIZE - (OUT_SIZE - textWd) / 2;
+		}
 		nextTime = millis() + 150;
 	}
 }

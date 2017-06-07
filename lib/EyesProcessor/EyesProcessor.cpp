@@ -41,7 +41,7 @@ void EyesProcessor::process(const String& cmd) {
 	} else if (cmd.startsWith("set")) {
                 uint8_t     pixel = 0;
                 uint32_t    color = 0;
-                
+
                 // parse the pixel #
                 byte        c = 4; // skip "set="
                 while (c < cmd.length() && cmd[c] != ',')
@@ -66,6 +66,8 @@ void EyesProcessor::process(const String& cmd) {
 	} else if (checkEyeAnim(cmd, "widen", MycroftEyes::WIDEN)) {
 		return;
 	} else if (checkEyeAnim(cmd, "unlook", MycroftEyes::UNLOOK)) {
+		return;
+	} else if (checkEyeAnim(cmd, "spin", MycroftEyes::SPIN)) {
 		return;
         }
 }
