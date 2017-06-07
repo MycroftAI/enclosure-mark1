@@ -26,7 +26,7 @@ void MycroftWeather::display(const String& temperature, const String& icon) {
 
 	calculateTemperaturePosition(temperature);
 	mouth.reset();
-        mouth.showIcon(icon);
+        mouth.showIcon(icon.c_str());
         // "\\" is mapped as the degree symbol
 	mouth.staticText(temperature+"\\", tempPos, 1);
 	mouth.ht1632.render();

@@ -2,6 +2,7 @@
 #include "MouthImages.h"
 #include "font_5x4.h"
 #include "font_8x4.h"
+#include <string.h>
 
 // The "mouth" consists of 4 8x8 pixel plates
 // #define NUM_PLATES	4
@@ -158,15 +159,46 @@ void MycroftMouth::readBufferState(byte idx, State anim) {
 	}
 }
 
-void MycroftMouth::showIcon(const String& icon) {
+void MycroftMouth::showIcon(const char code[61]) {
+
+	static char msgHold[31] = {0};
+	char icon[91];
+
+	//Arduinos have a hardcoded limit of 64 bytes for their serial input
+	//buffer. To get around this Mycroft sends large messages as two parts.
+
+	//check if first or second half of a message
+	//if it is, concatenate the message into one
+	if (code[strlen(code)-1] == '$')
+	{
+		if(msgHold[0] != 0) //if holding part of a messasge
+		{
+			strcpy(icon,msgHold);
+			strcat(icon,code);
+			icon[strlen(icon)-1] = 0;
+			msgHold[0] = 0;
+		}
+		else //hold part of a message
+		{
+			strcpy(msgHold, code);
+			return;
+		}
+	}
+	else
+	{
+		strcpy(icon, code);
+	}
+
 	byte 	xOfs = 0;
 	byte	yOfs = 0;
 	byte	c = 0;
+	char  clearBefore = '1';
+	int clearTime = 0;
 	if (icon[c] == 'x' && icon[c+1] == '=')
 	{
 		// parse the xOfs
 		c += 2;
-		while (icon[c] != ',' && c < icon.length())
+		while (icon[c] != ',' && c < strlen(icon))
 		{
 			xOfs = xOfs*10 + icon[c]-'0';	// assumes '0'-'9'
 			c++;
@@ -176,57 +208,87 @@ void MycroftMouth::showIcon(const String& icon) {
 	if (icon[c] == 'y' && icon[c+1] == '=')
 	{
                 // parse the yOfs
-                c += 2; 
-                while (icon[c] != ',' && c < icon.length())
+                c += 2;
+                while (icon[c] != ',' && c < strlen(icon))
                 {
                         yOfs = yOfs*10 + icon[c]-'0';	// assumes '0'-'9'
                         c++;
                 }
                 c++;
         }
+	if (icon[c] == 'c' && icon[c+1] == 'P' && icon[c+2] == '=')
+	{
+		c += 3;
+		clearBefore = icon[c];
+		c += 2;
+	}
 
-	// icon is an encoded string.  The encoding includes 
+	if (icon[c] == 'c' && icon[c+1] == 'T' && icon[c+2] == '=') // 'cT' parameter currently does not do anything
+	{
+		c += 3;
+		while(icon[c] != ',' && c < strlen(icon))
+		{
+		  clearTime = clearTime*10 + icon[c] - '0';
+			c++;
+		}
+		c++;
+	}
+
+
+	// icon is an encoded string.  The encoding includes
 	// two leading characters to indicate width and height
 	// of the icon which follows.  Subsequent characters
 	// are encodings of the 4-bit blocks.  The data is in
 	// column order from the top-down.
 	// Chars = ABCDEFGHIJKLMNOP, represent 0b0000 to 0b1111
 	// The low bit is the first pixel, running top to bottom
-	if (c+2 > (int)icon.length())
+	if (c+2 > (int)strlen(icon))
 		return;
-        
+
+
         // NOTE: For some reason no string longer than 48 characters is
         // coming through.
-        
-//	String	strY(icon.length());
+
+//	String	strY(strlen(icon));
 //        String  str("W=");
 //        str += strY;
 //        write(str.c_str());
 //        return;
-        
+
+
+
 	byte	w = icon[c++]-'A';	// this encoding works well up to 65
 	byte 	h = icon[c++]-'A';
 
-	
-	if (icon.length()-c < (int)w*2)
+	if ((strlen(icon))-c < (int)w*2)
 		return;
 
-        
 	char	buf[2];
-	ht1632.clear();
-	for (; w && c < icon.length(); c++)
+
+	if(clearBefore == '1')
+	{
+		ht1632.clear();
+	}
+
+  int a = 0;
+	for (; w && c < (strlen(icon)); c++)
 	{
 		if (icon[c] < 'A')
 			continue;
 
-		if (c % 2)
+		if (a % 2 == 1)
 		{
 			buf[1] = icon[c]-'A';
+
 			ht1632.drawImage(buf, 1, h, xOfs++, yOfs);
 			w--;
 		}
 		else
+		{
 			buf[0] = icon[c]-'A';
+
+		}
+		a++;
 	}
 
 	state = ICON;
@@ -274,4 +336,3 @@ void MycroftMouth::resetCounters(State anim) {
 	i = 0;
 	nextTime = 0;
 }
-
