@@ -28,8 +28,8 @@ mouth.listen                    begins animation of listening mouth (wavy line)
 mouth.think                     begins animation of mouth going back and forth
 mouth.smile                     shows smiling mouth
 mouth.text=str                  scrolls text once across screen
-mouth.icon=[x=#,][y=#,]image    displays an encoded image (see note 1 below)
-mouth.viseme=int                displays a mouth shape viseme (see note 2 below)
+mouth.icon=[x=#,][y=#,]image    displays an encoded image (see note 2 below)
+mouth.viseme=int                displays a mouth shape viseme (see note 1 below)
 
 system.reset                    resets the Arduino
 system.mute                     mutes the audio output
@@ -92,7 +92,8 @@ these visemes.
 Two-color (black/white) images can be encoded and sent to the Mark 1
 faceplate.  The images can be created using editor.html in the same
 directory as this note.  Just check the "Icon Encode" checkbox and
-click in the squares to draw.
+click in the squares to draw. NOTE: Large images are a special case
+and must be handled separately. See below.
 
 A blank 16x8 image looks like this:
   QIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -130,3 +131,17 @@ The sinking is actually a good example of bad animation, because the Arduino
 doesn't 'clip' the image as it is writing" past the bounds of the screen.  So
 you might see glitches.  The correct way of doing this is to produce images
 that have the bottom rows cut off as it sinks.
+
+LARGE IMAGES
+
+You might notice that images much larger than the sailboat above will not
+appear on the faceplate. This is due to the Arduino's serial port buffer 
+limiting the number of characters that can be sent. To get around this, 
+you must split a long image encoding by ending it with a '$', then send 
+another protocol beginning with a '$' that finishes the encoding. Like so:
+
+  echo "mouth.icon=x=0,aIAAAAABICIEAFAFAFOFAFAFCFDFDFPF$" > /dev/ttyAMA0
+  echo "mouth.icon=$AFAFAFAFAFAFIFOFOFOFOFOFIEICABAAAA" > /dev/ttyAMA0
+
+The mouth_display function in the enclosure API handles this automatically.
+
