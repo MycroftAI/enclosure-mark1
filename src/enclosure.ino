@@ -31,7 +31,7 @@
 #define SEC                             1000
 
 #define MENU_HOLD_TIME			(2*SEC)
-#define MENU_TIME_OUT		        (30*SEC)
+#define MENU_TIME_OUT		        (5*SEC)
 
 
 // Uncomment any of these defines when debugging
@@ -223,7 +223,7 @@ void loop() {
                         if ((i == &mouthProcessor || i == &weatherProcessor)
                             && menu.isEntered())
                             continue;   // no mouth movements while MENU is showing
-                        
+
 			if (i->tryProcess(cmd))
 				break;
                 }
@@ -239,7 +239,7 @@ void loop() {
 			hardwareTester.run(encoder, eyes, mouth, arduino);
 			menu.finishTest();
 		}
-		
+
                 MycroftEncoder::Direction dir = encoder.getDirection();
 		if (menu.isEntered()) {
                         if (dir == MycroftEncoder::Direction::NONE) {
@@ -250,7 +250,7 @@ void loop() {
                             }
                         } else {
                             timeLastInteract = millis();
-                            
+
                             if (menu.getCurrentMenu() == MycroftMenu::MAIN
                                 || menu.getCurrentMenu() == MycroftMenu::RESET_UNIT
                                 || menu.getCurrentMenu() == MycroftMenu::ALLOW_SSH) {

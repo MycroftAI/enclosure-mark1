@@ -42,7 +42,7 @@ public:
 	void think();
 	void listen();
 	void viseme(const String& str);
-	void showIcon(const String& strIcon);
+	void showIcon(const char strIcon[61]);
 	void write(const char *value);
 	State getState() const { return state; }
 
