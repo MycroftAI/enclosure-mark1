@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #########################################################################
 #Copyright 2017, Mycroft AI, Inc.
 #
@@ -13,7 +14,7 @@
 #See the License for the specific language governing permissions and
 #limitations under the License.
 #########################################################################
-#!/usr/bin/env bash
+
 
 function init_vars() {
   TOP='.'
