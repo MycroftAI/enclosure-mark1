@@ -32,3 +32,6 @@ This will write the generated hex file to the Arduino. After running through the
 
 [mycroft-front]:http://i.imgbox.com/AvlCUgie.png
 [arduino-ide]:https://www.arduino.cc/en/Main/Software
+
+# Version number location
+enclosure/lib/MycroftArduino/MycroftArduino.h
