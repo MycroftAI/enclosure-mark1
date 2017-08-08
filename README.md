@@ -56,4 +56,4 @@ self.enclosure.mouth_text("I am angry!")
 ```
 
 # Graphics
-The `mouth.icon=` command takes a custom format for it's black and white images.  You can use the [HTML editor](../master/editor.html) to create the image strings that can be sent.  Within Mycroft you can send PNG files using `self.enclosure.display_png()` and they will be automatically converted to the correct format for you.
+The `mouth.icon=` command takes a custom format for it's black and white images.  You can use the [HTML editor](http://htmlpreview.github.io/?https://raw.githubusercontent.com/MycroftAI/enclosure-mark1/master/editor.html) to create the image strings that can be sent.  Within Mycroft you can send PNG files using `self.enclosure.display_png()` and they will be automatically converted to the correct format for you.
