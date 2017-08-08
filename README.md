@@ -35,3 +35,25 @@ This will write the generated hex file to the Arduino. After running through the
 
 # Version number location
 enclosure/lib/MycroftArduino/MycroftArduino.h
+
+# Serial Port Protocols
+
+See the file [protocols.txt](../master/protocols.txt) for a description of commands that can be sent to the faceplate.
+
+Commands can be sent from the command line on a Raspberry Pi, such as this:
+```
+$ echo "eyes.blink" > /dev/ttyAMA0
+$ echo "eyes.color=16711680" > /dev/ttyAMA0
+$ echo "mouth.text=I am angry!" > /dev/ttyAMA0
+```
+Which will blink the eyes, turn them red, then display the phrase on the faceplate.
+
+# Mycroft Skill API Interface
+Skills are written in Python.  Access to the Mark 1 features can be had using the mycroft.client.enclosure.api,
+which is configured and available inside a skill using `self.enclosure`.  For example:
+```
+self.enclosure.mouth_text("I am angry!")
+```
+
+# Graphics
+The `mouth.icon=` command takes a custom format for it's black and white images.  You can use the [HTML editor](../master/editor.html) to create the image strings that can be sent.  Within Mycroft you can send PNG files using `self.enclosure.display_png()` and they will be automatically converted to the correct format for you.
