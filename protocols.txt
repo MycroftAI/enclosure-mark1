@@ -64,7 +64,8 @@ Generated from the menu system
    "mycroft.mark1.demo"         user selected DEMO from menu
    "unit.enable-ssh"            user selected SSH > ALLOW
    "unit.disable-ssh"           user selected SSH > BLOCK
-
+   "unit.enable-learning"       user selected LEARN > ALLOW
+   "unit.disable-learning"      user selected LEARN > OFF
 
 
 NOTES
