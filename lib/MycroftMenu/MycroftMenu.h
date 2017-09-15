@@ -21,7 +21,7 @@ class MycroftMenu {
 public:
     MycroftMenu(int pinCS1, int pinWR, int pinDATA, int pinENC1, int pinENC2, int pinBUTTON);
     enum menuState {
-        MAIN, BRIGHTNESS, RESET_UNIT, ALLOW_SSH
+        MAIN, BRIGHTNESS, RESET_UNIT, ALLOW_SSH, LEARN
     };
     menuState getCurrentMenu();
     void drawText();
@@ -42,7 +42,7 @@ private:
     // This defines the order of menu items
     struct OptionContainer {
         enum Option{
-            ILLUM, WIFI, REBOOT, SHUTDOWN, TEST, SSH, RESET, DEMO, EXIT, _COUNT
+            ILLUM, WIFI, REBOOT, SHUTDOWN, TEST, SSH, LEARN, RESET, DEMO, EXIT, _COUNT
         };
         Option option;
     };
