@@ -1,3 +1,5 @@
+// NOTE:  Version info can be found in ../lib/MycroftArduino/MycroftArduino.h
+
 #include "ClickEncoder.h"
 #include "TimerOne.h"
 

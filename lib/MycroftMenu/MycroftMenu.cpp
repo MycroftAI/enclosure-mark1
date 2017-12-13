@@ -101,9 +101,6 @@ void MycroftMenu::drawText() {
             case OptionContainer::SSH:
                 drawOption(true, "SSH", true);
                 break;
-            case OptionContainer::LEARN:
-                drawOption(true, "LEARN", true);
-                break;
             case OptionContainer::RESET:
                 drawOption(true, "RESET", true);
                 break;
@@ -139,14 +136,6 @@ void MycroftMenu::drawText() {
             drawOption(false, "BLOCK", true);
         }
     }
-    else if (currentState == LEARN){
-        if (choice){
-            drawOption(true, "ALLOW", false);
-        }
-        else{
-            drawOption(false, "OFF", true);
-        }
-    }
 }
 
 void MycroftMenu::pressButton() {
@@ -170,11 +159,6 @@ void MycroftMenu::pressButton() {
                 return;
             case OptionContainer::SSH:
                 currentState = ALLOW_SSH;
-                choice = false;
-                drawText();
-                break;
-            case OptionContainer::LEARN:
-                currentState = LEARN;
                 choice = false;
                 drawText();
                 break;
@@ -210,17 +194,6 @@ void MycroftMenu::pressButton() {
             Serial.println(F("unit.disable-ssh"));
         }
         optionIndex = OptionContainer::SSH;
-        exitMenu();
-        return;
-    }
-    else if (currentState == LEARN){
-        if (choice){
-            Serial.println(F("unit.enable-learning"));
-        }
-        else {
-            Serial.println(F("unit.disable-learning"));
-        }
-        optionIndex = OptionContainer::LEARN;
         exitMenu();
         return;
     }

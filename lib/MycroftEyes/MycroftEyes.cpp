@@ -49,7 +49,7 @@ void MycroftEyes::updateAnimation() {
 void MycroftEyes::setup() {
 	bright = 30;
 	neoPixel.begin();
-	color = neoPixel.Color(0, 255, 255);       // default to CYAN
+	color = neoPixel.Color(112, 101, 106);       // #706569 soft tan/gray, matches upload.sh
 	neoPixel.setBrightness(bright);
 	currentAnim = NONE;
 	startAnim(SPIN, BOTH);
