@@ -255,8 +255,7 @@ void loop() {
 
                             if (menu.getCurrentMenu() == MycroftMenu::MAIN
                                 || menu.getCurrentMenu() == MycroftMenu::RESET_UNIT
-                                || menu.getCurrentMenu() == MycroftMenu::ALLOW_SSH
-                                || menu.getCurrentMenu() == MycroftMenu::LEARN) {
+                                || menu.getCurrentMenu() == MycroftMenu::ALLOW_SSH) {
                                     scrollMenu(dir);
                             } else if (menu.getCurrentMenu() == MycroftMenu::BRIGHTNESS){
                                     scrollBrightness(dir);
