@@ -39,7 +39,10 @@ esac
 shift # past argument or value
 done
 
-
+# First feedback that boot is progressing.  Change color to soft
+# gray and fill eyes.
+echo "eyes.color=7365993" > /dev/ttyAMA0  # color=soft gray, #706569
+echo "mouth.text=" > /dev/ttyAMA0
 
 if [[ $STOPSERVICE -eq 1 ]]; then
     # stop service to allow reading off the serial port without interference
@@ -59,6 +62,12 @@ if [[ $UPDATE -ne 1 ]]; then
 fi
 
 if [[ $UPDATE -eq 1 ]]; then
+    # Provide visual feedback that Arduino is being updated
+    echo "eyes.color=16747520" > /dev/ttyAMA0  # color=orange
+    sleep 0.25
+    echo "mouth.text=FLASH" > /dev/ttyAMA0
+    sleep 0.25
+
     # Upload new code to the Arduino
     sudo avrdude -p atmega328p -C ${SCRIPT_DIR}/avrdude-gpio.conf -c linuxgpio -v -U flash:w:${SCRIPT_DIR}/build/enclosure.ino.hex
     if [ $? -eq 0 ]; then
@@ -66,7 +75,15 @@ if [[ $UPDATE -eq 1 ]]; then
         echo "Upload succeeded, saving version info"
         sudo python ${SCRIPT_DIR}/verifyArduino.py --savever
     fi
+elif
+    sleep 0.5
 fi
+
+# Post-flash stage we go yellow, indicating pre-connection
+sleep 0.25
+echo "eyes.color=16768768" > /dev/ttyAMA0   # color=yellow
+sleep 0.25
+echo "mouth.text=" > /dev/ttyAMA0
 
 if [[ $STOPSERVICE  -eq 1 ]]; then
     # restart service if we stopped it
