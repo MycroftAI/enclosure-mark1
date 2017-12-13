@@ -65,7 +65,7 @@ if [[ $UPDATE -eq 1 ]]; then
     # Provide visual feedback that Arduino is being updated
     echo "eyes.color=16747520" > /dev/ttyAMA0  # color=orange
     sleep 0.25
-    echo "mouth.text=FLASH" > /dev/ttyAMA0
+    echo "mouth.text=UPDATE" > /dev/ttyAMA0
     sleep 0.25
 
     # Upload new code to the Arduino
@@ -75,8 +75,6 @@ if [[ $UPDATE -eq 1 ]]; then
         echo "Upload succeeded, saving version info"
         sudo python ${SCRIPT_DIR}/verifyArduino.py --savever
     fi
-elif
-    sleep 0.5
 fi
 
 # Post-flash stage we go yellow, indicating pre-connection
