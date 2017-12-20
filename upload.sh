@@ -15,6 +15,8 @@
 #########################################################################
 #!/usr/bin/env bash
 
+if ! (cat /etc/mycroft/mycroft.conf | grep -qF "mycroft_mark_1"); then exit
+
 # Default script behavior
 STOPSERVICE=1   # auto stop and restart mycroft-enclosure-client
 UPDATE=0        # only upload when version info indicates necessary
