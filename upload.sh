@@ -15,7 +15,7 @@
 #########################################################################
 #!/usr/bin/env bash
 
-if ! (cat /etc/mycroft/mycroft.conf | grep -qF "mycroft_mark_1"); then exit
+if ! grep -qF "mycroft_mark_1" /etc/mycroft/mycroft.conf; then exit; fi
 
 # Default script behavior
 STOPSERVICE=1   # auto stop and restart mycroft-enclosure-client
