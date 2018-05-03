@@ -56,11 +56,11 @@ def open_serial_port():
         port = config.get("port")
         rate = int(config.get("rate"))
         timeout = int(config.get("timeout"))
-        print ("Connecting to: " + port + " rate: " + str(rate) +
-               " timeout: " + str(timeout))
+        print("Connecting to: " + port + " rate: " + str(rate) +
+              " timeout: " + str(timeout))
         return serial.serial_for_url(url=port, baudrate=rate, timeout=timeout)
     except:
-        print "It is not possible to connect to serial port: " + str(port)
+        print("It is not possible to connect to serial port: " + str(port))
         sys.exit(-3)  # don't try to update
         raise
 
@@ -79,11 +79,11 @@ def detect_platform():
     #       to the serial port before attempting to act on it.  So we will
     #       rely on this to identify if a Mycroft Arduino is connected to the
     #       serial port.
-    tty.write("system.version")
+    tty.write(b"system.version")
     time.sleep(1)
 
-    resp = tty.readline().rstrip()
-    print "Reply= '" + resp + "'"
+    resp = tty.readline().decode().rstrip()
+    print("Reply= '" + resp + "'")
     if "Command: system.version" in resp:
         # We have a Mark 1!
 
@@ -187,24 +187,24 @@ try:
         tty.flushOutput()
 
         # Write "system.version"
-        print "Requesting version..."
-        tty.write("system.version")
+        print("Requesting version...")
+        tty.write(b"system.version")
         time.sleep(0.1)
 
         # Now check to see if we got a response from the version command
         # command we just sent.  Remember, there might not be a Mark 1
         # Arduino on the other side of the serial port.
-        resp = tty.readline().rstrip()
+        resp = tty.readline().decode().rstrip()
         log("Resp1='"+str(resp)+"'")
-        print "Reply= '" + resp + "'"
+        print("Reply= '" + resp + "'")
         if "Command: system.version" in resp:
             # Got Arduino ping response, attempting to extract version
-            resp = tty.readline().rstrip()
+            resp = tty.readline().decode().rstrip()
             log("Ver='"+str(resp)+"'")
-            print "Reply= '" + resp + "'"
+            print("Reply= '" + resp + "'")
             if "Mycroft Mark 1 v" in resp:
                 ver = resp
-                print "Ver= '" + ver + "'"
+                print("Ver= '" + ver + "'")
 
                 # Save the version for subsequent testing
                 if len(sys.argv) > 1 and sys.argv[1] == "--savever":
