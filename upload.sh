@@ -17,6 +17,10 @@
 
 if ! grep -qF "mycroft_mark_1" /etc/mycroft/mycroft.conf; then exit; fi
 
+if [[ ${UPLOAD_VENV} ]]; then
+    source "${UPLOAD_VENV}/bin/activate"
+fi
+
 # Default script behavior
 STOPSERVICE=1   # auto stop and restart mycroft-enclosure-client
 UPDATE=0        # only upload when version info indicates necessary
@@ -88,4 +92,7 @@ echo "mouth.text=" > /dev/ttyAMA0
 if [[ $STOPSERVICE  -eq 1 ]]; then
     # restart service if we stopped it
     sudo service mycroft-enclosure-client start
+fi
+if [[ ${UPLOAD_VENV} ]]; then
+    deactivate
 fi
