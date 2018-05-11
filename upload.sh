@@ -79,7 +79,12 @@ if [[ $UPDATE -eq 1 ]]; then
     if [ $? -eq 0 ]; then
         # Read and save the version info from the Arduino if write succeeded
         echo "Upload succeeded, saving version info"
-        sudo python ${SCRIPT_DIR}/verifyArduino.py --savever
+        if [[ ${UPLOAD_VENV} ]]; then
+            sudo ${UPLOAD_VENV}/bin/python ${SCRIPT_DIR}/verifyArduino.py --savever
+        else
+            sudo python ${SCRIPT_DIR}/verifyArduino.py --savever
+        fi
+
     fi
 fi
 
