@@ -21,7 +21,7 @@
 #define STR_EXPAND(x)                   #x
 #define STR(tok)			STR_EXPAND(tok)
 #define ENCLOSURE_VERSION_MAJOR         1
-#define ENCLOSURE_VERSION_MINOR         3
+#define ENCLOSURE_VERSION_MINOR         4
 #define ENCLOSURE_VERSION_REVISION      0
 #define ENCLOSURE_VERSION_STRING        STR(ENCLOSURE_VERSION_MAJOR) \
                                         "." STR(ENCLOSURE_VERSION_MINOR) \
