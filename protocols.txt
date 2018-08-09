@@ -37,6 +37,7 @@ system.unmute                   restores the audio output
 system.blink=int                int = times to blink the Arduino's on-board LED
 
 test.begin                      initiate a hardware test sequence
+version                         reply with version, e.g. "Mycroft Mark 1 v0.1.9"
 
 weather.display=int,image       int = temperature, image shown to the left of it
 
