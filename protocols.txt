@@ -103,7 +103,7 @@ and must be handled separately. See below.
 
 A blank 16x8 image looks like this:
   QIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-And a simple 16x8 boot icon look like this:
+And a simple 16x8 boat icon look like this:
   QIAAABACAGIEMEOEPHAEAGACABABAAAAAA
 
 You can send this image to the faceplate using this command line:
