@@ -188,14 +188,15 @@ void MycroftMouth::showIcon(const char code[61]) {
 	{
 		if(msgHold[0] != 0) //if holding part of a messasge
 		{
-			strcpy(icon,msgHold);
-			strcat(icon,code);
-			icon[strlen(icon)-1] = 0;
-			msgHold[0] = 0;
+			strcpy(icon, msgHold);
+			strcat(icon, code);
+			icon[strlen(icon) - 1] = '\0'; // Remove the trailing $
+			msgHold[0] = '\0';
 		}
 		else //hold part of a message
 		{
-			strcpy(msgHold, code);
+                        // Copy the code to the holding variable
+			memcpy(msgHold, code, strlen(code) - 1);
 			return;
 		}
 	}
