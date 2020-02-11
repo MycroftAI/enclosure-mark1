@@ -174,36 +174,50 @@ void MycroftMouth::readBufferState(byte idx, State anim) {
 	}
 }
 
+
+#define ICON_LEN 91
 void MycroftMouth::showIcon(const char code[61]) {
 
-	static char msgHold[31] = {0};
-	char icon[91];
+	static char msgHold[61] = {0};
+	char icon[ICON_LEN];
 
-	//Arduinos have a hardcoded limit of 64 bytes for their serial input
-	//buffer. To get around this Mycroft sends large messages as two parts.
+	// Arduinos have a hardcoded limit of 64 bytes for their serial input
+	// buffer. To get around this Mycroft sends large messages as two parts.
 
-	//check if first or second half of a message
-	//if it is, concatenate the message into one
-	if (code[strlen(code)-1] == '$')
-	{
-		if(msgHold[0] != 0) //if holding part of a messasge
-		{
-			strcpy(icon, msgHold);
-			strcat(icon, code);
-			icon[strlen(icon) - 1] = '\0'; // Remove the trailing $
-			msgHold[0] = '\0';
-		}
-		else //hold part of a message
-		{
-                        // Copy the code to the holding variable
-			memcpy(msgHold, code, strlen(code) - 1);
-			return;
-		}
-	}
-	else
-	{
-		strcpy(icon, code);
-	}
+        // Check if it's the first part of a two part message.
+        if (code[strlen(code) - 1] == '$')
+        {
+                // Copy the code to the holding variable
+                memcpy(msgHold, code, strlen(code) - 1);
+                return;
+        }
+        // Check if this is a continuation message
+        else if (code[0] == '$')
+        {
+                // if holding part of a messasge
+                if (msgHold[0] != '\0')
+                {
+                        if (strlen(msgHold) + strlen(code) < ICON_LEN)
+                        {
+                                strcpy(icon, msgHold);
+                                strcat(icon, code);
+                                // Remove the trailing $
+                                icon[strlen(icon) - 1] = '\0';
+                                msgHold[0] = '\0'; // Mark holding var as empty
+                        }
+                        else
+                        {
+                                msgHold[0] = '\0';
+                                return;
+                        }
+                }
+                else // There is no first part to add to.
+                        return;
+        }
+        else // Single message code
+        {
+                strncpy(icon, code, 60);
+        }
 
 	byte 	xOfs = 0;
 	byte	yOfs = 0;
