@@ -201,7 +201,7 @@ void MycroftMouth::showIcon(const char code[61]) {
                         {
                                 // icon = msgHold + code
                                 strcpy(icon, msgHold);
-                                strcat(icon, code+1); // Remove the leading $
+                                strcat(icon, code + 1); // Remove the leading $
                                 msgHold[0] = '\0'; // Mark holding var as empty
                         }
                         else
