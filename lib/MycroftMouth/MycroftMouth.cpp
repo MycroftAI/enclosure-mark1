@@ -188,26 +188,26 @@ void MycroftMouth::showIcon(const char code[61]) {
         if (code[strlen(code) - 1] == '$')
         {
                 // Copy the code to the holding variable
-                memcpy(msgHold, code, strlen(code) - 1);
+                memcpy(msgHold, code, strlen(code) - 1); // Remove the trailing $
                 return;
         }
         // Check if this is a continuation message
         else if (code[0] == '$')
         {
-                // if holding part of a messasge
+                // if holding part of a message
                 if (msgHold[0] != '\0')
                 {
                         if (strlen(msgHold) + strlen(code) < ICON_LEN)
                         {
+                                // icon = msgHold + code
                                 strcpy(icon, msgHold);
-                                strcat(icon, code);
-                                // Remove the trailing $
-                                icon[strlen(icon) - 1] = '\0';
+                                strcat(icon, code + 1); // Remove the leading $
                                 msgHold[0] = '\0'; // Mark holding var as empty
                         }
                         else
                         {
-                                msgHold[0] = '\0';
+                                // TODO how to handle oversized images?
+                                msgHold[0] = '\0'; // Mark holding var as empty
                                 return;
                         }
                 }
