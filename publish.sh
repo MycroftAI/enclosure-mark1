@@ -19,7 +19,7 @@
 function init_vars() {
   TOP='.'
   PROJECT_NAME="enclosure"
-  VERSION="$(basename $(git describe --abbrev=0 --tags) | sed -e 's/v//g')"
+  VERSION="1.4.2"
   ARCH="armhf"
   ARTIFACT_BASE="enclosure-${ARCH}-${VERSION}"
   ARTIFACT_DIR=${TOP}/build_artifacts
