@@ -51,6 +51,9 @@ function _run() {
 }
 
 init_vars
+if [[ $1 == "release" ]]; then
+    git checkout v${VERSION}
+fi
 compile_arduino_sketch
 create_tarball
 upload
