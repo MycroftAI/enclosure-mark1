@@ -118,7 +118,7 @@ if not os.path.isfile(pathSketch):
 
 # Read the platform.  We should only be attempting to verify/update
 # the Arduino on a Mycroft Mark 1 platform.
-config = mycroft.configuration.ConfigurationManager.get().get("enclosure")
+config = mycroft.configuration.Configuration.get().get("enclosure")
 platform = config.get('platform')
 if platform is None:
     platform = detect_platform()
